@@ -64,4 +64,44 @@ public:
   void JP();   // 0xc2, 0xd2, 0xc3, 0xe9, 0xca, 0xda
   void CALL(); // 0xc4, 0xd4, 0xcc, 0xdc, 0xcd
   void RST();  // 0xe7, 0xd7, 0xc7, 0xd7, 0xcf, 0xdf, 0xef, 0xff
+
+  /* ====================================
+   *       8-bit LOAD/STORE/MOVE
+   * ====================================
+   */
+  void LD(); // too many
+
+  /* ====================================
+   *       16-bit LOAD/STORE/MOVE
+   * ====================================
+   */
+  void LD_16(); // quite a lot
+  void POP();
+
+  /* ====================================
+   *     8-bit ARITHMETIC LOGIC UNIT
+   * ====================================
+   */
+  void INC();
+  void DEC();
+  void DAA();
+  void CPL();
+  void CCF();
+  void ADD();
+  void ADC();
+  void SUB();
+  void SBC();
+  void AND();
+  void XOR();
+  void OR();
+  void CP();
+
+  /* ====================================
+   *     16-bit ARITHMETIC LOGIC UNIT
+   * ====================================
+   */
+  void INC_16();
+  void ADD_16();
+  void DEC_16();
+  void LD_HL_SP();
 };
