@@ -46,6 +46,10 @@ private:
 public:
   CPU(std::ifstream &ROM_);
   void print_reg();
+  uint8_t read_byte(uint16_t addr);
+  uint16_t read_word(uint16_t addr);
+  void write_byte(uint16_t addr, uint8_t val);
+  void write_word(uint16_t addr, uint16_t val);
 
   /* ====================================
    *          CONTROL/MISC

@@ -15,4 +15,6 @@ public:
   Memory(std::ifstream &ROM);
   void print_mem(int n);
   void load_memory(std::ifstream &ROM, int MEM_END);
+  uint8_t read_byte(uint16_t addr);
+  void write_byte(uint16_t addr, uint8_t val);
 };

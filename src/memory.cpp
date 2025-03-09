@@ -1,5 +1,6 @@
 #include "../include/memory.h"
 #include <array>
+#include <cstdint>
 #include <cstring>
 #include <fstream>
 #include <iomanip>
@@ -24,3 +25,6 @@ void Memory::load_memory(std::ifstream &ROM, int MEM_END) {
   }
   std::cout << std::dec;
 }
+
+uint8_t Memory::read_byte(uint16_t addr) { return MEMORY[addr]; }
+void Memory::write_byte(uint16_t addr, uint8_t val) { MEMORY[addr] = val; }
