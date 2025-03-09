@@ -8,6 +8,8 @@ class CPU {
 private:
   Memory ROM;
 
+  int clock_m;
+
   struct reg {
     union {
       struct {
@@ -44,4 +46,22 @@ private:
 public:
   CPU(std::ifstream &ROM_);
   void print_reg();
+
+  /* ====================================
+   *          CONTROL/MISC
+   * ====================================
+   */
+  void NOP();  // 0x00
+  void STOP(); // 0x10
+  void HALT(); // 0x76
+
+  /* ====================================
+   *          CONTROL/BRANCH
+   * ====================================
+   */
+  void JR();   // 0x18, 0x20, 0x28, 0x30 0x38
+  void RET();  // 0xc0, 0xd0, 0xc8, 0xd8, 0xc9, 0xd9
+  void JP();   // 0xc2, 0xd2, 0xc3, 0xe9, 0xca, 0xda
+  void CALL(); // 0xc4, 0xd4, 0xcc, 0xdc, 0xcd
+  void RST();  // 0xe7, 0xd7, 0xc7, 0xd7, 0xcf, 0xdf, 0xef, 0xff
 };
