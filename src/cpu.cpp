@@ -1,6 +1,7 @@
 #include "../include/cpu.h"
 #include <cstring>
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 
 CPU::CPU(std::ifstream &ROM_)
@@ -17,18 +18,23 @@ CPU::CPU(std::ifstream &ROM_)
       ROM(ROM_) {}
 
 void CPU::print_reg() {
-  std::cout << "a = " << static_cast<int>(reg.a) << std::endl;
-  std::cout << "f = " << static_cast<int>(reg.f) << std::endl;
-  std::cout << "af = " << reg.af << std::endl;
-  std::cout << "b = " << static_cast<int>(reg.b) << std::endl;
-  std::cout << "c = " << static_cast<int>(reg.c) << std::endl;
-  std::cout << "bc = " << reg.bc << std::endl;
-  std::cout << "d = " << static_cast<int>(reg.d) << std::endl;
-  std::cout << "e = " << static_cast<int>(reg.e) << std::endl;
-  std::cout << "de = " << reg.de << std::endl;
-  std::cout << "h = " << static_cast<int>(reg.h) << std::endl;
-  std::cout << "l = " << static_cast<int>(reg.l) << std::endl;
-  std::cout << "hl = " << reg.hl << std::endl;
-  std::cout << "sp = " << reg.sp << std::endl;
-  std::cout << "pc = " << reg.pc << std::endl;
+  std::cout << std::hex << std::uppercase << std::setfill('0');
+
+  std::cout << "Registers:\n";
+  std::cout << "A  = 0x" << std::setw(2) << static_cast<int>(reg.a) << std::endl;
+  std::cout << "F  = 0x" << std::setw(2) << static_cast<int>(reg.f) << std::endl;
+  std::cout << "AF = 0x" << std::setw(4) << reg.af << std::endl;
+  std::cout << "B  = 0x" << std::setw(2) << static_cast<int>(reg.b) << std::endl;
+  std::cout << "C  = 0x" << std::setw(2) << static_cast<int>(reg.c) << std::endl;
+  std::cout << "BC = 0x" << std::setw(4) << reg.bc << std::endl;
+  std::cout << "D  = 0x" << std::setw(2) << static_cast<int>(reg.d) << std::endl;
+  std::cout << "E  = 0x" << std::setw(2) << static_cast<int>(reg.e) << std::endl;
+  std::cout << "DE = 0x" << std::setw(4) << reg.de << std::endl;
+  std::cout << "H  = 0x" << std::setw(2) << static_cast<int>(reg.h) << std::endl;
+  std::cout << "L  = 0x" << std::setw(2) << static_cast<int>(reg.l) << std::endl;
+  std::cout << "HL = 0x" << std::setw(4) << reg.hl << std::endl;
+  std::cout << "SP = 0x" << std::setw(4) << reg.sp << std::endl;
+  std::cout << "PC = 0x" << std::setw(4) << reg.pc << std::endl;
+
+  std::cout << std::dec;
 }
