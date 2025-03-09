@@ -10,7 +10,7 @@ private:
 
   int clock_m;
 
-  struct reg {
+  struct REGISTERS {
     union {
       struct {
         std::uint8_t a;
@@ -44,12 +44,17 @@ private:
   } reg;
 
 public:
+  using R_PTR = uint8_t REGISTERS::*;
+
   CPU(std::ifstream &ROM_);
   void print_reg();
   uint8_t read_byte(uint16_t addr);
   uint16_t read_word(uint16_t addr);
   void write_byte(uint16_t addr, uint8_t val);
   void write_word(uint16_t addr, uint16_t val);
+
+  uint8_t read_reg(R_PTR r);
+  void write_reg(R_PTR r, uint8_t val);
 
   /* ====================================
    *          CONTROL/MISC
@@ -73,13 +78,36 @@ public:
    *       8-bit LOAD/STORE/MOVE
    * ====================================
    */
-  void LD(); // too many
+  void LD_r16_r8(uint16_t addr, R_PTR r); // too many
+  void LD_r8_r16(R_PTR r, uint16_t addr); // too many
+  void LD_r8_r8(R_PTR r1, R_PTR r2);
+  void LD_r8_n8(R_PTR r1, uint8_t n8);
+  void LD_HL_r8(R_PTR r);
+  void LD_HL_n8(uint8_t n);
+  void LD_r8_HL(R_PTR r);
+  // start here
+  // void LD_r16_A(R_PTR r);
+  // void LD_n16_A(uint16_t n16);
+  // void LD_A_r16(R_PTR r);
+  // void LD_A_n16(uint16_t n16);
+  void LD_HLI_A();
+  void LD_HLD_A();
+  void LD_A_HLD();
+  void LD_A_HLI();
+  void LDH_n16_A(uint16_t n);
+  void LDH_C_A();
+  void LDH_A_n16(uint16_t n16);
+  void LDH_A_C();
 
   /* ====================================
    *       16-bit LOAD/STORE/MOVE
    * ====================================
    */
-  void LD_16(); // quite a lot
+  void LD_r16_n16(CPU::R_PTR r1, CPU::R_PTR r2, uint16_t n16); // quite a lot
+  void LD_SP_n16(uint16_t n16);
+  void LD_n16_SP(uint16_t n16);
+  void LD_HL_SP_e8(int8_t e8); // implement flags
+  void LD_SP_HL();
   void POP();
 
   /* ====================================
