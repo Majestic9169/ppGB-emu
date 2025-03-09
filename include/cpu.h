@@ -104,4 +104,24 @@ public:
   void ADD_16();
   void DEC_16();
   void LD_HL_SP();
+
+  /* ====================================
+   *     8-bit ROTATE/SHIFT bit
+   * ====================================
+   */
+  void RLCA();
+  void RLA();
+  void RRCA();
+  void RRA();
+  void RLC();
+  void RRC();
+  void RL();
+  void RR();
+  void SLA();
+  void SRA();
+  void SWAP();
+  void SRL();
+  void BIT();
+  void RES();
+  void SET();
 };
