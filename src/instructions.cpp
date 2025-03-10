@@ -247,3 +247,32 @@ void CPU::AND_A_n8(uint8_t n8) {
   flag_value(H, 1);
   flag_value(C, 0);
 }
+
+// CP A, r8
+void CPU::CP_A_r8(R8_PTR r) {
+  uint8_t reg_value = read_reg(r);
+  uint8_t result = reg.a - reg_value;
+  set_z_flag(result);
+  flag_value(N, 1);
+  flag_value(H, ((reg.a & 0x0f) - (reg_value & 0x0f)) < 0);
+  flag_value(C, reg.a < reg_value);
+}
+
+// CP A, [HL]
+void CPU::CP_A_HL() {
+  uint8_t reg_value = read_byte(reg.hl);
+  uint8_t result = reg.a - reg_value;
+  set_z_flag(result);
+  flag_value(N, 1);
+  flag_value(H, ((reg.a & 0x0f) - (reg_value & 0x0f)) < 0);
+  flag_value(C, reg.a < reg_value);
+}
+
+// CP A, n8
+void CPU::CP_A_n8(uint8_t n8) {
+  uint8_t result = reg.a - n8;
+  set_z_flag(result);
+  flag_value(N, 1);
+  flag_value(H, ((reg.a & 0x0f) - (n8 & 0x0f)) < 0);
+  flag_value(C, reg.a < n8);
+}

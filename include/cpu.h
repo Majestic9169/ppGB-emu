@@ -150,6 +150,10 @@ public:
   void AND_A_HL();
   void AND_A_n8(uint8_t n8);
 
+  void CP_A_r8(R8_PTR r);
+  void CP_A_HL();
+  void CP_A_n8(uint8_t n8);
+
   void INC();
   void DEC();
   void DAA();
@@ -159,7 +163,6 @@ public:
   void SBC();
   void XOR();
   void OR();
-  void CP();
 
   /* ====================================
    *     16-bit ARITHMETIC LOGIC UNIT
