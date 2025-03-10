@@ -284,3 +284,32 @@ void CPU::CPL() {
   flag_value(N, 1);
   flag_value(H, 1);
 }
+
+// DAA
+void CPU::DAA() {
+  if (flag_value(N)) {
+    uint8_t adj = 0;
+    if (flag_value(H)) {
+      adj += 0x06;
+    }
+    if (flag_value(C)) {
+      adj += 0x60;
+      flag_value(C, 0);
+    }
+    reg.a -= adj;
+    set_z_flag(reg.a);
+    flag_value(H, 0);
+  } else {
+    uint8_t adj = 0;
+    if (flag_value(H) || (reg.a & 0xf) > 0x9) {
+      adj += 0x06;
+    }
+    if (flag_value(C) || reg.a > 0x99) {
+      adj += 0x60;
+      flag_value(C, 1);
+    }
+    reg.a += adj;
+    set_z_flag(reg.a);
+    flag_value(H, 0);
+  }
+}
