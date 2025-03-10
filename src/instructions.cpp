@@ -313,3 +313,37 @@ void CPU::DAA() {
     flag_value(H, 0);
   }
 }
+
+// DEC r8
+void CPU::DEC_r8(CPU::R8_PTR r) {
+  uint8_t val = read_reg(r) - 1;
+  write_reg(r, val);
+  set_z_flag(val);
+  flag_value(N, 1);
+  flag_value(H, (((val + 1) & 0x0f) - (0x01 & 0x0f)) < 0);
+}
+
+// DEC [HL]
+void CPU::DEC_HL() {
+  reg.hl -= 1;
+  set_z_flag(reg.hl);
+  flag_value(N, 1);
+  flag_value(H, (((reg.hl + 1) & 0x0f) - (0x01 & 0x0f)) < 0);
+}
+
+// DEC r16
+void CPU::DEC_r16(CPU::R16_PTR r) {
+  uint16_t val = read_reg(r) - 1;
+  write_reg(r, val);
+  set_z_flag(val);
+  flag_value(N, 1);
+  flag_value(H, (((val + 1) & 0x0f) - (0x01 & 0x0f)) < 0);
+}
+
+// DEC SP
+void CPU::DEC_SP() {
+  reg.sp -= 1;
+  set_z_flag(reg.sp);
+  flag_value(N, 1);
+  flag_value(H, (((reg.sp + 1) & 0x0f) - (0x01 & 0x0f)) < 0);
+}
