@@ -3,6 +3,9 @@
 #include <cstring>
 #include <fstream>
 #include <iostream>
+#include <sys/types.h>
+
+enum FLAGS { C = 3, H, N, Z };
 
 class CPU {
 private:
@@ -47,7 +50,11 @@ public:
   using R_PTR = uint8_t REGISTERS::*;
 
   CPU(std::ifstream &ROM_);
+
+#ifdef DEBUG
   void print_reg();
+#endif
+
   uint8_t read_byte(uint16_t addr);
   uint16_t read_word(uint16_t addr);
   void write_byte(uint16_t addr, uint8_t val);
@@ -56,6 +63,11 @@ public:
   uint8_t read_reg(R_PTR r);
   void write_reg(R_PTR r, uint8_t val);
 
+  bool flag_value(FLAGS);
+  void flag_value(FLAGS, bool set);
+  void reset_flags();
+  void set_h_flag(uint test);
+  void set_c_flag(uint test);
   /* ====================================
    *          CONTROL/MISC
    * ====================================
@@ -114,13 +126,15 @@ public:
    *     8-bit ARITHMETIC LOGIC UNIT
    * ====================================
    */
+  void ADC_A_r8(R_PTR r);
+  void ADC_A_HL();
+  void ADC_A_n8(uint8_t n8);
   void INC();
   void DEC();
   void DAA();
   void CPL();
   void CCF();
   void ADD();
-  void ADC();
   void SUB();
   void SBC();
   void AND();
