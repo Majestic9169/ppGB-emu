@@ -16,7 +16,7 @@ void CPU::NOP() {
  * ====================================
  */
 // LD r8, r8
-void CPU::LD_r8_r8(CPU::R_PTR r1, CPU::R_PTR r2) {
+void CPU::LD_r8_r8(CPU::R8_PTR r1, CPU::R8_PTR r2) {
   if (r1 == r2) {
     NOP();
   } else {
@@ -26,28 +26,25 @@ void CPU::LD_r8_r8(CPU::R_PTR r1, CPU::R_PTR r2) {
 }
 
 // LD r8, n8
-void CPU::LD_r8_n8(CPU::R_PTR r, uint8_t val) { write_reg(r, val); }
+void CPU::LD_r8_n8(CPU::R8_PTR r, uint8_t val) { write_reg(r, val); }
 
 // LD (r16), A
-void CPU::LD_r16_r8(uint16_t addr, CPU::R_PTR r) {
-  uint8_t val = read_reg(r);
-  write_byte(addr, val);
+void CPU::LD_r16_r8(CPU::R16_PTR r1, CPU::R8_PTR r2) {
+  uint8_t val = read_reg(r2);
+  write_byte(read_reg(r1), val);
 }
 
 // LD A, (r16)
-void CPU::LD_r8_r16(CPU::R_PTR r, uint16_t addr) {
-  uint8_t val = read_byte(addr);
-  write_reg(r, val);
+void CPU::LD_r8_r16(CPU::R8_PTR r1, CPU::R16_PTR r2) {
+  uint8_t val = read_byte(read_reg(r2));
+  write_reg(r1, val);
 }
 
 // LD r16, n16
-void CPU::LD_r16_n16(CPU::R_PTR r1, CPU::R_PTR r2, uint16_t n16) {
-  write_reg(r1, n16 << 8);
-  write_reg(r2, n16 & 0x00ff);
-}
+void CPU::LD_r16_n16(CPU::R16_PTR r, uint16_t n16) { write_reg(r, n16); }
 
 // LD [HL], r8
-void CPU::LD_HL_r8(CPU::R_PTR r) {
+void CPU::LD_HL_r8(CPU::R8_PTR r) {
   uint8_t val = read_reg(r);
   write_byte(reg.hl, val);
 }
@@ -56,7 +53,7 @@ void CPU::LD_HL_r8(CPU::R_PTR r) {
 void CPU::LD_HL_n8(uint8_t n) { write_byte(reg.hl, n); }
 
 // LD r8, [HL]
-void CPU::LD_r8_HL(CPU::R_PTR r) {
+void CPU::LD_r8_HL(CPU::R8_PTR r) {
   uint8_t val = read_byte(reg.hl);
   write_reg(r, val);
 }
@@ -144,7 +141,7 @@ void CPU::LDH_A_C() {
  */
 
 // ADC A, r8
-void CPU::ADC_A_r8(CPU::R_PTR r) {
+void CPU::ADC_A_r8(CPU::R8_PTR r) {
   uint32_t tmp = reg.a + read_reg(r) + flag_value(C);
   reg.a = tmp;
   flag_value(Z, reg.a == 0 ? 0 : 1);

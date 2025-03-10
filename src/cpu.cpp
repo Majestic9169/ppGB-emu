@@ -43,12 +43,22 @@ void CPU::write_word(uint16_t addr, uint16_t val) {
   write_byte(addr + 1, val >> 8);
 }
 
-uint8_t CPU::read_reg(CPU::R_PTR r) {
+uint8_t CPU::read_reg(CPU::R8_PTR r) {
   clock_m += 1;
   return reg.*r;
 }
 
-void CPU::write_reg(CPU::R_PTR r, uint8_t val) {
+void CPU::write_reg(CPU::R8_PTR r, uint8_t val) {
+  clock_m += 1;
+  reg.*r = val;
+}
+
+uint16_t CPU::read_reg(CPU::R16_PTR r) {
+  clock_m += 1;
+  return reg.*r;
+}
+
+void CPU::write_reg(CPU::R16_PTR r, uint16_t val) {
   clock_m += 1;
   reg.*r = val;
 }
