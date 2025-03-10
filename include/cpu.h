@@ -69,6 +69,7 @@ public:
   bool flag_value(FLAGS);
   void flag_value(FLAGS, bool set);
   void reset_flags();
+  void set_z_flag(uint test);
   void set_h_flag(uint test);
   void set_c_flag(uint test);
   /* ====================================
@@ -109,6 +110,7 @@ public:
   void LD_HLD_A();
   void LD_A_HLD();
   void LD_A_HLI();
+
   void LDH_n16_A(uint16_t n);
   void LDH_C_A();
   void LDH_A_n16(uint16_t n16);
@@ -123,6 +125,7 @@ public:
   void LD_n16_SP(uint16_t n16);
   void LD_HL_SP_e8(int8_t e8); // implement flags
   void LD_SP_HL();
+
   void POP();
 
   /* ====================================
@@ -132,10 +135,18 @@ public:
   void ADC_A_r8(R8_PTR r);
   void ADC_A_HL();
   void ADC_A_n8(uint8_t n8);
+
   void ADD_A_r8(R8_PTR r);
   void ADD_A_HL();
   void ADD_A_n8(uint8_t n8);
-  void ALL_HL_r16(R16_PTR r);
+  void ADD_HL_r16(R16_PTR r);
+  void ADD_HL_SP();
+  void ADD_SP_e8(int8_t e8);
+
+  void AND_A_r8(R8_PTR r);
+  void AND_A_HL();
+  void AND_A_n8(uint8_t n8);
+
   void INC();
   void DEC();
   void DAA();
@@ -143,7 +154,6 @@ public:
   void CCF();
   void SUB();
   void SBC();
-  void AND();
   void XOR();
   void OR();
   void CP();

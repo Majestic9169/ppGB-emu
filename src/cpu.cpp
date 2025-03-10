@@ -78,6 +78,14 @@ void CPU::reset_flags() {
   flag_value(C, 0);
 }
 
+void CPU::set_z_flag(uint test) {
+  if (test == 0) {
+    flag_value(Z, 1);
+  } else {
+    flag_value(Z, 0);
+  }
+}
+
 void CPU::set_h_flag(uint test) {
   if (test > 0xff) {
     flag_value(H, 1);

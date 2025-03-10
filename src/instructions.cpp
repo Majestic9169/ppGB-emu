@@ -1,5 +1,6 @@
 #include "../include/cpu.h"
 #include <cstdint>
+#include <sys/types.h>
 
 /* ====================================
  *          CONTROL/MISC
@@ -144,7 +145,7 @@ void CPU::LDH_A_C() {
 void CPU::ADC_A_r8(CPU::R8_PTR r) {
   uint32_t tmp = reg.a + read_reg(r) + flag_value(C);
   reg.a = tmp;
-  flag_value(Z, reg.a == 0 ? 0 : 1);
+  set_z_flag(reg.a);
   flag_value(N, 0);
   set_h_flag(tmp);
   set_c_flag(tmp);
@@ -154,7 +155,7 @@ void CPU::ADC_A_r8(CPU::R8_PTR r) {
 void CPU::ADC_A_HL() {
   uint32_t tmp = read_byte(reg.hl) + flag_value(C) + reg.a;
   reg.a = tmp;
-  flag_value(Z, reg.a == 0 ? 0 : 1);
+  set_z_flag(reg.a);
   flag_value(N, 0);
   set_h_flag(tmp);
   set_c_flag(tmp);
@@ -164,8 +165,85 @@ void CPU::ADC_A_HL() {
 void CPU::ADC_A_n8(uint8_t n8) {
   uint32_t tmp = reg.a + n8 + flag_value(C);
   reg.a = tmp;
-  flag_value(Z, reg.a == 0 ? 0 : 1);
+  set_z_flag(reg.a);
   flag_value(N, 0);
   set_h_flag(tmp);
   set_c_flag(tmp);
+}
+
+// ADD A, r8
+void CPU::ADD_A_r8(CPU::R8_PTR r) {
+  uint32_t tmp = reg.a + read_reg(r);
+  reg.a = tmp;
+  set_z_flag(reg.a);
+  flag_value(N, 0);
+  set_h_flag(tmp);
+  set_c_flag(tmp);
+}
+
+// ADD A, [HL]
+void CPU::ADD_A_HL() {
+  uint32_t tmp = read_byte(reg.hl) + reg.a;
+  reg.a = tmp;
+  set_z_flag(reg.a);
+  flag_value(N, 0);
+  set_h_flag(tmp);
+  set_c_flag(tmp);
+}
+
+// ADD A, n8
+void CPU::ADD_A_n8(uint8_t n8) {
+  uint32_t tmp = reg.a + n8;
+  reg.a = tmp;
+  set_z_flag(reg.a);
+  flag_value(N, 0);
+  set_h_flag(tmp);
+  set_c_flag(tmp);
+}
+
+// ADD HL, r16
+void CPU::ADD_HL_r16(CPU::R16_PTR r) {
+  uint tmp = read_reg(r) + reg.hl;
+  reg.hl = tmp;
+  tmp >>= 7;
+  flag_value(N, 0);
+  set_h_flag(tmp);
+  set_c_flag(tmp);
+}
+
+// ADD SP, e8
+void CPU::ADD_SP_e8(int8_t e8) {
+  uint tmp = reg.sp + e8;
+  reg.sp = tmp;
+  flag_value(Z, 0);
+  flag_value(N, 0);
+  set_h_flag(tmp);
+  set_c_flag(tmp);
+}
+
+// AND A, r8
+void CPU::AND_A_r8(CPU::R8_PTR r) {
+  reg.a &= read_reg(r);
+  set_z_flag(reg.a);
+  flag_value(N, 0);
+  flag_value(H, 1);
+  flag_value(C, 0);
+}
+
+// AND A, [HL]
+void CPU::AND_A_HL() {
+  reg.a &= read_byte(reg.hl);
+  set_z_flag(reg.a);
+  flag_value(N, 0);
+  flag_value(H, 1);
+  flag_value(C, 0);
+}
+
+// AND A, n8
+void CPU::AND_A_n8(uint8_t n8) {
+  reg.a &= n8;
+  set_z_flag(reg.a);
+  flag_value(N, 0);
+  flag_value(H, 1);
+  flag_value(C, 0);
 }
