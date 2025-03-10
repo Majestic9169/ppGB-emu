@@ -3,6 +3,7 @@
 #include <fstream>
 #include <ios>
 #include <iostream>
+#define DEBUG
 
 int main(int argc, char **argv) {
   if (argc < 2) {
@@ -11,6 +12,6 @@ int main(int argc, char **argv) {
   std::ifstream ROM;
   ROM.open(argv[1], std::ios::binary | std::ios::in);
   CPU gb(ROM);
-  gb.print_reg();
+  // gb.print_reg();
   ROM.close();
 }

@@ -72,11 +72,14 @@ public:
   void set_z_flag(uint test);
   void set_h_flag(uint test);
   void set_c_flag(uint test);
+
+  void INSTRUCTION_DECODER();
+
   /* ====================================
    *          CONTROL/MISC
    * ====================================
    */
-  void NOP();  // 0x00
+  void NOP();
   void STOP(); // 0x10
   void HALT(); // 0x76
 

@@ -6,5 +6,7 @@ project(
   LANGUAGES CXX
 )
 
-add_executable(ppGB main.cpp src/memory.cpp src/cpu.cpp)
+file(GLOB_RECURSE GB_SRC ./src/*.cpp)
+
+add_executable(ppGB main.cpp ${GB_SRC})
 
