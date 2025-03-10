@@ -276,3 +276,11 @@ void CPU::CP_A_n8(uint8_t n8) {
   flag_value(H, ((reg.a & 0x0f) - (n8 & 0x0f)) < 0);
   flag_value(C, reg.a < n8);
 }
+
+// CPL
+void CPU::CPL() {
+  reg.a = ~reg.a;
+  clock_m += 1;
+  flag_value(N, 1);
+  flag_value(H, 1);
+}

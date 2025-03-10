@@ -154,10 +154,11 @@ public:
   void CP_A_HL();
   void CP_A_n8(uint8_t n8);
 
+  void CPL();
+
   void INC();
   void DEC();
   void DAA();
-  void CPL();
   void CCF();
   void SUB();
   void SBC();
