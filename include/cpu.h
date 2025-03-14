@@ -162,6 +162,7 @@ public:
   void INC_HL();
 
   void CCF();
+
   void SUB();
   void SBC();
   void XOR();

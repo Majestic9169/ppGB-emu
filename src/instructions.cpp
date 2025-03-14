@@ -380,3 +380,10 @@ void CPU::INC_SP() {
   uint16_t res = read_reg(&CPU::REGISTERS::sp) + 1;
   write_reg(&CPU::REGISTERS::sp, res);
 }
+
+// CCF
+void CPU::CCF() {
+  flag_value(N, 0);
+  flag_value(H, 0);
+  flag_value(C, flag_value(C) == 0 ? 1 : 0);
+}
