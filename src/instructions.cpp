@@ -447,3 +447,33 @@ void CPU::SBC_A_HL() {
   set_z_flag(reg.a);
   flag_value(N, 1);
 }
+
+// XOR A, r8
+void CPU::XOR_A_r8(CPU::R8_PTR r) {
+  uint8_t val = read_reg(r);
+  reg.a ^= val;
+  set_z_flag(reg.a);
+  flag_value(N, 0);
+  flag_value(C, 0);
+  flag_value(H, 0);
+}
+
+// XOR A, [HL]
+void CPU::XOR_A_HL() {
+  uint8_t val = read_byte(reg.hl);
+  reg.a ^= val;
+  set_z_flag(reg.a);
+  flag_value(N, 0);
+  flag_value(C, 0);
+  flag_value(H, 0);
+}
+
+// XOR A, n8
+void CPU::XOR_A_n8(uint8_t n8) {
+  uint8_t val = n8;
+  reg.a ^= val;
+  set_z_flag(reg.a);
+  flag_value(N, 0);
+  flag_value(C, 0);
+  flag_value(H, 0);
+}

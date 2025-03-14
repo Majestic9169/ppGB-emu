@@ -171,7 +171,10 @@ public:
   void SBC_A_HL();
   void SBC_A_n8(uint8_t n8);
 
-  void XOR();
+  void XOR_A_r8(R8_PTR r);
+  void XOR_A_HL();
+  void XOR_A_n8(uint8_t n8);
+
   void OR();
 
   /* ====================================
