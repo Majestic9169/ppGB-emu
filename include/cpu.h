@@ -163,7 +163,10 @@ public:
 
   void CCF();
 
-  void SUB();
+  void SUB_A_r8(R8_PTR r);
+  void SUB_A_HL();
+  void SUB_A_n8(uint8_t n8);
+
   void SBC();
   void XOR();
   void OR();

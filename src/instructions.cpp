@@ -1,5 +1,6 @@
 #include "../include/cpu.h"
 #include <cstdint>
+#include <memory>
 #include <sys/types.h>
 
 /* ====================================
@@ -386,4 +387,34 @@ void CPU::CCF() {
   flag_value(N, 0);
   flag_value(H, 0);
   flag_value(C, flag_value(C) == 0 ? 1 : 0);
+}
+
+// SUB A, r8
+void CPU::SUB_A_r8(CPU::R8_PTR r) {
+  uint8_t reg_val = read_reg(r);
+  flag_value(C, reg_val > reg.a);
+  flag_value(H, (reg_val & 0x0f) > (reg.a & 0x0f));
+  reg.a -= reg_val;
+  set_z_flag(reg.a);
+  flag_value(N, 1);
+}
+
+// SUB A, [HL]
+void CPU::SUB_A_HL() {
+  uint8_t val = read_byte(reg.hl);
+  flag_value(C, val > reg.a);
+  flag_value(H, (val & 0x0f) > (reg.a & 0x0f));
+  write_reg(&CPU::REGISTERS::a, reg.a - val);
+  set_z_flag(reg.a);
+  flag_value(N, 1);
+}
+
+// SUB A, n8
+void CPU::SUB_A_n8(uint8_t n8) {
+  uint8_t val = n8;
+  flag_value(C, val > reg.a);
+  flag_value(H, (val & 0x0f) > (reg.a & 0x0f));
+  reg.a -= n8;
+  set_z_flag(reg.a);
+  flag_value(N, 1);
 }
