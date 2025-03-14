@@ -507,3 +507,19 @@ void CPU::OR_A_n8(uint8_t n8) {
   flag_value(C, 0);
   flag_value(H, 0);
 }
+
+/* ====================================
+ *          CONTROL/BRANCH
+ * ====================================
+ */
+
+// JR n16
+void CPU::JR_n16(int8_t e8) { reg.pc += e8; }
+
+// JR cc, n16
+void CPU::JR_CC_n16(bool condition, int8_t e8) {
+  if (condition) {
+    JR_n16(e8);
+  } else {
+  }
+}
