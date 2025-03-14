@@ -418,3 +418,32 @@ void CPU::SUB_A_n8(uint8_t n8) {
   set_z_flag(reg.a);
   flag_value(N, 1);
 }
+
+// SBC A, n8
+void CPU::SBC_A_r8(CPU::R8_PTR r) {
+  uint8_t val = read_reg(r);
+  flag_value(C, val + flag_value(C) > reg.a);
+  flag_value(H, ((val + flag_value(C)) & 0x0f) > (reg.a & 0x0f));
+  reg.a = reg.a - val - flag_value(C);
+  set_z_flag(reg.a);
+  flag_value(N, 1);
+}
+// SBC A, n8
+void CPU::SBC_A_n8(uint8_t n8) {
+  uint8_t val = n8;
+  flag_value(C, val + flag_value(C) > reg.a);
+  flag_value(H, ((val + flag_value(C)) & 0x0f) > (reg.a & 0x0f));
+  reg.a = reg.a - val - flag_value(C);
+  set_z_flag(reg.a);
+  flag_value(N, 1);
+}
+
+// SUB A, n8
+void CPU::SBC_A_HL() {
+  uint8_t val = read_byte(reg.hl);
+  flag_value(C, (val + flag_value(C)) > reg.a);
+  flag_value(H, ((val + flag_value(C)) & 0x0f) > (reg.a & 0x0f));
+  reg.a = reg.a - val - flag_value(C);
+  set_z_flag(reg.a);
+  flag_value(N, 1);
+}
