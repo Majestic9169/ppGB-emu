@@ -477,3 +477,33 @@ void CPU::XOR_A_n8(uint8_t n8) {
   flag_value(C, 0);
   flag_value(H, 0);
 }
+
+// OR A, r8
+void CPU::OR_A_r8(CPU::R8_PTR r) {
+  uint8_t val = read_reg(r);
+  reg.a |= val;
+  set_z_flag(reg.a);
+  flag_value(N, 0);
+  flag_value(C, 0);
+  flag_value(H, 0);
+}
+
+// OR A, [HL]
+void CPU::OR_A_HL() {
+  uint8_t val = read_byte(reg.hl);
+  reg.a |= val;
+  set_z_flag(reg.a);
+  flag_value(N, 0);
+  flag_value(C, 0);
+  flag_value(H, 0);
+}
+
+// OR A, n8
+void CPU::OR_A_n8(uint8_t n8) {
+  uint8_t val = n8;
+  reg.a |= val;
+  set_z_flag(reg.a);
+  flag_value(N, 0);
+  flag_value(C, 0);
+  flag_value(H, 0);
+}

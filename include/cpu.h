@@ -175,7 +175,9 @@ public:
   void XOR_A_HL();
   void XOR_A_n8(uint8_t n8);
 
-  void OR();
+  void OR_A_r8(R8_PTR r);
+  void OR_A_HL();
+  void OR_A_n8(uint8_t n8);
 
   /* ====================================
    *     16-bit ARITHMETIC LOGIC UNIT
