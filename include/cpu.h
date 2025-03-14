@@ -90,8 +90,13 @@ public:
   void JR_n16(int8_t e8);
   void JR_CC_n16(bool condition, int8_t e8);
 
-  void RET();  // 0xc0, 0xd0, 0xc8, 0xd8, 0xc9, 0xd9
-  void JP();   // 0xc2, 0xd2, 0xc3, 0xe9, 0xca, 0xda
+  void RET();
+  void RET_CC(bool condition);
+
+  void JP_n16(uint16_t n16);
+  void JP_CC_n16(bool condition, uint16_t n16);
+  void JP_HL();
+
   void CALL(); // 0xc4, 0xd4, 0xcc, 0xdc, 0xcd
   void RST();  // 0xe7, 0xd7, 0xc7, 0xd7, 0xcf, 0xdf, 0xef, 0xff
 
@@ -99,14 +104,13 @@ public:
    *       8-bit LOAD/STORE/MOVE
    * ====================================
    */
-  void LD_r16_r8(R16_PTR r1, R8_PTR r2); // too many
-  void LD_r8_r16(R8_PTR r1, R16_PTR r2); // too many
+  void LD_r16_r8(R16_PTR r1, R8_PTR r2);
+  void LD_r8_r16(R8_PTR r1, R16_PTR r2);
   void LD_r8_r8(R8_PTR r1, R8_PTR r2);
   void LD_r8_n8(R8_PTR r1, uint8_t n8);
   void LD_HL_r8(R8_PTR r);
   void LD_HL_n8(uint8_t n);
   void LD_r8_HL(R8_PTR r);
-  // start here
   // void LD_r16_A(R8_PTR r);
   // void LD_n16_A(uint16_t n16);
   // void LD_A_r16(R8_PTR r);

@@ -523,3 +523,17 @@ void CPU::JR_CC_n16(bool condition, int8_t e8) {
   } else {
   }
 }
+
+// JP n16
+void CPU::JP_n16(uint16_t n16) { reg.pc = n16; }
+
+// JP cc, n16
+void CPU::JP_CC_n16(bool condition, uint16_t n16) {
+  if (condition) {
+    JP_n16(n16);
+  } else {
+  }
+}
+
+// JP HL
+void CPU::JP_HL() { reg.pc = reg.hl; }
