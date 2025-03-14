@@ -347,3 +347,36 @@ void CPU::DEC_SP() {
   flag_value(N, 1);
   flag_value(H, (((reg.sp + 1) & 0x0f) - (0x01 & 0x0f)) < 0);
 }
+
+// INC r8
+void CPU::INC_r8(CPU::R8_PTR r) {
+  uint res = read_reg(r) + 1;
+  write_reg(r, res);
+  set_z_flag((uint8_t)res);
+  flag_value(N, 0);
+  set_h_flag(res);
+}
+
+// INC HL
+void CPU::INC_HL() {
+  uint res = read_byte(reg.hl) + 1;
+  write_byte(reg.hl, res);
+  set_z_flag((read_byte(reg.hl)));
+  flag_value(N, 0);
+  set_h_flag(res);
+}
+
+// INC r16
+void CPU::INC_r16(CPU::R16_PTR r) {
+  uint res = read_reg(r) + 1;
+  write_reg(r, res);
+  set_z_flag((uint16_t)res);
+  flag_value(N, 0);
+  set_h_flag(res);
+}
+
+// INC r16
+void CPU::INC_SP() {
+  uint16_t res = read_reg(&CPU::REGISTERS::sp) + 1;
+  write_reg(&CPU::REGISTERS::sp, res);
+}

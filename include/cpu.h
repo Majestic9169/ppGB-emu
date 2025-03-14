@@ -158,7 +158,9 @@ public:
   void DEC_r8(R8_PTR r);
   void DEC_HL();
 
-  void INC();
+  void INC_r8(R8_PTR r);
+  void INC_HL();
+
   void CCF();
   void SUB();
   void SBC();
@@ -169,7 +171,8 @@ public:
    *     16-bit ARITHMETIC LOGIC UNIT
    * ====================================
    */
-  void INC_16();
+  void INC_r16(R16_PTR r);
+  void INC_SP();
 
   void ADD_HL_r16(R16_PTR r);
   void ADD_HL_SP();
