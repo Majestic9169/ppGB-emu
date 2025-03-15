@@ -24,17 +24,17 @@ CPU::CPU(std::ifstream &ROM_)
       ROM(ROM_), clock_m(0) {}
 
 uint8_t CPU::read_byte(uint16_t addr) {
-  clock_m += 1;
+  // clock_m += 1;
   return ROM.read_byte(addr);
 }
 
 uint16_t CPU::read_word(uint16_t addr) {
-  clock_m += 1;
+  // clock_m += 1;
   return (ROM.read_byte(addr) << 8) + (ROM.read_byte(addr + 1));
 }
 
 void CPU::write_byte(uint16_t addr, uint8_t val) {
-  clock_m += 1;
+  // clock_m += 1;
   ROM.write_byte(addr, val);
 }
 
@@ -44,22 +44,22 @@ void CPU::write_word(uint16_t addr, uint16_t val) {
 }
 
 uint8_t CPU::read_reg(CPU::R8_PTR r) {
-  clock_m += 1;
+  // clock_m += 1;
   return reg.*r;
 }
 
 void CPU::write_reg(CPU::R8_PTR r, uint8_t val) {
-  clock_m += 1;
+  // clock_m += 1;
   reg.*r = val;
 }
 
 uint16_t CPU::read_reg(CPU::R16_PTR r) {
-  clock_m += 1;
+  // clock_m += 1;
   return reg.*r;
 }
 
 void CPU::write_reg(CPU::R16_PTR r, uint16_t val) {
-  clock_m += 1;
+  // clock_m += 1;
   reg.*r = val;
 }
 

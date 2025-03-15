@@ -131,7 +131,7 @@ public:
    *       16-bit LOAD/STORE/MOVE
    * ====================================
    */
-  void LD_r16_n16(R16_PTR r, uint16_t n16); // quite a lot
+  void LD_r16_n16(R16_PTR r, uint16_t n16);
   void LD_SP_n16(uint16_t n16);
   void LD_n16_SP(uint16_t n16);
   void LD_HL_SP_e8(int8_t e8); // implement flags

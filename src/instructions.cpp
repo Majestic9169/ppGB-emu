@@ -1,6 +1,5 @@
 #include "../include/cpu.h"
 #include <cstdint>
-#include <memory>
 #include <sys/types.h>
 
 /* ====================================
