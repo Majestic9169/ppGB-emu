@@ -843,36 +843,81 @@ void CPU::INSTRUCTION_DECODER() {
     LD_r8_r8(&REGISTERS::l, &REGISTERS::a);
     break;
   case 0x70:
+    printf("%s", disasm[0x70]);
+    clock_m += clock_m_cycles[0x70];
+    LD_HL_r8(&REGISTERS::b);
     break;
   case 0x71:
+    printf("%s", disasm[0x71]);
+    clock_m += clock_m_cycles[0x71];
+    LD_HL_r8(&REGISTERS::c);
     break;
   case 0x72:
+    printf("%s", disasm[0x72]);
+    clock_m += clock_m_cycles[0x72];
+    LD_HL_r8(&REGISTERS::d);
     break;
   case 0x73:
+    printf("%s", disasm[0x73]);
+    clock_m += clock_m_cycles[0x73];
+    LD_HL_r8(&REGISTERS::e);
     break;
   case 0x74:
+    printf("%s", disasm[0x74]);
+    clock_m += clock_m_cycles[0x74];
+    LD_HL_r8(&REGISTERS::h);
     break;
   case 0x75:
+    printf("%s", disasm[0x75]);
+    clock_m += clock_m_cycles[0x75];
+    LD_HL_r8(&REGISTERS::l);
     break;
   case 0x76:
     break;
   case 0x77:
+    printf("%s", disasm[0x77]);
+    clock_m += clock_m_cycles[0x77];
+    LD_HL_r8(&REGISTERS::a);
     break;
   case 0x78:
+    printf("%s", disasm[0x78]);
+    clock_m += clock_m_cycles[0x78];
+    LD_r8_r8(&REGISTERS::a, &REGISTERS::b);
     break;
   case 0x79:
+    printf("%s", disasm[0x79]);
+    clock_m += clock_m_cycles[0x79];
+    LD_r8_r8(&REGISTERS::a, &REGISTERS::c);
     break;
   case 0x7A:
+    printf("%s", disasm[0x7a]);
+    clock_m += clock_m_cycles[0x7a];
+    LD_r8_r8(&REGISTERS::a, &REGISTERS::d);
     break;
   case 0x7B:
+    printf("%s", disasm[0x7b]);
+    clock_m += clock_m_cycles[0x7b];
+    LD_r8_r8(&REGISTERS::a, &REGISTERS::e);
     break;
   case 0x7C:
+    printf("%s", disasm[0x7c]);
+    clock_m += clock_m_cycles[0x7c];
+    LD_r8_r8(&REGISTERS::a, &REGISTERS::h);
     break;
   case 0x7D:
+    printf("%s", disasm[0x7d]);
+    clock_m += clock_m_cycles[0x7d];
+    LD_r8_r8(&REGISTERS::a, &REGISTERS::l);
     break;
   case 0x7E:
+    printf("%s", disasm[0x7e]);
+    clock_m += clock_m_cycles[0x7e];
+    LD_r8_HL(&REGISTERS::a);
     break;
   case 0x7F:
+    printf("%s", disasm[0x7f]);
+    clock_m += clock_m_cycles[0x7f];
+    LD_r8_r8(&REGISTERS::a, &REGISTERS::a);
     break;
   case 0x80:
     break;
