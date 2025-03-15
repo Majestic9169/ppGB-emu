@@ -137,7 +137,7 @@ public:
   void LD_HL_SP_e8(int8_t e8); // implement flags
   void LD_SP_HL();
 
-  void POP();
+  void POP_r16(R16_PTR r);
 
   void PUSH_r16(R16_PTR r);
 

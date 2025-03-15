@@ -144,6 +144,13 @@ void CPU::PUSH_r16(CPU::R16_PTR r) {
   DEC_SP();
 }
 
+// POP r16
+void CPU::POP_r16(CPU::R16_PTR r) {
+  INC_SP();
+  write_reg(r, read_word(reg.sp));
+  INC_SP();
+}
+
 /* ====================================
  *          ARTHMETIC UNITS
  * ====================================
@@ -528,6 +535,20 @@ void CPU::JR_CC_n16(bool condition, int8_t e8) {
   if (condition) {
     JR_n16(e8);
   } else {
+  }
+}
+
+// RET
+void CPU::RET() {
+  INC_SP();
+  reg.pc = read_word(reg.sp);
+  INC_SP();
+}
+
+// RET CC
+void CPU::RET_CC(bool condition) {
+  if (condition) {
+    RET();
   }
 }
 
