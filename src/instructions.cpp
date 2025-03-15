@@ -225,6 +225,15 @@ void CPU::ADD_HL_r16(CPU::R16_PTR r) {
   set_c_flag(tmp);
 }
 
+// ADD HL, SP
+void CPU::ADD_HL_SP() {
+  uint tmp = reg.sp + reg.hl;
+  reg.hl = tmp;
+  tmp >>= 7;
+  flag_value(N, 0);
+  set_h_flag(tmp);
+  set_c_flag(tmp);
+}
 // ADD SP, e8
 void CPU::ADD_SP_e8(int8_t e8) {
   uint tmp = reg.sp + e8;

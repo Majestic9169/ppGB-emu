@@ -12,6 +12,10 @@ int main(int argc, char **argv) {
   std::ifstream ROM;
   ROM.open(argv[1], std::ios::binary | std::ios::in);
   CPU gb(ROM);
-  // gb.print_reg();
+
+  while (1) {
+    gb.INSTRUCTION_DECODER();
+  }
+
   ROM.close();
 }
