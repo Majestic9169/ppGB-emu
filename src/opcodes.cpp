@@ -1,8 +1,6 @@
 #include "../include/cpu.h"
 #include <cstdint>
 #include <cstdio>
-#include <iostream>
-#include <ostream>
 
 const char *disasm[256] = {
     "[ASM] NOP\n",                     // 0x00
@@ -522,38 +520,88 @@ void CPU::INSTRUCTION_DECODER() {
     clock_m += clock_m_cycles[0x2f];
     CPL();
   } break;
-  case 0x30:
-    break;
-  case 0x31:
-    break;
+  case 0x30: {
+    int8_t val = read_byte(reg.pc++);
+    printf(disasm[0x30], val);
+    clock_m += clock_m_cycles[0x30];
+    JR_CC_n16(flag_value(N) & flag_value(C), val);
+  } break;
+  case 0x31: {
+    uint16_t val = read_word(reg.pc++);
+    printf(disasm[0x31], val);
+    clock_m += clock_m_cycles[0x31];
+    LD_SP_n16(val);
+  } break;
   case 0x32:
+    printf("%s", disasm[0x32]);
+    clock_m += clock_m_cycles[0x32];
+    LD_HLD_A();
     break;
   case 0x33:
+    printf("%s", disasm[0x33]);
+    clock_m += clock_m_cycles[0x33];
+    INC_SP();
     break;
   case 0x34:
+    printf("%s", disasm[0x34]);
+    clock_m += clock_m_cycles[0x34];
+    INC_HL();
     break;
   case 0x35:
+    printf("%s", disasm[0x35]);
+    clock_m += clock_m_cycles[0x35];
+    DEC_HL();
     break;
-  case 0x36:
-    break;
-  case 0x37:
-    break;
-  case 0x38:
-    break;
+  case 0x36: {
+    uint8_t val = read_byte(reg.pc++);
+    printf(disasm[0x36], val);
+    clock_m += clock_m_cycles[0x36];
+    LD_HL_n8(val);
+  } break;
+  case 0x37: {
+  } break;
+  case 0x38: {
+    int8_t val = read_byte(reg.pc++);
+    printf(disasm[0x38], val);
+    clock_m += clock_m_cycles[0x38];
+    JR_CC_n16(flag_value(C), val);
+  } break;
   case 0x39:
+    printf("%s", disasm[0x39]);
+    clock_m += clock_m_cycles[0x39];
+    ADD_HL_SP();
     break;
   case 0x3A:
+    printf("%s", disasm[0x3a]);
+    clock_m += clock_m_cycles[0x3a];
+    LD_A_HLD();
     break;
   case 0x3B:
+    printf("%s", disasm[0x3b]);
+    clock_m += clock_m_cycles[0x3b];
+    DEC_SP();
     break;
   case 0x3C:
+    printf("%s", disasm[0x3c]);
+    clock_m += clock_m_cycles[0x3c];
+    INC_r8(&REGISTERS::a);
     break;
   case 0x3D:
+    printf("%s", disasm[0x3d]);
+    clock_m += clock_m_cycles[0x3d];
+    DEC_r8(&REGISTERS::a);
     break;
-  case 0x3E:
-    break;
-  case 0x3F:
-    break;
+  case 0x3E: {
+    uint8_t val = read_byte(reg.pc++);
+    printf(disasm[0x3e], val);
+    clock_m += clock_m_cycles[0x3e];
+    LD_r8_n8(&REGISTERS::a, val);
+  } break;
+  case 0x3F: {
+    printf("%s", disasm[0x3f]);
+    clock_m += clock_m_cycles[0x3f];
+    CCF();
+  } break;
   case 0x40:
     break;
   case 0x41:
