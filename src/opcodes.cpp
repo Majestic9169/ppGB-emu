@@ -1327,7 +1327,7 @@ void CPU::INSTRUCTION_DECODER() {
     clock_m += clock_m_cycles[0xce];
     ADC_A_n8(val);
   } break;
-  case 0xcF:
+  case 0xcf:
     printf("ERROR 0x%04X\n", read_byte(reg.pc));
     exit(1);
     break;
