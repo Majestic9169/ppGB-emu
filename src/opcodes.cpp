@@ -1,6 +1,7 @@
 #include "../include/cpu.h"
 #include <cstdint>
 #include <cstdio>
+#include <ctime>
 
 const char *disasm[256] = {
     "[ASM] NOP\n",                     // 0x00
@@ -289,6 +290,7 @@ void CPU::INSTRUCTION_DECODER() {
     break;
   case 0x01: {
     uint16_t val = read_word(reg.pc++);
+    reg.pc++;
     printf(disasm[0x01], val);
     clock_m += clock_m_cycles[0x01];
     LD_r16_n16(&REGISTERS::bc, val);
@@ -325,6 +327,7 @@ void CPU::INSTRUCTION_DECODER() {
     break;
   case 0x08: {
     uint16_t val = read_word(reg.pc++);
+    reg.pc++;
     printf(disasm[0x08], val);
     clock_m += clock_m_cycles[0x08];
     LD_n16_SP(val);
@@ -370,6 +373,7 @@ void CPU::INSTRUCTION_DECODER() {
     break;
   case 0x11: {
     uint16_t val = read_word(reg.pc++);
+    reg.pc++;
     printf(disasm[0x11], val);
     clock_m += clock_m_cycles[0x11];
     LD_r16_n16(&REGISTERS::de, val);
@@ -449,6 +453,7 @@ void CPU::INSTRUCTION_DECODER() {
   } break;
   case 0x21: {
     uint16_t val = read_word(reg.pc++);
+    reg.pc++;
     printf(disasm[0x21], val);
     clock_m += clock_m_cycles[0x21];
     LD_r16_n16(&REGISTERS::hl, val);
@@ -534,6 +539,7 @@ void CPU::INSTRUCTION_DECODER() {
   } break;
   case 0x31: {
     uint16_t val = read_word(reg.pc++);
+    reg.pc++;
     printf(disasm[0x31], val);
     clock_m += clock_m_cycles[0x31];
     LD_SP_n16(val);
@@ -1245,11 +1251,81 @@ void CPU::INSTRUCTION_DECODER() {
     clock_m += clock_m_cycles[0xbf];
     CP_A_r8(&REGISTERS::a);
     break;
-  case 0xC0:
+  case 0xc0:
+    printf("%s", disasm[0xc0]);
+    clock_m += clock_m_cycles[0xc0];
+    RET_CC(flag_value(N) & flag_value(Z));
+    break;
+  case 0xc1:
+    printf("%s", disasm[0xc1]);
+    clock_m += clock_m_cycles[0xc1];
+    POP_r16(&REGISTERS::bc);
+    break;
+  case 0xc2: {
+    uint16_t val = read_word(reg.pc++);
+    reg.pc++;
+    printf(disasm[0xc2], val);
+    clock_m += clock_m_cycles[0xc2];
+    JP_CC_n16(flag_value(N) & flag_value(Z), val);
+  } break;
+  case 0xc3: {
+    uint16_t val = read_word(reg.pc++);
+    reg.pc++;
+    printf(disasm[0xc3], val);
+    clock_m += clock_m_cycles[0xc3];
+    JP_n16(val);
+  } break;
+  case 0xc4: {
+    uint16_t val = read_word(reg.pc++);
+    reg.pc++;
+    printf(disasm[0xc4], val);
+    clock_m += clock_m_cycles[0xc4];
+    CALL_CC_n16(flag_value(N) & flag_value(Z), val);
+  } break;
+  case 0xc5:
+    printf("%s", disasm[0xc5]);
+    clock_m += clock_m_cycles[0xc5];
+    PUSH_r16(&REGISTERS::bc);
+    break;
+  case 0xc6: {
+    uint8_t val = read_byte(reg.pc++);
+    printf(disasm[0xc6], val);
+    clock_m += clock_m_cycles[0xc6];
+    ADD_A_n8(val);
+  } break;
+  case 0xc7:
     printf("ERROR 0x%04X\n", read_byte(reg.pc));
     exit(1);
     break;
-  case 0xCB:
+  case 0xc8:
+    printf("ERROR 0x%04X\n", read_byte(reg.pc));
+    exit(1);
+    break;
+  case 0xc9:
+    printf("ERROR 0x%04X\n", read_byte(reg.pc));
+    exit(1);
+    break;
+  case 0xcA:
+    printf("ERROR 0x%04X\n", read_byte(reg.pc));
+    exit(1);
+    break;
+  case 0xcB:
+    printf("ERROR 0x%04X\n", read_byte(reg.pc));
+    exit(1);
+    break;
+  case 0xcC:
+    printf("ERROR 0x%04X\n", read_byte(reg.pc));
+    exit(1);
+    break;
+  case 0xcD:
+    printf("ERROR 0x%04X\n", read_byte(reg.pc));
+    exit(1);
+    break;
+  case 0xcE:
+    printf("ERROR 0x%04X\n", read_byte(reg.pc));
+    exit(1);
+    break;
+  case 0xcF:
     printf("ERROR 0x%04X\n", read_byte(reg.pc));
     exit(1);
     break;
