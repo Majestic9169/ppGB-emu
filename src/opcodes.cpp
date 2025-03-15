@@ -1000,36 +1000,84 @@ void CPU::INSTRUCTION_DECODER() {
     ADC_A_r8(&REGISTERS::a);
     break;
   case 0x90:
+    printf("%s", disasm[0x90]);
+    clock_m += clock_m_cycles[0x90];
+    SUB_A_r8(&REGISTERS::b);
     break;
   case 0x91:
+    printf("%s", disasm[0x91]);
+    clock_m += clock_m_cycles[0x91];
+    SUB_A_r8(&REGISTERS::c);
     break;
   case 0x92:
+    printf("%s", disasm[0x92]);
+    clock_m += clock_m_cycles[0x92];
+    SUB_A_r8(&REGISTERS::d);
     break;
   case 0x93:
+    printf("%s", disasm[0x93]);
+    clock_m += clock_m_cycles[0x93];
+    SUB_A_r8(&REGISTERS::e);
     break;
   case 0x94:
+    printf("%s", disasm[0x94]);
+    clock_m += clock_m_cycles[0x94];
+    SUB_A_r8(&REGISTERS::h);
     break;
   case 0x95:
+    printf("%s", disasm[0x95]);
+    clock_m += clock_m_cycles[0x95];
+    SUB_A_r8(&REGISTERS::l);
     break;
   case 0x96:
+    printf("%s", disasm[0x96]);
+    clock_m += clock_m_cycles[0x96];
+    SUB_A_HL();
     break;
   case 0x97:
+    printf("%s", disasm[0x97]);
+    clock_m += clock_m_cycles[0x97];
+    SUB_A_r8(&REGISTERS::a);
     break;
   case 0x98:
+    printf("%s", disasm[0x98]);
+    clock_m += clock_m_cycles[0x98];
+    SBC_A_r8(&REGISTERS::b);
     break;
   case 0x99:
+    printf("%s", disasm[0x99]);
+    clock_m += clock_m_cycles[0x99];
+    SBC_A_r8(&REGISTERS::c);
     break;
   case 0x9A:
+    printf("%s", disasm[0x9a]);
+    clock_m += clock_m_cycles[0x9a];
+    SBC_A_r8(&REGISTERS::d);
     break;
   case 0x9B:
+    printf("%s", disasm[0x9b]);
+    clock_m += clock_m_cycles[0x9b];
+    SBC_A_r8(&REGISTERS::e);
     break;
   case 0x9C:
+    printf("%s", disasm[0x9c]);
+    clock_m += clock_m_cycles[0x9c];
+    SBC_A_r8(&REGISTERS::h);
     break;
   case 0x9D:
+    printf("%s", disasm[0x9d]);
+    clock_m += clock_m_cycles[0x9d];
+    SBC_A_r8(&REGISTERS::l);
     break;
   case 0x9E:
+    printf("%s", disasm[0x9e]);
+    clock_m += clock_m_cycles[0x9e];
+    SBC_A_HL();
     break;
   case 0x9F:
+    printf("%s", disasm[0x9f]);
+    clock_m += clock_m_cycles[0x9f];
+    SBC_A_r8(&REGISTERS::a);
     break;
   case 0xA0:
     break;
