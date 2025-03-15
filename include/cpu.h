@@ -97,8 +97,10 @@ public:
   void JP_CC_n16(bool condition, uint16_t n16);
   void JP_HL();
 
-  void CALL(); // 0xc4, 0xd4, 0xcc, 0xdc, 0xcd
-  void RST();  // 0xe7, 0xd7, 0xc7, 0xd7, 0xcf, 0xdf, 0xef, 0xff
+  void CALL_n16(uint16_t n16);
+  void CALL_CC_n16(bool condition, uint16_t n16);
+
+  void RST(); // 0xe7, 0xd7, 0xc7, 0xd7, 0xcf, 0xdf, 0xef, 0xff
 
   /* ====================================
    *       8-bit LOAD/STORE/MOVE
@@ -136,6 +138,8 @@ public:
   void LD_SP_HL();
 
   void POP();
+
+  void PUSH_r16(R16_PTR r);
 
   /* ====================================
    *     8-bit ARITHMETIC LOGIC UNIT

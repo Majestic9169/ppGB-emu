@@ -137,6 +137,13 @@ void CPU::LDH_A_C() {
   write_reg(&CPU::REGISTERS::a, val);
 }
 
+// PUSH r16
+void CPU::PUSH_r16(CPU::R16_PTR r) {
+  DEC_SP();
+  write_word(reg.sp, read_reg(r));
+  DEC_SP();
+}
+
 /* ====================================
  *          ARTHMETIC UNITS
  * ====================================
@@ -537,3 +544,18 @@ void CPU::JP_CC_n16(bool condition, uint16_t n16) {
 
 // JP HL
 void CPU::JP_HL() { reg.pc = reg.hl; }
+
+// CALL n16
+void CPU::CALL_n16(uint16_t n16) {
+  DEC_SP();
+  write_word(reg.sp, reg.pc + 1);
+  DEC_SP();
+  JP_n16(n16);
+}
+
+// JP CC, n16
+void CPU::CALL_CC_n16(bool condition, uint16_t n16) {
+  if (condition) {
+    CALL_n16(n16);
+  }
+}
