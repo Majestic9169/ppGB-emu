@@ -320,6 +320,8 @@ void CPU::INSTRUCTION_DECODER() {
     LD_r8_n8(&REGISTERS::b, val);
   } break;
   case 0x07:
+    printf("ERROR 0x%04X\n", read_byte(reg.pc));
+    exit(1);
     break;
   case 0x08: {
     uint16_t val = read_word(reg.pc++);
@@ -359,8 +361,12 @@ void CPU::INSTRUCTION_DECODER() {
     LD_r8_n8(&REGISTERS::c, val);
   } break;
   case 0x0F:
+    printf("ERROR 0x%04X\n", read_byte(reg.pc));
+    exit(1);
     break;
   case 0x10:
+    printf("ERROR 0x%04X\n", read_byte(reg.pc));
+    exit(1);
     break;
   case 0x11: {
     uint16_t val = read_word(reg.pc++);
@@ -1240,12 +1246,20 @@ void CPU::INSTRUCTION_DECODER() {
     CP_A_r8(&REGISTERS::a);
     break;
   case 0xC0:
+    printf("ERROR 0x%04X\n", read_byte(reg.pc));
+    exit(1);
     break;
   case 0xCB:
+    printf("ERROR 0x%04X\n", read_byte(reg.pc));
+    exit(1);
     break;
   case 0xFF:
+    printf("ERROR 0x%04X\n", read_byte(reg.pc));
+    exit(1);
     break;
   default:
+    printf("ERROR 0x%04X\n", read_byte(reg.pc));
+    exit(1);
     break;
   }
 }
