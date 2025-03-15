@@ -1,4 +1,3 @@
-#ifdef DEBUG
 #include "../include/cpu.h"
 #include <iomanip>
 
@@ -31,4 +30,3 @@ void CPU::print_reg() {
 
   std::cout << std::dec;
 }
-#endif

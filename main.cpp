@@ -15,6 +15,7 @@ int main(int argc, char **argv) {
 
   while (1) {
     gb.INSTRUCTION_DECODER();
+    // gb.print_reg();
   }
 
   ROM.close();
