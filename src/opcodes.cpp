@@ -603,36 +603,84 @@ void CPU::INSTRUCTION_DECODER() {
     CCF();
   } break;
   case 0x40:
+    printf("%s", disasm[0x40]);
+    clock_m += clock_m_cycles[0x40];
+    LD_r8_r8(&REGISTERS::b, &REGISTERS::b);
     break;
   case 0x41:
+    printf("%s", disasm[0x41]);
+    clock_m += clock_m_cycles[0x41];
+    LD_r8_r8(&REGISTERS::b, &REGISTERS::c);
     break;
   case 0x42:
+    printf("%s", disasm[0x42]);
+    clock_m += clock_m_cycles[0x42];
+    LD_r8_r8(&REGISTERS::b, &REGISTERS::d);
     break;
   case 0x43:
+    printf("%s", disasm[0x43]);
+    clock_m += clock_m_cycles[0x43];
+    LD_r8_r8(&REGISTERS::b, &REGISTERS::e);
     break;
   case 0x44:
+    printf("%s", disasm[0x44]);
+    clock_m += clock_m_cycles[0x44];
+    LD_r8_r8(&REGISTERS::b, &REGISTERS::h);
     break;
   case 0x45:
+    printf("%s", disasm[0x45]);
+    clock_m += clock_m_cycles[0x45];
+    LD_r8_r8(&REGISTERS::b, &REGISTERS::l);
     break;
   case 0x46:
+    printf("%s", disasm[0x46]);
+    clock_m += clock_m_cycles[0x46];
+    LD_r8_HL(&REGISTERS::b);
     break;
   case 0x47:
+    printf("%s", disasm[0x47]);
+    clock_m += clock_m_cycles[0x47];
+    LD_r8_r8(&REGISTERS::b, &REGISTERS::a);
     break;
   case 0x48:
+    printf("%s", disasm[0x48]);
+    clock_m += clock_m_cycles[0x48];
+    LD_r8_r8(&REGISTERS::c, &REGISTERS::b);
     break;
   case 0x49:
+    printf("%s", disasm[0x49]);
+    clock_m += clock_m_cycles[0x49];
+    LD_r8_r8(&REGISTERS::c, &REGISTERS::c);
     break;
   case 0x4A:
+    printf("%s", disasm[0x4a]);
+    clock_m += clock_m_cycles[0x4a];
+    LD_r8_r8(&REGISTERS::c, &REGISTERS::d);
     break;
   case 0x4B:
+    printf("%s", disasm[0x4b]);
+    clock_m += clock_m_cycles[0x4b];
+    LD_r8_r8(&REGISTERS::c, &REGISTERS::e);
     break;
   case 0x4C:
+    printf("%s", disasm[0x4c]);
+    clock_m += clock_m_cycles[0x4c];
+    LD_r8_r8(&REGISTERS::c, &REGISTERS::h);
     break;
   case 0x4D:
+    printf("%s", disasm[0x4d]);
+    clock_m += clock_m_cycles[0x4d];
+    LD_r8_r8(&REGISTERS::c, &REGISTERS::l);
     break;
   case 0x4E:
+    printf("%s", disasm[0x4e]);
+    clock_m += clock_m_cycles[0x4e];
+    LD_r8_HL(&REGISTERS::c);
     break;
   case 0x4F:
+    printf("%s", disasm[0x40]);
+    clock_m += clock_m_cycles[0x40];
+    LD_r8_r8(&REGISTERS::c, &REGISTERS::a);
     break;
   case 0x50:
     break;
