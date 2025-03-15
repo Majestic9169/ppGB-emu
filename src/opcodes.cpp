@@ -1079,37 +1079,85 @@ void CPU::INSTRUCTION_DECODER() {
     clock_m += clock_m_cycles[0x9f];
     SBC_A_r8(&REGISTERS::a);
     break;
-  case 0xA0:
+  case 0xa0:
+    printf("%s", disasm[0xa0]);
+    clock_m += clock_m_cycles[0xa0];
+    AND_A_r8(&REGISTERS::b);
     break;
-  case 0xA1:
+  case 0xa1:
+    printf("%s", disasm[0xa1]);
+    clock_m += clock_m_cycles[0xa1];
+    AND_A_r8(&REGISTERS::c);
     break;
-  case 0xA2:
+  case 0xa2:
+    printf("%s", disasm[0xa2]);
+    clock_m += clock_m_cycles[0xa2];
+    AND_A_r8(&REGISTERS::d);
     break;
-  case 0xA3:
+  case 0xa3:
+    printf("%s", disasm[0xa3]);
+    clock_m += clock_m_cycles[0xa3];
+    AND_A_r8(&REGISTERS::e);
     break;
-  case 0xA4:
+  case 0xa4:
+    printf("%s", disasm[0xa4]);
+    clock_m += clock_m_cycles[0xa4];
+    AND_A_r8(&REGISTERS::h);
     break;
-  case 0xA5:
+  case 0xa5:
+    printf("%s", disasm[0xa5]);
+    clock_m += clock_m_cycles[0xa5];
+    AND_A_r8(&REGISTERS::l);
     break;
-  case 0xA6:
+  case 0xa6:
+    printf("%s", disasm[0xa6]);
+    clock_m += clock_m_cycles[0xa6];
+    AND_A_HL();
     break;
-  case 0xA7:
+  case 0xa7:
+    printf("%s", disasm[0xa7]);
+    clock_m += clock_m_cycles[0xa7];
+    AND_A_r8(&REGISTERS::a);
     break;
-  case 0xA8:
+  case 0xa8:
+    printf("%s", disasm[0xa8]);
+    clock_m += clock_m_cycles[0xa8];
+    XOR_A_r8(&REGISTERS::b);
     break;
-  case 0xA9:
+  case 0xa9:
+    printf("%s", disasm[0xa9]);
+    clock_m += clock_m_cycles[0xa9];
+    XOR_A_r8(&REGISTERS::c);
     break;
-  case 0xAA:
+  case 0xaA:
+    printf("%s", disasm[0xaa]);
+    clock_m += clock_m_cycles[0xaa];
+    XOR_A_r8(&REGISTERS::d);
     break;
-  case 0xAB:
+  case 0xaB:
+    printf("%s", disasm[0xab]);
+    clock_m += clock_m_cycles[0xab];
+    XOR_A_r8(&REGISTERS::e);
     break;
-  case 0xAC:
+  case 0xaC:
+    printf("%s", disasm[0xac]);
+    clock_m += clock_m_cycles[0xac];
+    XOR_A_r8(&REGISTERS::h);
     break;
-  case 0xAD:
+  case 0xaD:
+    printf("%s", disasm[0xad]);
+    clock_m += clock_m_cycles[0xad];
+    XOR_A_r8(&REGISTERS::l);
     break;
-  case 0xAE:
+  case 0xaE:
+    printf("%s", disasm[0xae]);
+    clock_m += clock_m_cycles[0xae];
+    XOR_A_HL();
     break;
-  case 0xAF:
+  case 0xaF:
+    printf("%s", disasm[0xaf]);
+    clock_m += clock_m_cycles[0xaf];
+    XOR_A_r8(&REGISTERS::a);
     break;
   case 0xB0:
     break;
