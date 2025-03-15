@@ -30,7 +30,7 @@ uint8_t CPU::read_byte(uint16_t addr) {
 
 uint16_t CPU::read_word(uint16_t addr) {
   // clock_m += 1;
-  return (ROM.read_byte(addr) << 8) + (ROM.read_byte(addr + 1));
+  return (ROM.read_byte(addr)) + (ROM.read_byte(addr + 1) << 8);
 }
 
 void CPU::write_byte(uint16_t addr, uint8_t val) {

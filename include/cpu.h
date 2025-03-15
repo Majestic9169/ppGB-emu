@@ -120,9 +120,9 @@ public:
   void LD_A_HLD();
   void LD_A_HLI();
 
-  void LDH_n16_A(uint16_t n);
+  void LDH_n16_A(uint8_t n8);
   void LDH_C_A();
-  void LDH_A_n16(uint16_t n16);
+  void LDH_A_n16(uint8_t n8);
   void LDH_A_C();
 
   /* ====================================

@@ -1331,6 +1331,12 @@ void CPU::INSTRUCTION_DECODER() {
     printf("ERROR 0x%04X\n", read_byte(reg.pc));
     exit(1);
     break;
+  case 0xe0: {
+    uint8_t val = read_byte(reg.pc++);
+    printf(disasm[0xe0], val);
+    clock_m += clock_m_cycles[0xe0];
+    LDH_n16_A(val);
+  } break;
   case 0xFF:
     printf("ERROR 0x%04X\n", read_byte(reg.pc));
     exit(1);

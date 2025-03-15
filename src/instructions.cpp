@@ -113,9 +113,9 @@ void CPU::LD_SP_HL() {
 }
 
 // LDH [n16], A
-void CPU::LDH_n16_A(uint16_t n16) {
+void CPU::LDH_n16_A(uint8_t n8) {
   uint8_t val = read_reg(&CPU::REGISTERS::a);
-  write_byte(n16, val);
+  write_byte(0xff00 + n8, val);
 }
 
 // LDH [C], A
@@ -125,8 +125,8 @@ void CPU::LDH_C_A() {
 }
 
 // LDH A, [n16]
-void CPU::LDH_A_n16(uint16_t n16) {
-  uint8_t val = read_byte(n16);
+void CPU::LDH_A_n16(uint8_t n8) {
+  uint8_t val = read_byte(0xff00 + n8);
   write_reg(&CPU::REGISTERS::a, val);
 }
 
