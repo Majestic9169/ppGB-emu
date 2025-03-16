@@ -1296,32 +1296,31 @@ void CPU::INSTRUCTION_DECODER() {
     ADD_A_n8(val);
   } break;
   case 0xc7:
-    printf("ERROR 0x%04X\n", read_byte(reg.pc));
-    exit(1);
+    printf(disasm[0xc7], curr_pc);
+    clock_m += clock_m_cycles[0xc7];
+    CALL_n16(0x00);
     break;
   case 0xc8:
-    printf("ERROR 0x%04X\n", read_byte(reg.pc));
-    exit(1);
+    printf(disasm[0xc8], curr_pc);
+    clock_m += clock_m_cycles[0xc8];
+    RET_CC(flag_value(Z));
     break;
   case 0xc9:
-    printf("ERROR 0x%04X\n", read_byte(reg.pc));
-    exit(1);
+    printf(disasm[0xc8], curr_pc);
+    clock_m += clock_m_cycles[0xc8];
+    RET();
     break;
-  case 0xcA:
-    printf("ERROR 0x%04X\n", read_byte(reg.pc));
-    exit(1);
-    break;
+  case 0xca: {
+    uint16_t val = read_word(reg.pc++);
+    printf(disasm[0xca], curr_pc, val);
+    clock_m += clock_m_cycles[0xca];
+    JP_CC_n16(flag_value(Z), val);
+  } break;
   case 0xcb:
-    printf("ERROR 0x%04X\n", read_byte(reg.pc));
-    exit(1);
     break;
   case 0xcc:
-    printf("ERROR 0x%04X\n", read_byte(reg.pc));
-    exit(1);
     break;
   case 0xcd:
-    printf("ERROR 0x%04X\n", read_byte(reg.pc));
-    exit(1);
     break;
   case 0xce: {
     uint8_t val = read_byte(reg.pc++);
@@ -1330,22 +1329,23 @@ void CPU::INSTRUCTION_DECODER() {
     ADC_A_n8(val);
   } break;
   case 0xcf:
-    printf("ERROR 0x%04X\n", read_byte(reg.pc));
-    exit(1);
     break;
-  case 0xe0: {
+  case 0xE0: {
     uint8_t val = read_byte(reg.pc++);
     printf(disasm[0xe0], curr_pc, val);
     clock_m += clock_m_cycles[0xe0];
     LDH_n16_A(val);
   } break;
+  case 0xf3: {
+    printf(disasm[0xf3], curr_pc);
+    clock_m += clock_m_cycles[0xf3];
+    DI();
+  } break;
   case 0xFF:
-    printf("ERROR 0x%04X\n", read_byte(reg.pc));
-    exit(1);
     break;
   default:
-    printf("ERROR: DEFAULT 0x%02X\n", reg.pc);
-    printf("ERROR 0x%04X\n", read_byte(reg.pc));
+    printf("ERROR: DEFAULT 0x%02X\n", curr_pc);
+    printf("ERROR 0x%04X\n", read_byte(curr_pc));
     exit(1);
     break;
   }

@@ -588,3 +588,10 @@ void CPU::CALL_CC_n16(bool condition, uint16_t n16) {
     CALL_n16(n16);
   }
 }
+
+/* ====================================
+ *          MISCELLANEOUS
+ * ====================================
+ */
+// DI
+void CPU::DI() { int_.IME = 0; }

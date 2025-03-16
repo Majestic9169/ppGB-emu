@@ -46,6 +46,12 @@ private:
     std::uint16_t pc;
   } reg;
 
+  struct interrupts {
+    bool IME;
+    uint8_t IE;
+    uint8_t IF;
+  } int_;
+
 public:
   using R8_PTR = uint8_t REGISTERS::*;
   using R16_PTR = uint16_t REGISTERS::*;
@@ -222,4 +228,11 @@ public:
   void BIT();
   void RES();
   void SET();
+
+  /* ====================================
+   *          MISCELLANEOUS
+   * ====================================
+   */
+  void DI();
+  void EI();
 };

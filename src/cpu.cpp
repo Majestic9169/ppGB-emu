@@ -21,6 +21,11 @@ CPU::CPU(std::ifstream &ROM_)
           .l = 0x4d,
           .sp = 0xfffe,
           .pc = 0x100},
+      int_{
+          .IME = 0,
+          .IE = 0,
+          .IF = 0,
+      },
       ROM(ROM_), clock_m(0) {}
 
 uint8_t CPU::read_byte(uint16_t addr) {
