@@ -118,9 +118,9 @@ public:
   void LD_HL_n8(uint8_t n);
   void LD_r8_HL(R8_PTR r);
   // void LD_r16_A(R8_PTR r);
-  // void LD_n16_A(uint16_t n16);
+  void LD_n16_A(uint16_t n16);
   // void LD_A_r16(R8_PTR r);
-  // void LD_A_n16(uint16_t n16);
+  void LD_A_n16(uint16_t n16);
   void LD_HLI_A();
   void LD_HLD_A();
   void LD_A_HLD();

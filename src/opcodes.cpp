@@ -4,262 +4,262 @@
 #include <ctime>
 
 const char *disasm[256] = {
-    "0x%04x: [00] NOP\n",                     // 0x00
-    "0x%04x: [01] LD BC, 0x%04X\n",           // 0x01
-    "0x%04x: [02] LD (BC), A\n",              // 0x02
-    "0x%04x: [03] INC BC\n",                  // 0x03
-    "0x%04x: [04] INC B\n",                   // 0x04
-    "0x%04x: [05] DEC B\n",                   // 0x05
-    "0x%04x: [06] LD B, 0x%02X\n",            // 0x06
-    "0x%04x: [07] RLCA\n",                    // 0x07
-    "0x%04x: [08] LD (0x%04X), SP\n",         // 0x08
-    "0x%04x: [09] ADD HL, BC\n",              // 0x09
-    "0x%04x: [0a] LD A, (BC)\n",              // 0x0a
-    "0x%04x: [0b] DEC BC\n",                  // 0x0b
-    "0x%04x: [0c] INC C\n",                   // 0x0c
-    "0x%04x: [0d] DEC C\n",                   // 0x0d
-    "0x%04x: [0e] LD C, 0x%02X\n",            // 0x0e
-    "0x%04x: [0f] RRCA\n",                    // 0x0f
-    "0x%04x: [10] STOP\n",                    // 0x10
-    "0x%04x: [11] LD DE, 0x%04X\n",           // 0x11
-    "0x%04x: [12] LD (DE), A\n",              // 0x12
-    "0x%04x: [13] INC DE\n",                  // 0x13
-    "0x%04x: [14] INC D\n",                   // 0x14
-    "0x%04x: [15] DEC D\n",                   // 0x15
-    "0x%04x: [16] LD D, 0x%02X\n",            // 0x16
-    "0x%04x: [17] RLA\n",                     // 0x17
-    "0x%04x: [18] JR 0x%02X\n",               // 0x18
-    "0x%04x: [19] ADD HL, DE\n",              // 0x19
-    "0x%04x: [1a] LD A, (DE)\n",              // 0x1a
-    "0x%04x: [1b] DEC DE\n",                  // 0x1b
-    "0x%04x: [1c] INC E\n",                   // 0x1c
-    "0x%04x: [1d] DEC E\n",                   // 0x1d
-    "0x%04x: [1e] LD E, 0x%02X\n",            // 0x1e
-    "0x%04x: [1f] RRA\n",                     // 0x1f
-    "0x%04x: [20] JR NZ, 0x%02X\n",           // 0x20
-    "0x%04x: [21] LD HL, 0x%04X\n",           // 0x21
-    "0x%04x: [22] LDI (HL), A\n",             // 0x22
-    "0x%04x: [23] INC HL\n",                  // 0x23
-    "0x%04x: [24] INC H\n",                   // 0x24
-    "0x%04x: [25] DEC H\n",                   // 0x25
-    "0x%04x: [26] LD H, 0x%02X\n",            // 0x26
-    "0x%04x: [27] DAA\n",                     // 0x27
-    "0x%04x: [28] JR Z, 0x%02X\n",            // 0x28
-    "0x%04x: [29] ADD HL, HL\n",              // 0x29
-    "0x%04x: [2a] LDI A, (HL)\n",             // 0x2a
-    "0x%04x: [2b] DEC HL\n",                  // 0x2b
-    "0x%04x: [2c] INC L\n",                   // 0x2c
-    "0x%04x: [2d] DEC L\n",                   // 0x2d
-    "0x%04x: [2e] LD L, 0x%02X\n",            // 0x2e
-    "0x%04x: [2f] CPL\n",                     // 0x2f
-    "0x%04x: [30] JR NC, 0x%02X\n",           // 0x30
-    "0x%04x: [31] LD SP, 0x%04X\n",           // 0x31
-    "0x%04x: [32] LDD (HL), A\n",             // 0x32
-    "0x%04x: [33] INC SP\n",                  // 0x33
-    "0x%04x: [34] INC (HL)\n",                // 0x34
-    "0x%04x: [35] DEC (HL)\n",                // 0x35
-    "0x%04x: [36] LD (HL), 0x%02X\n",         // 0x36
-    "0x%04x: [37] SCF\n",                     // 0x37
-    "0x%04x: [38] JR C, 0x%02X\n",            // 0x38
-    "0x%04x: [39] ADD HL, SP\n",              // 0x39
-    "0x%04x: [3a] LDD A, (HL)\n",             // 0x3a
-    "0x%04x: [3b] DEC SP\n",                  // 0x3b
-    "0x%04x: [3c] INC A\n",                   // 0x3c
-    "0x%04x: [3d] DEC A\n",                   // 0x3d
-    "0x%04x: [3e] LD A, 0x%02X\n",            // 0x3e
-    "0x%04x: [3f] CCF\n",                     // 0x3f
-    "0x%04x: [40] LD B, B\n",                 // 0x40
-    "0x%04x: [41] LD B, C\n",                 // 0x41
-    "0x%04x: [42] LD B, D\n",                 // 0x42
-    "0x%04x: [43] LD B, E\n",                 // 0x43
-    "0x%04x: [44] LD B, H\n",                 // 0x44
-    "0x%04x: [45] LD B, L\n",                 // 0x45
-    "0x%04x: [46] LD B, (HL)\n",              // 0x46
-    "0x%04x: [47] LD B, A\n",                 // 0x47
-    "0x%04x: [48] LD C, B\n",                 // 0x48
-    "0x%04x: [49] LD C, C\n",                 // 0x49
-    "0x%04x: [4a] LD C, D\n",                 // 0x4a
-    "0x%04x: [4b] LD C, E\n",                 // 0x4b
-    "0x%04x: [4c] LD C, H\n",                 // 0x4c
-    "0x%04x: [4d] LD C, L\n",                 // 0x4d
-    "0x%04x: [4e] LD C, (HL)\n",              // 0x4e
-    "0x%04x: [4f] LD C, A\n",                 // 0x4f
-    "0x%04x: [50] LD D, B\n",                 // 0x50
-    "0x%04x: [51] LD D, C\n",                 // 0x51
-    "0x%04x: [52] LD D, D\n",                 // 0x52
-    "0x%04x: [53] LD D, E\n",                 // 0x53
-    "0x%04x: [54] LD D, H\n",                 // 0x54
-    "0x%04x: [55] LD D, L\n",                 // 0x55
-    "0x%04x: [56] LD D, (HL)\n",              // 0x56
-    "0x%04x: [57] LD D, A\n",                 // 0x57
-    "0x%04x: [58] LD E, B\n",                 // 0x58
-    "0x%04x: [59] LD E, C\n",                 // 0x59
-    "0x%04x: [5a] LD E, D\n",                 // 0x5a
-    "0x%04x: [5b] LD E, E\n",                 // 0x5b
-    "0x%04x: [5c] LD E, H\n",                 // 0x5c
-    "0x%04x: [5d] LD E, L\n",                 // 0x5d
-    "0x%04x: [5e] LD E, (HL)\n",              // 0x5e
-    "0x%04x: [5f] LD E, A\n",                 // 0x5f
-    "0x%04x: [60] LD H, B\n",                 // 0x60
-    "0x%04x: [61] LD H, C\n",                 // 0x61
-    "0x%04x: [62] LD H, D\n",                 // 0x62
-    "0x%04x: [63] LD H, E\n",                 // 0x63
-    "0x%04x: [64] LD H, H\n",                 // 0x64
-    "0x%04x: [65] LD H, L\n",                 // 0x65
-    "0x%04x: [66] LD H, (HL)\n",              // 0x66
-    "0x%04x: [67] LD H, A\n",                 // 0x67
-    "0x%04x: [68] LD L, B\n",                 // 0x68
-    "0x%04x: [69] LD L, C\n",                 // 0x69
-    "0x%04x: [6a] LD L, D\n",                 // 0x6a
-    "0x%04x: [6b] LD L, E\n",                 // 0x6b
-    "0x%04x: [6c] LD L, H\n",                 // 0x6c
-    "0x%04x: [6d] LD L, L\n",                 // 0x6d
-    "0x%04x: [6e] LD L, (HL)\n",              // 0x6e
-    "0x%04x: [6f] LD L, A\n",                 // 0x6f
-    "0x%04x: [70] LD (HL), B\n",              // 0x70
-    "0x%04x: [71] LD (HL), C\n",              // 0x71
-    "0x%04x: [72] LD (HL), D\n",              // 0x72
-    "0x%04x: [73] LD (HL), E\n",              // 0x73
-    "0x%04x: [74] LD (HL), H\n",              // 0x74
-    "0x%04x: [75] LD (HL), L\n",              // 0x75
-    "0x%04x: [76] HALT\n",                    // 0x76
-    "0x%04x: [77] LD (HL), A\n",              // 0x77
-    "0x%04x: [78] LD A, B\n",                 // 0x78
-    "0x%04x: [79] LD A, C\n",                 // 0x79
-    "0x%04x: [7a] LD A, D\n",                 // 0x7a
-    "0x%04x: [7b] LD A, E\n",                 // 0x7b
-    "0x%04x: [7c] LD A, H\n",                 // 0x7c
-    "0x%04x: [7d] LD A, L\n",                 // 0x7d
-    "0x%04x: [7e] LD A, (HL)\n",              // 0x7e
-    "0x%04x: [7f] LD A, A\n",                 // 0x7f
-    "0x%04x: [80] ADD A, B\n",                // 0x80
-    "0x%04x: [81] ADD A, C\n",                // 0x81
-    "0x%04x: [82] ADD A, D\n",                // 0x82
-    "0x%04x: [83] ADD A, E\n",                // 0x83
-    "0x%04x: [84] ADD A, H\n",                // 0x84
-    "0x%04x: [85] ADD A, L\n",                // 0x85
-    "0x%04x: [86] ADD A, (HL)\n",             // 0x86
-    "0x%04x: [87] ADD A\n",                   // 0x87
-    "0x%04x: [88] ADC B\n",                   // 0x88
-    "0x%04x: [89] ADC C\n",                   // 0x89
-    "0x%04x: [8a] ADC D\n",                   // 0x8a
-    "0x%04x: [8b] ADC E\n",                   // 0x8b
-    "0x%04x: [8c] ADC H\n",                   // 0x8c
-    "0x%04x: [8d] ADC L\n",                   // 0x8d
-    "0x%04x: [8e] ADC (HL)\n",                // 0x8e
-    "0x%04x: [8f] ADC A\n",                   // 0x8f
-    "0x%04x: [90] SUB B\n",                   // 0x90
-    "0x%04x: [91] SUB C\n",                   // 0x91
-    "0x%04x: [92] SUB D\n",                   // 0x92
-    "0x%04x: [93] SUB E\n",                   // 0x93
-    "0x%04x: [94] SUB H\n",                   // 0x94
-    "0x%04x: [95] SUB L\n",                   // 0x95
-    "0x%04x: [96] SUB (HL)\n",                // 0x96
-    "0x%04x: [97] SUB A\n",                   // 0x97
-    "0x%04x: [98] SBC B\n",                   // 0x98
-    "0x%04x: [99] SBC C\n",                   // 0x99
-    "0x%04x: [9a] SBC D\n",                   // 0x9a
-    "0x%04x: [9b] SBC E\n",                   // 0x9b
-    "0x%04x: [9c] SBC H\n",                   // 0x9c
-    "0x%04x: [9d] SBC L\n",                   // 0x9d
-    "0x%04x: [9e] SBC (HL)\n",                // 0x9e
-    "0x%04x: [9f] SBC A\n",                   // 0x9f
-    "0x%04x: [a0] AND B\n",                   // 0xa0
-    "0x%04x: [a1] AND C\n",                   // 0xa1
-    "0x%04x: [a2] AND D\n",                   // 0xa2
-    "0x%04x: [a3] AND E\n",                   // 0xa3
-    "0x%04x: [a4] AND H\n",                   // 0xa4
-    "0x%04x: [a5] AND L\n",                   // 0xa5
-    "0x%04x: [a6] AND (HL)\n",                // 0xa6
-    "0x%04x: [a7] AND A\n",                   // 0xa7
-    "0x%04x: [a8] XOR B\n",                   // 0xa8
-    "0x%04x: [a9] XOR C\n",                   // 0xa9
-    "0x%04x: [aa] XOR D\n",                   // 0xaa
-    "0x%04x: [ab] XOR E\n",                   // 0xab
-    "0x%04x: [ac] XOR H\n",                   // 0xac
-    "0x%04x: [ad] XOR L\n",                   // 0xad
-    "0x%04x: [ae] XOR (HL)\n",                // 0xae
-    "0x%04x: [af] XOR A\n",                   // 0xaf
-    "0x%04x: [b0] OR B\n",                    // 0xb0
-    "0x%04x: [b1] OR C\n",                    // 0xb1
-    "0x%04x: [b2] OR D\n",                    // 0xb2
-    "0x%04x: [b3] OR E\n",                    // 0xb3
-    "0x%04x: [b4] OR H\n",                    // 0xb4
-    "0x%04x: [b5] OR L\n",                    // 0xb5
-    "0x%04x: [b6] OR (HL)\n",                 // 0xb6
-    "0x%04x: [b7] OR A\n",                    // 0xb7
-    "0x%04x: [b8] CP B\n",                    // 0xb8
-    "0x%04x: [b9] CP C\n",                    // 0xb9
-    "0x%04x: [ba] CP D\n",                    // 0xba
-    "0x%04x: [bb] CP E\n",                    // 0xbb
-    "0x%04x: [bc] CP H\n",                    // 0xbc
-    "0x%04x: [bd] CP L\n",                    // 0xbd
-    "0x%04x: [be] CP (HL)\n",                 // 0xbe
-    "0x%04x: [bf] CP A\n",                    // 0xbf
-    "0x%04x: [c0] RET NZ\n",                  // 0xc0
-    "0x%04x: [c1] POP BC\n",                  // 0xc1
-    "0x%04x: [c2] JP NZ, 0x%04X\n",           // 0xc2
-    "0x%04x: [c3] JP 0x%04X\n",               // 0xc3
-    "0x%04x: [c4] CALL NZ, 0x%04X\n",         // 0xc4
-    "0x%04x: [c5] PUSH BC\n",                 // 0xc5
-    "0x%04x: [c6] ADD A, 0x%02X\n",           // 0xc6
-    "0x%04x: [c7] RST 0x00\n",                // 0xc7
-    "0x%04x: [c8] RET Z\n",                   // 0xc8
-    "0x%04x: [c9] RET\n",                     // 0xc9
-    "0x%04x: [ca] JP Z, 0x%04X\n",            // 0xca
-    "0x%04x: [cb] CB %02X\n",                 // 0xcb
-    "0x%04x: [cc] CALL Z, 0x%04X\n",          // 0xcc
-    "0x%04x: [cd] CALL 0x%04X\n",             // 0xcd
-    "0x%04x: [ce] ADC 0x%02X\n",              // 0xce
-    "0x%04x: [cf] RST 0x08\n",                // 0xcf
-    "0x%04x: [d0] RET NC\n",                  // 0xd0
-    "0x%04x: [d1] POP DE\n",                  // 0xd1
-    "0x%04x: [d2] JP NC, 0x%04X\n",           // 0xd2
-    "0x%04x: [d3] UNKNOWN\n",                 // 0xd3
-    "0x%04x: [d4] CALL NC, 0x%04X\n",         // 0xd4
-    "0x%04x: [d5] PUSH DE\n",                 // 0xd5
-    "0x%04x: [d6] SUB 0x%02X\n",              // 0xd6
-    "0x%04x: [d7] RST 0x10\n",                // 0xd7
-    "0x%04x: [d8] RET C\n",                   // 0xd8
-    "0x%04x: [d9] RETI\n",                    // 0xd9
-    "0x%04x: [da] JP C, 0x%04X\n",            // 0xda
-    "0x%04x: [db] UNKNOWN\n",                 // 0xdb
-    "0x%04x: [dc] CALL C, 0x%04X\n",          // 0xdc
-    "0x%04x: [dd] UNKNOWN\n",                 // 0xdd
-    "0x%04x: [de] SBC 0x%02X\n",              // 0xde
-    "0x%04x: [df] RST 0x18\n",                // 0xdf
-    "0x%04x: [e0] LD (0xFF00 + 0x%02X), A\n", // 0xe0
-    "0x%04x: [e1] POP HL\n",                  // 0xe1
-    "0x%04x: [e2] LD (0xFF00 + C), A\n",      // 0xe2
-    "0x%04x: [e3] UNKNOWN\n",                 // 0xe3
-    "0x%04x: [e4] UNKNOWN\n",                 // 0xe4
-    "0x%04x: [e5] PUSH HL\n",                 // 0xe5
-    "0x%04x: [e6] AND 0x%02X\n",              // 0xe6
-    "0x%04x: [e7] RST 0x20\n",                // 0xe7
-    "0x%04x: [e8] ADD SP,0x%02X\n",           // 0xe8
-    "0x%04x: [e9] JP HL\n",                   // 0xe9
-    "0x%04x: [ea] LD (0x%04X), A\n",          // 0xea
-    "0x%04x: [eb] UNKNOWN\n",                 // 0xeb
-    "0x%04x: [ec] UNKNOWN\n",                 // 0xec
-    "0x%04x: [ed] UNKNOWN\n",                 // 0xed
-    "0x%04x: [ee] XOR 0x%02X\n",              // 0xee
-    "0x%04x: [ef] RST 0x28\n",                // 0xef
-    "0x%04x: [f0] LD A, (0xFF00 + 0x%02X)\n", // 0xf0
-    "0x%04x: [f1] POP AF\n",                  // 0xf1
-    "0x%04x: [f2] LD A, (0xFF00 + C)\n",      // 0xf2
-    "0x%04x: [f3] DI\n",                      // 0xf3
-    "0x%04x: [f4] UNKNOWN\n",                 // 0xf4
-    "0x%04x: [f5] PUSH AF\n",                 // 0xf5
-    "0x%04x: [f6] OR 0x%02X\n",               // 0xf6
-    "0x%04x: [f7] RST 0x30\n",                // 0xf7
-    "0x%04x: [f8] LD HL, SP+0x%02X\n",        // 0xf8
-    "0x%04x: [f9] LD SP, HL\n",               // 0xf9
-    "0x%04x: [fa] LD A, (0x%04X)\n",          // 0xfa
-    "0x%04x: [fb] EI\n",                      // 0xfb
-    "0x%04x: [fc] UNKNOWN\n",                 // 0xfc
-    "0x%04x: [fd] UNKNOWN\n",                 // 0xfd
-    "0x%04x: [fe] CP 0x%02X\n",               // 0xfe
-    "0x%04x: [ff] RST 0x38\n",                // 0xff
+    "0x%04x: [00] NOP\n",                      // 0x00
+    "0x%04x: [01] LD BC, 0x%04X\n",            // 0x01
+    "0x%04x: [02] LD (BC), A\n",               // 0x02
+    "0x%04x: [03] INC BC\n",                   // 0x03
+    "0x%04x: [04] INC B\n",                    // 0x04
+    "0x%04x: [05] DEC B\n",                    // 0x05
+    "0x%04x: [06] LD B, 0x%02X\n",             // 0x06
+    "0x%04x: [07] RLCA\n",                     // 0x07
+    "0x%04x: [08] LD (0x%04X), SP\n",          // 0x08
+    "0x%04x: [09] ADD HL, BC\n",               // 0x09
+    "0x%04x: [0a] LD A, (BC)\n",               // 0x0a
+    "0x%04x: [0b] DEC BC\n",                   // 0x0b
+    "0x%04x: [0c] INC C\n",                    // 0x0c
+    "0x%04x: [0d] DEC C\n",                    // 0x0d
+    "0x%04x: [0e] LD C, 0x%02X\n",             // 0x0e
+    "0x%04x: [0f] RRCA\n",                     // 0x0f
+    "0x%04x: [10] STOP\n",                     // 0x10
+    "0x%04x: [11] LD DE, 0x%04X\n",            // 0x11
+    "0x%04x: [12] LD (DE), A\n",               // 0x12
+    "0x%04x: [13] INC DE\n",                   // 0x13
+    "0x%04x: [14] INC D\n",                    // 0x14
+    "0x%04x: [15] DEC D\n",                    // 0x15
+    "0x%04x: [16] LD D, 0x%02X\n",             // 0x16
+    "0x%04x: [17] RLA\n",                      // 0x17
+    "0x%04x: [18] JR 0x%02X\n",                // 0x18
+    "0x%04x: [19] ADD HL, DE\n",               // 0x19
+    "0x%04x: [1a] LD A, (DE)\n",               // 0x1a
+    "0x%04x: [1b] DEC DE\n",                   // 0x1b
+    "0x%04x: [1c] INC E\n",                    // 0x1c
+    "0x%04x: [1d] DEC E\n",                    // 0x1d
+    "0x%04x: [1e] LD E, 0x%02X\n",             // 0x1e
+    "0x%04x: [1f] RRA\n",                      // 0x1f
+    "0x%04x: [20] JR NZ, 0x%02X\n",            // 0x20
+    "0x%04x: [21] LD HL, 0x%04X\n",            // 0x21
+    "0x%04x: [22] LDI (HL), A\n",              // 0x22
+    "0x%04x: [23] INC HL\n",                   // 0x23
+    "0x%04x: [24] INC H\n",                    // 0x24
+    "0x%04x: [25] DEC H\n",                    // 0x25
+    "0x%04x: [26] LD H, 0x%02X\n",             // 0x26
+    "0x%04x: [27] DAA\n",                      // 0x27
+    "0x%04x: [28] JR Z, 0x%02X\n",             // 0x28
+    "0x%04x: [29] ADD HL, HL\n",               // 0x29
+    "0x%04x: [2a] LDI A, (HL)\n",              // 0x2a
+    "0x%04x: [2b] DEC HL\n",                   // 0x2b
+    "0x%04x: [2c] INC L\n",                    // 0x2c
+    "0x%04x: [2d] DEC L\n",                    // 0x2d
+    "0x%04x: [2e] LD L, 0x%02X\n",             // 0x2e
+    "0x%04x: [2f] CPL\n",                      // 0x2f
+    "0x%04x: [30] JR NC, 0x%02X\n",            // 0x30
+    "0x%04x: [31] LD SP, 0x%04X\n",            // 0x31
+    "0x%04x: [32] LDD (HL), A\n",              // 0x32
+    "0x%04x: [33] INC SP\n",                   // 0x33
+    "0x%04x: [34] INC (HL)\n",                 // 0x34
+    "0x%04x: [35] DEC (HL)\n",                 // 0x35
+    "0x%04x: [36] LD (HL), 0x%02X\n",          // 0x36
+    "0x%04x: [37] SCF\n",                      // 0x37
+    "0x%04x: [38] JR C, 0x%02X\n",             // 0x38
+    "0x%04x: [39] ADD HL, SP\n",               // 0x39
+    "0x%04x: [3a] LDD A, (HL)\n",              // 0x3a
+    "0x%04x: [3b] DEC SP\n",                   // 0x3b
+    "0x%04x: [3c] INC A\n",                    // 0x3c
+    "0x%04x: [3d] DEC A\n",                    // 0x3d
+    "0x%04x: [3e] LD A, 0x%02X\n",             // 0x3e
+    "0x%04x: [3f] CCF\n",                      // 0x3f
+    "0x%04x: [40] LD B, B\n",                  // 0x40
+    "0x%04x: [41] LD B, C\n",                  // 0x41
+    "0x%04x: [42] LD B, D\n",                  // 0x42
+    "0x%04x: [43] LD B, E\n",                  // 0x43
+    "0x%04x: [44] LD B, H\n",                  // 0x44
+    "0x%04x: [45] LD B, L\n",                  // 0x45
+    "0x%04x: [46] LD B, (HL)\n",               // 0x46
+    "0x%04x: [47] LD B, A\n",                  // 0x47
+    "0x%04x: [48] LD C, B\n",                  // 0x48
+    "0x%04x: [49] LD C, C\n",                  // 0x49
+    "0x%04x: [4a] LD C, D\n",                  // 0x4a
+    "0x%04x: [4b] LD C, E\n",                  // 0x4b
+    "0x%04x: [4c] LD C, H\n",                  // 0x4c
+    "0x%04x: [4d] LD C, L\n",                  // 0x4d
+    "0x%04x: [4e] LD C, (HL)\n",               // 0x4e
+    "0x%04x: [4f] LD C, A\n",                  // 0x4f
+    "0x%04x: [50] LD D, B\n",                  // 0x50
+    "0x%04x: [51] LD D, C\n",                  // 0x51
+    "0x%04x: [52] LD D, D\n",                  // 0x52
+    "0x%04x: [53] LD D, E\n",                  // 0x53
+    "0x%04x: [54] LD D, H\n",                  // 0x54
+    "0x%04x: [55] LD D, L\n",                  // 0x55
+    "0x%04x: [56] LD D, (HL)\n",               // 0x56
+    "0x%04x: [57] LD D, A\n",                  // 0x57
+    "0x%04x: [58] LD E, B\n",                  // 0x58
+    "0x%04x: [59] LD E, C\n",                  // 0x59
+    "0x%04x: [5a] LD E, D\n",                  // 0x5a
+    "0x%04x: [5b] LD E, E\n",                  // 0x5b
+    "0x%04x: [5c] LD E, H\n",                  // 0x5c
+    "0x%04x: [5d] LD E, L\n",                  // 0x5d
+    "0x%04x: [5e] LD E, (HL)\n",               // 0x5e
+    "0x%04x: [5f] LD E, A\n",                  // 0x5f
+    "0x%04x: [60] LD H, B\n",                  // 0x60
+    "0x%04x: [61] LD H, C\n",                  // 0x61
+    "0x%04x: [62] LD H, D\n",                  // 0x62
+    "0x%04x: [63] LD H, E\n",                  // 0x63
+    "0x%04x: [64] LD H, H\n",                  // 0x64
+    "0x%04x: [65] LD H, L\n",                  // 0x65
+    "0x%04x: [66] LD H, (HL)\n",               // 0x66
+    "0x%04x: [67] LD H, A\n",                  // 0x67
+    "0x%04x: [68] LD L, B\n",                  // 0x68
+    "0x%04x: [69] LD L, C\n",                  // 0x69
+    "0x%04x: [6a] LD L, D\n",                  // 0x6a
+    "0x%04x: [6b] LD L, E\n",                  // 0x6b
+    "0x%04x: [6c] LD L, H\n",                  // 0x6c
+    "0x%04x: [6d] LD L, L\n",                  // 0x6d
+    "0x%04x: [6e] LD L, (HL)\n",               // 0x6e
+    "0x%04x: [6f] LD L, A\n",                  // 0x6f
+    "0x%04x: [70] LD (HL), B\n",               // 0x70
+    "0x%04x: [71] LD (HL), C\n",               // 0x71
+    "0x%04x: [72] LD (HL), D\n",               // 0x72
+    "0x%04x: [73] LD (HL), E\n",               // 0x73
+    "0x%04x: [74] LD (HL), H\n",               // 0x74
+    "0x%04x: [75] LD (HL), L\n",               // 0x75
+    "0x%04x: [76] HALT\n",                     // 0x76
+    "0x%04x: [77] LD (HL), A\n",               // 0x77
+    "0x%04x: [78] LD A, B\n",                  // 0x78
+    "0x%04x: [79] LD A, C\n",                  // 0x79
+    "0x%04x: [7a] LD A, D\n",                  // 0x7a
+    "0x%04x: [7b] LD A, E\n",                  // 0x7b
+    "0x%04x: [7c] LD A, H\n",                  // 0x7c
+    "0x%04x: [7d] LD A, L\n",                  // 0x7d
+    "0x%04x: [7e] LD A, (HL)\n",               // 0x7e
+    "0x%04x: [7f] LD A, A\n",                  // 0x7f
+    "0x%04x: [80] ADD A, B\n",                 // 0x80
+    "0x%04x: [81] ADD A, C\n",                 // 0x81
+    "0x%04x: [82] ADD A, D\n",                 // 0x82
+    "0x%04x: [83] ADD A, E\n",                 // 0x83
+    "0x%04x: [84] ADD A, H\n",                 // 0x84
+    "0x%04x: [85] ADD A, L\n",                 // 0x85
+    "0x%04x: [86] ADD A, (HL)\n",              // 0x86
+    "0x%04x: [87] ADD A\n",                    // 0x87
+    "0x%04x: [88] ADC B\n",                    // 0x88
+    "0x%04x: [89] ADC C\n",                    // 0x89
+    "0x%04x: [8a] ADC D\n",                    // 0x8a
+    "0x%04x: [8b] ADC E\n",                    // 0x8b
+    "0x%04x: [8c] ADC H\n",                    // 0x8c
+    "0x%04x: [8d] ADC L\n",                    // 0x8d
+    "0x%04x: [8e] ADC (HL)\n",                 // 0x8e
+    "0x%04x: [8f] ADC A\n",                    // 0x8f
+    "0x%04x: [90] SUB B\n",                    // 0x90
+    "0x%04x: [91] SUB C\n",                    // 0x91
+    "0x%04x: [92] SUB D\n",                    // 0x92
+    "0x%04x: [93] SUB E\n",                    // 0x93
+    "0x%04x: [94] SUB H\n",                    // 0x94
+    "0x%04x: [95] SUB L\n",                    // 0x95
+    "0x%04x: [96] SUB (HL)\n",                 // 0x96
+    "0x%04x: [97] SUB A\n",                    // 0x97
+    "0x%04x: [98] SBC B\n",                    // 0x98
+    "0x%04x: [99] SBC C\n",                    // 0x99
+    "0x%04x: [9a] SBC D\n",                    // 0x9a
+    "0x%04x: [9b] SBC E\n",                    // 0x9b
+    "0x%04x: [9c] SBC H\n",                    // 0x9c
+    "0x%04x: [9d] SBC L\n",                    // 0x9d
+    "0x%04x: [9e] SBC (HL)\n",                 // 0x9e
+    "0x%04x: [9f] SBC A\n",                    // 0x9f
+    "0x%04x: [a0] AND B\n",                    // 0xa0
+    "0x%04x: [a1] AND C\n",                    // 0xa1
+    "0x%04x: [a2] AND D\n",                    // 0xa2
+    "0x%04x: [a3] AND E\n",                    // 0xa3
+    "0x%04x: [a4] AND H\n",                    // 0xa4
+    "0x%04x: [a5] AND L\n",                    // 0xa5
+    "0x%04x: [a6] AND (HL)\n",                 // 0xa6
+    "0x%04x: [a7] AND A\n",                    // 0xa7
+    "0x%04x: [a8] XOR B\n",                    // 0xa8
+    "0x%04x: [a9] XOR C\n",                    // 0xa9
+    "0x%04x: [aa] XOR D\n",                    // 0xaa
+    "0x%04x: [ab] XOR E\n",                    // 0xab
+    "0x%04x: [ac] XOR H\n",                    // 0xac
+    "0x%04x: [ad] XOR L\n",                    // 0xad
+    "0x%04x: [ae] XOR (HL)\n",                 // 0xae
+    "0x%04x: [af] XOR A\n",                    // 0xaf
+    "0x%04x: [b0] OR B\n",                     // 0xb0
+    "0x%04x: [b1] OR C\n",                     // 0xb1
+    "0x%04x: [b2] OR D\n",                     // 0xb2
+    "0x%04x: [b3] OR E\n",                     // 0xb3
+    "0x%04x: [b4] OR H\n",                     // 0xb4
+    "0x%04x: [b5] OR L\n",                     // 0xb5
+    "0x%04x: [b6] OR (HL)\n",                  // 0xb6
+    "0x%04x: [b7] OR A\n",                     // 0xb7
+    "0x%04x: [b8] CP B\n",                     // 0xb8
+    "0x%04x: [b9] CP C\n",                     // 0xb9
+    "0x%04x: [ba] CP D\n",                     // 0xba
+    "0x%04x: [bb] CP E\n",                     // 0xbb
+    "0x%04x: [bc] CP H\n",                     // 0xbc
+    "0x%04x: [bd] CP L\n",                     // 0xbd
+    "0x%04x: [be] CP (HL)\n",                  // 0xbe
+    "0x%04x: [bf] CP A\n",                     // 0xbf
+    "0x%04x: [c0] RET NZ\n",                   // 0xc0
+    "0x%04x: [c1] POP BC\n",                   // 0xc1
+    "0x%04x: [c2] JP NZ, 0x%04X\n",            // 0xc2
+    "0x%04x: [c3] JP 0x%04X\n",                // 0xc3
+    "0x%04x: [c4] CALL NZ, 0x%04X\n",          // 0xc4
+    "0x%04x: [c5] PUSH BC\n",                  // 0xc5
+    "0x%04x: [c6] ADD A, 0x%02X\n",            // 0xc6
+    "0x%04x: [c7] RST 0x00\n",                 // 0xc7
+    "0x%04x: [c8] RET Z\n",                    // 0xc8
+    "0x%04x: [c9] RET\n",                      // 0xc9
+    "0x%04x: [ca] JP Z, 0x%04X\n",             // 0xca
+    "0x%04x: [cb] CB %02X\n",                  // 0xcb
+    "0x%04x: [cc] CALL Z, 0x%04X\n",           // 0xcc
+    "0x%04x: [cd] CALL 0x%04X\n",              // 0xcd
+    "0x%04x: [ce] ADC 0x%02X\n",               // 0xce
+    "0x%04x: [cf] RST 0x08\n",                 // 0xcf
+    "0x%04x: [d0] RET NC\n",                   // 0xd0
+    "0x%04x: [d1] POP DE\n",                   // 0xd1
+    "0x%04x: [d2] JP NC, 0x%04X\n",            // 0xd2
+    "0x%04x: [d3] UNKNOWN\n",                  // 0xd3
+    "0x%04x: [d4] CALL NC, 0x%04X\n",          // 0xd4
+    "0x%04x: [d5] PUSH DE\n",                  // 0xd5
+    "0x%04x: [d6] SUB 0x%02X\n",               // 0xd6
+    "0x%04x: [d7] RST 0x10\n",                 // 0xd7
+    "0x%04x: [d8] RET C\n",                    // 0xd8
+    "0x%04x: [d9] RETI\n",                     // 0xd9
+    "0x%04x: [da] JP C, 0x%04X\n",             // 0xda
+    "0x%04x: [db] UNKNOWN\n",                  // 0xdb
+    "0x%04x: [dc] CALL C, 0x%04X\n",           // 0xdc
+    "0x%04x: [dd] UNKNOWN\n",                  // 0xdd
+    "0x%04x: [de] SBC 0x%02X\n",               // 0xde
+    "0x%04x: [df] RST 0x18\n",                 // 0xdf
+    "0x%04x: [e0] LDH (0xFF00 + 0x%02X), A\n", // 0xe0
+    "0x%04x: [e1] POP HL\n",                   // 0xe1
+    "0x%04x: [e2] LDH (0xFF00 + C), A\n",      // 0xe2
+    "0x%04x: [e3] UNKNOWN\n",                  // 0xe3
+    "0x%04x: [e4] UNKNOWN\n",                  // 0xe4
+    "0x%04x: [e5] PUSH HL\n",                  // 0xe5
+    "0x%04x: [e6] AND 0x%02X\n",               // 0xe6
+    "0x%04x: [e7] RST 0x20\n",                 // 0xe7
+    "0x%04x: [e8] ADD SP,0x%02X\n",            // 0xe8
+    "0x%04x: [e9] JP HL\n",                    // 0xe9
+    "0x%04x: [ea] LD (0x%04X), A\n",           // 0xea
+    "0x%04x: [eb] UNKNOWN\n",                  // 0xeb
+    "0x%04x: [ec] UNKNOWN\n",                  // 0xec
+    "0x%04x: [ed] UNKNOWN\n",                  // 0xed
+    "0x%04x: [ee] XOR 0x%02X\n",               // 0xee
+    "0x%04x: [ef] RST 0x28\n",                 // 0xef
+    "0x%04x: [f0] LDH A, (0xFF00 + 0x%02X)\n", // 0xf0
+    "0x%04x: [f1] POP AF\n",                   // 0xf1
+    "0x%04x: [f2] LDH A, (0xFF00 + C)\n",      // 0xf2
+    "0x%04x: [f3] DI\n",                       // 0xf3
+    "0x%04x: [f4] UNKNOWN\n",                  // 0xf4
+    "0x%04x: [f5] PUSH AF\n",                  // 0xf5
+    "0x%04x: [f6] OR 0x%02X\n",                // 0xf6
+    "0x%04x: [f7] RST 0x30\n",                 // 0xf7
+    "0x%04x: [f8] LD HL, SP+0x%02X\n",         // 0xf8
+    "0x%04x: [f9] LD SP, HL\n",                // 0xf9
+    "0x%04x: [fa] LD A, (0x%04X)\n",           // 0xfa
+    "0x%04x: [fb] EI\n",                       // 0xfb
+    "0x%04x: [fc] UNKNOWN\n",                  // 0xfc
+    "0x%04x: [fd] UNKNOWN\n",                  // 0xfd
+    "0x%04x: [fe] CP 0x%02X\n",                // 0xfe
+    "0x%04x: [ff] RST 0x38\n",                 // 0xff
 };
 
 const uint8_t clock_m_cycles[256] = {
@@ -448,7 +448,7 @@ void CPU::INSTRUCTION_DECODER() {
   case 0x1F:
     break;
   case 0x20: {
-    int8_t val = read_byte(reg.pc++);
+    uint8_t val = read_byte(reg.pc++);
     printf(disasm[0x20], curr_pc, val);
     clock_m += clock_m_cycles[0x20];
     JR_CC_n16(flag_value(N) & flag_value(Z), val);
@@ -1312,16 +1312,26 @@ void CPU::INSTRUCTION_DECODER() {
     break;
   case 0xca: {
     uint16_t val = read_word(reg.pc++);
+    reg.pc++;
     printf(disasm[0xca], curr_pc, val);
     clock_m += clock_m_cycles[0xca];
     JP_CC_n16(flag_value(Z), val);
   } break;
   case 0xcb:
+    printf("ERROR 0x%04X\n", read_byte(curr_pc));
+    exit(1);
     break;
   case 0xcc:
+    printf("ERROR 0x%04X\n", read_byte(curr_pc));
+    exit(1);
     break;
-  case 0xcd:
-    break;
+  case 0xcd: {
+    uint16_t val = read_word(reg.pc++);
+    reg.pc++;
+    printf(disasm[0xcd], curr_pc, val);
+    clock_m += clock_m_cycles[0xcd];
+    CALL_n16(val);
+  } break;
   case 0xce: {
     uint8_t val = read_byte(reg.pc++);
     printf(disasm[0xce], curr_pc, val);
@@ -1336,10 +1346,55 @@ void CPU::INSTRUCTION_DECODER() {
     clock_m += clock_m_cycles[0xe0];
     LDH_n16_A(val);
   } break;
+  case 0xE2:
+    printf(disasm[0xE2], curr_pc);
+    clock_m += clock_m_cycles[0xE2];
+    LDH_C_A();
+    break;
+  case 0xE6: {
+    uint8_t val = read_byte(reg.pc++);
+    printf(disasm[0xE6], curr_pc, val);
+    clock_m += clock_m_cycles[0xE6];
+    AND_A_n8(val);
+  } break;
+  case 0xE9:
+    printf(disasm[0xE9], curr_pc);
+    clock_m += clock_m_cycles[0xE9];
+    break;
+  case 0xEA: {
+    uint16_t val = read_word(reg.pc++);
+    reg.pc++;
+    printf(disasm[0xea], curr_pc, val);
+    clock_m += clock_m_cycles[0xea];
+    LD_n16_A(val);
+  } break;
+  case 0xf0: {
+    uint8_t val = read_byte(reg.pc++);
+    printf(disasm[0xf0], curr_pc, val);
+    clock_m += clock_m_cycles[0xf0];
+    LDH_A_n16(val);
+  } break;
   case 0xf3: {
     printf(disasm[0xf3], curr_pc);
     clock_m += clock_m_cycles[0xf3];
     DI();
+  } break;
+  case 0xFA: {
+    uint16_t val = read_word(reg.pc++);
+    reg.pc++;
+    printf(disasm[0xfa], curr_pc, val);
+    clock_m += clock_m_cycles[0xfa];
+  } break;
+  case 0xfb: {
+    printf(disasm[0xfb], curr_pc);
+    clock_m += clock_m_cycles[0xfb];
+    EI();
+  } break;
+  case 0xfe: {
+    uint8_t val = read_byte(reg.pc++);
+    printf(disasm[0xfe], curr_pc, val);
+    clock_m += clock_m_cycles[0xfe];
+    CP_A_n8(val);
   } break;
   case 0xFF:
     break;

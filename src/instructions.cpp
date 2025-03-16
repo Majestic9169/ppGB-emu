@@ -59,6 +59,12 @@ void CPU::LD_r8_HL(CPU::R8_PTR r) {
   write_reg(r, val);
 }
 
+// LD [n16], A
+void CPU::LD_n16_A(uint16_t n16) { write_byte(n16, reg.a); }
+
+// LD A, [n16]
+void CPU::LD_A_n16(uint16_t n16) { write_reg(&REGISTERS::a, read_byte(n16)); };
+
 // LD [HLI], A
 void CPU::LD_HLI_A() {
   uint8_t val = read_reg(&CPU::REGISTERS::a);
@@ -595,3 +601,6 @@ void CPU::CALL_CC_n16(bool condition, uint16_t n16) {
  */
 // DI
 void CPU::DI() { int_.IME = 0; }
+
+// EI
+void CPU::EI() { int_.IME = 1; }
