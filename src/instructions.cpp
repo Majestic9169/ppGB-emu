@@ -600,7 +600,36 @@ void CPU::CALL_CC_n16(bool condition, uint16_t n16) {
  * ====================================
  */
 // DI
-void CPU::DI() { int_.IME = 0; }
+void CPU::DI() { IME = 0; }
 
 // EI
-void CPU::EI() { int_.IME = 1; }
+void CPU::EI() { IME = 1; }
+
+/* ====================================
+ *     8-bit ROTATE/SHIFT bit
+ * ====================================
+ */
+
+// BIT u3, r8
+void CPU::BIT_u3_r8(uint8_t u3, CPU::R8_PTR r) {
+  uint8_t test_byte = 1 << u3;
+  if (test_byte & read_reg(r)) {
+    flag_value(Z, 0);
+  } else {
+    flag_value(Z, 1);
+  }
+  flag_value(N, 0);
+  flag_value(H, 1);
+}
+
+// BIT u3, [HL]
+void CPU::BIT_u3_HL(uint8_t u3) {
+  uint8_t test_byte = 1 << u3;
+  if (test_byte & read_byte(reg.hl)) {
+    flag_value(Z, 0);
+  } else {
+    flag_value(Z, 1);
+  }
+  flag_value(N, 0);
+  flag_value(H, 1);
+}

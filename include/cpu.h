@@ -46,11 +46,7 @@ private:
     std::uint16_t pc;
   } reg;
 
-  struct interrupts {
-    bool IME;
-    uint8_t IE;
-    uint8_t IF;
-  } int_;
+  bool IME;
 
 public:
   using R8_PTR = uint8_t REGISTERS::*;
@@ -78,6 +74,7 @@ public:
   void set_c_flag(uint test);
 
   void INSTRUCTION_DECODER();
+  void CB_INSTRUCTION_DECODER();
 
   /* ====================================
    *          CONTROL/MISC
@@ -213,21 +210,23 @@ public:
    *     8-bit ROTATE/SHIFT bit
    * ====================================
    */
-  void RLCA();
-  void RLA();
-  void RRCA();
-  void RRA();
-  void RLC();
-  void RRC();
+  void BIT_u3_r8(uint8_t u3, R8_PTR r);
+  void BIT_u3_HL(uint8_t u3);
+
+  void RES();
   void RL();
+  void RLA();
+  void RLC();
+  void RLCA();
   void RR();
+  void RRA();
+  void RRC();
+  void RRCA();
+  void SET();
   void SLA();
   void SRA();
-  void SWAP();
   void SRL();
-  void BIT();
-  void RES();
-  void SET();
+  void SWAP();
 
   /* ====================================
    *          MISCELLANEOUS
