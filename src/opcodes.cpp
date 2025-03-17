@@ -1317,10 +1317,12 @@ void CPU::INSTRUCTION_DECODER() {
     clock_m += clock_m_cycles[0xca];
     JP_CC_n16(flag_value(Z), val);
   } break;
-  case 0xcb:
-    printf("ERROR 0x%04X\n", read_byte(curr_pc));
-    exit(1);
-    break;
+  case 0xcb: {
+    uint8_t val = read_byte(reg.pc);
+    printf(disasm[0xcb], curr_pc, val);
+    clock_m += clock_m_cycles[0xcb];
+    CB_INSTRUCTION_DECODER();
+  } break;
   case 0xcc:
     printf("ERROR 0x%04X\n", read_byte(curr_pc));
     exit(1);
