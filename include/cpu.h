@@ -239,8 +239,12 @@ public:
   void SET_u3_r8(uint8_t u3, R8_PTR r);
   void SET_u3_HL(uint8_t u3);
 
-  void SLA();
-  void SRA();
+  void SLA_r8(R8_PTR r);
+  void SLA_HL();
+
+  void SRA_r8(R8_PTR r);
+  void SRA_HL();
+
   void SRL();
   void SWAP();
 

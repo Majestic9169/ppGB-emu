@@ -803,3 +803,51 @@ void CPU::SET_u3_HL(uint8_t u3) {
   uint8_t set_byte = 1 << u3;
   write_byte(reg.hl, read_byte(reg.hl) | set_byte);
 }
+
+// SLA r8
+void CPU::SLA_r8(CPU::R8_PTR r) {
+  uint8_t val = read_reg(r);
+  bool new_carry = (val & 0x80) ? 1 : 0;
+  val = (val << 1);
+  write_reg(r, val);
+  set_z_flag(val);
+  flag_value(N, 0);
+  flag_value(H, 0);
+  flag_value(C, new_carry);
+}
+
+// SLA [HL]
+void CPU::SLA_HL() {
+  uint8_t val = read_byte(reg.hl);
+  bool new_carry = (val & 0x80) ? 1 : 0;
+  val = (val << 1);
+  write_byte(reg.hl, val);
+  set_z_flag(val);
+  flag_value(N, 0);
+  flag_value(H, 0);
+  flag_value(C, new_carry);
+}
+
+// SRA r8
+void CPU::SRA_r8(CPU::R8_PTR r) {
+  int8_t val = read_reg(r);
+  bool new_carry = (val & 0x01);
+  val = val >> 1;
+  write_reg(r, val);
+  set_z_flag(val);
+  flag_value(N, 0);
+  flag_value(H, 0);
+  flag_value(C, new_carry);
+}
+
+// SRA [HL]
+void CPU::SRA_HL() {
+  int8_t val = read_byte(reg.hl);
+  bool new_carry = (val & 0x01);
+  val = val >> 1;
+  write_byte(reg.hl, val);
+  set_z_flag(val);
+  flag_value(N, 0);
+  flag_value(H, 0);
+  flag_value(C, new_carry);
+}
