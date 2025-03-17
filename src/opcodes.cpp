@@ -409,7 +409,7 @@ void CPU::INSTRUCTION_DECODER() {
   case 0x17:
     break;
   case 0x18: {
-    int8_t val = read_byte(reg.pc++);
+    int val = read_byte(reg.pc++);
     printf(disasm[0x18], curr_pc, val);
     clock_m += clock_m_cycles[0x18];
     JR_n16(val);
@@ -448,7 +448,7 @@ void CPU::INSTRUCTION_DECODER() {
   case 0x1F:
     break;
   case 0x20: {
-    uint8_t val = read_byte(reg.pc++);
+    int val = read_byte(reg.pc++);
     printf(disasm[0x20], curr_pc, val);
     clock_m += clock_m_cycles[0x20];
     JR_CC_n16(flag_value(N) & flag_value(Z), val);
@@ -492,7 +492,7 @@ void CPU::INSTRUCTION_DECODER() {
     DAA();
   } break;
   case 0x28: {
-    int8_t val = read_byte(reg.pc++);
+    int val = read_byte(reg.pc++);
     printf(disasm[0x28], curr_pc, val);
     clock_m += clock_m_cycles[0x28];
     JR_CC_n16(flag_value(Z), val);
@@ -534,7 +534,7 @@ void CPU::INSTRUCTION_DECODER() {
     CPL();
   } break;
   case 0x30: {
-    int8_t val = read_byte(reg.pc++);
+    int val = read_byte(reg.pc++);
     printf(disasm[0x30], curr_pc, val);
     clock_m += clock_m_cycles[0x30];
     JR_CC_n16(flag_value(N) & flag_value(C), val);
@@ -575,7 +575,7 @@ void CPU::INSTRUCTION_DECODER() {
   case 0x37: {
   } break;
   case 0x38: {
-    int8_t val = read_byte(reg.pc++);
+    int val = read_byte(reg.pc++);
     printf(disasm[0x38], curr_pc, val);
     clock_m += clock_m_cycles[0x38];
     JR_CC_n16(flag_value(C), val);
