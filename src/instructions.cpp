@@ -791,3 +791,15 @@ void CPU::RRCA() {
   flag_value(H, 0);
   flag_value(C, new_carry);
 }
+
+// SET u3, r8
+void CPU::SET_u3_r8(uint8_t u3, CPU::R8_PTR r) {
+  uint8_t set_byte = 1 << u3;
+  write_reg(r, read_reg(r) | set_byte);
+}
+
+// SET u3, [HL]
+void CPU::SET_u3_HL(uint8_t u3) {
+  uint8_t set_byte = 1 << u3;
+  write_byte(reg.hl, read_byte(reg.hl) | set_byte);
+}

@@ -236,7 +236,9 @@ public:
 
   void RRCA();
 
-  void SET();
+  void SET_u3_r8(uint8_t u3, R8_PTR r);
+  void SET_u3_HL(uint8_t u3);
+
   void SLA();
   void SRA();
   void SRL();
