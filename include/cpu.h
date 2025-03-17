@@ -225,6 +225,7 @@ public:
   void RLC_HL();
 
   void RLCA();
+
   void RR();
   void RRA();
   void RRC();

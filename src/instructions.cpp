@@ -651,7 +651,7 @@ void CPU::RES_u3_HL(uint8_t u3) {
 // RL r8
 void CPU::RL_r8(CPU::R8_PTR r) {
   uint8_t val = read_reg(r);
-  bool new_carry = val & 0x10000000;
+  bool new_carry = (val & 0x80) ? 1 : 0;
   val = (val << 1) + flag_value(C);
   write_reg(r, val);
   set_z_flag(val);
@@ -663,7 +663,7 @@ void CPU::RL_r8(CPU::R8_PTR r) {
 // RL [HL]
 void CPU::RL_HL() {
   uint8_t val = read_byte(reg.hl);
-  bool new_carry = val & 0x10000000;
+  bool new_carry = (val & 0x80) ? 1 : 0;
   val = (val << 1) + flag_value(C);
   write_byte(reg.hl, val);
   set_z_flag(val);
@@ -675,7 +675,7 @@ void CPU::RL_HL() {
 // RLA
 void CPU::RLA() {
   uint8_t val = reg.a;
-  bool new_carry = val & 0x10000000;
+  bool new_carry = (val & 0x80) ? 1 : 0;
   val = (val << 1) + flag_value(C);
   reg.a = val;
   set_z_flag(val);
@@ -687,7 +687,7 @@ void CPU::RLA() {
 // RLC r8
 void CPU::RLC_r8(CPU::R8_PTR r) {
   uint8_t val = read_reg(r);
-  bool new_carry = val & 0x10000000;
+  bool new_carry = (val & 0x80) ? 1 : 0;
   val = (val << 1) + new_carry;
   write_reg(r, val);
   set_z_flag(val);
@@ -699,9 +699,21 @@ void CPU::RLC_r8(CPU::R8_PTR r) {
 // RLC [HL]
 void CPU::RLC_HL() {
   uint8_t val = read_byte(reg.hl);
-  bool new_carry = val & 0x10000000;
+  bool new_carry = (val & 0x80) ? 1 : 0;
   val = (val << 1) + new_carry;
   write_byte(reg.hl, val);
+  set_z_flag(val);
+  flag_value(N, 0);
+  flag_value(H, 0);
+  flag_value(C, new_carry);
+}
+
+// RLCA
+void CPU::RLCA() {
+  uint8_t val = reg.a;
+  bool new_carry = (val & 0x80) ? 1 : 0;
+  val = (val << 1) + new_carry;
+  reg.a = val;
   set_z_flag(val);
   flag_value(N, 0);
   flag_value(H, 0);
