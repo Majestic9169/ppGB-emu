@@ -851,3 +851,27 @@ void CPU::SRA_HL() {
   flag_value(H, 0);
   flag_value(C, new_carry);
 }
+
+// SRL r8
+void CPU::SRL_r8(CPU::R8_PTR r) {
+  uint8_t val = read_reg(r);
+  bool new_carry = (val & 0x01);
+  val = val >> 1;
+  write_reg(r, val);
+  set_z_flag(val);
+  flag_value(N, 0);
+  flag_value(H, 0);
+  flag_value(C, new_carry);
+}
+
+// SRL [HL]
+void CPU::SRL_HL() {
+  uint8_t val = read_byte(reg.hl);
+  bool new_carry = (val & 0x01);
+  val = val >> 1;
+  write_byte(reg.hl, val);
+  set_z_flag(val);
+  flag_value(N, 0);
+  flag_value(H, 0);
+  flag_value(C, new_carry);
+}

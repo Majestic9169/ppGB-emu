@@ -245,7 +245,9 @@ public:
   void SRA_r8(R8_PTR r);
   void SRA_HL();
 
-  void SRL();
+  void SRL_r8(R8_PTR r);
+  void SRL_HL();
+
   void SWAP();
 
   /* ====================================
