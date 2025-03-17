@@ -3,6 +3,9 @@
 #include <cstdio>
 #include <ctime>
 
+const int ASN = 0;
+const int ASM = 0;
+
 const char *cb_disasm[256] = {
     "0x%04x: [cb00] RLC B",       // 0x00
     "0x%04x: [cb01] RLC C",       // 0x01
@@ -286,860 +289,916 @@ void CPU::CB_INSTRUCTION_DECODER() {
 
   switch (read_byte(reg.pc++)) {
   case 0x00:
-    printf(cb_disasm[0x00], curr_pc);
-    clock_m += cb_clock_m_cycles[0x00];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
+    RLC_r8(&REGISTERS::b);
     break;
   case 0x01: {
-    printf(cb_disasm[0x01], curr_pc);
-    clock_m += cb_clock_m_cycles[0x01];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
+    RLC_r8(&REGISTERS::c);
   } break;
   case 0x02:
-    printf(cb_disasm[0x02], curr_pc);
-    clock_m += cb_clock_m_cycles[0x02];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
+    RLC_r8(&REGISTERS::d);
     break;
   case 0x03:
-    printf(cb_disasm[0x03], curr_pc);
-    clock_m += cb_clock_m_cycles[0x03];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
+    RLC_r8(&REGISTERS::e);
     break;
   case 0x04:
-    printf(cb_disasm[0x04], curr_pc);
-    clock_m += cb_clock_m_cycles[0x04];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
+    RLC_r8(&REGISTERS::h);
     break;
   case 0x05:
-    printf(cb_disasm[0x05], curr_pc);
-    clock_m += cb_clock_m_cycles[0x05];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
+    RLC_r8(&REGISTERS::l);
     break;
   case 0x06: {
-    printf(cb_disasm[0x06], curr_pc);
-    clock_m += cb_clock_m_cycles[0x06];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
+    RLC_HL();
   } break;
   case 0x07:
-    printf(cb_disasm[0x07], curr_pc);
-    clock_m += cb_clock_m_cycles[0x07];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
+    RLCA();
     break;
   case 0x08: {
-    printf(cb_disasm[0x08], curr_pc);
-    clock_m += cb_clock_m_cycles[0x08];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
+    RRC_r8(&REGISTERS::b);
   } break;
   case 0x09:
-    printf(cb_disasm[0x09], curr_pc);
-    clock_m += cb_clock_m_cycles[0x09];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
+    RRC_r8(&REGISTERS::c);
     break;
   case 0x0A:
-    printf(cb_disasm[0x0a], curr_pc);
-    clock_m += cb_clock_m_cycles[0x0a];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
+    RRC_r8(&REGISTERS::d);
     break;
   case 0x0B:
-    printf(cb_disasm[0x0b], curr_pc);
-    clock_m += cb_clock_m_cycles[0x0b];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
+    RRC_r8(&REGISTERS::e);
     break;
   case 0x0C:
-    printf(cb_disasm[0x0c], curr_pc);
-    clock_m += cb_clock_m_cycles[0x0c];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
+    RRC_r8(&REGISTERS::h);
     break;
   case 0x0D:
-    printf(cb_disasm[0x0d], curr_pc);
-    clock_m += cb_clock_m_cycles[0x0d];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
+    RRC_r8(&REGISTERS::b);
     break;
   case 0x0E: {
-    printf(cb_disasm[0x0e], curr_pc);
-    clock_m += cb_clock_m_cycles[0x0e];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
+    RRC_HL();
   } break;
   case 0x0F:
-    printf(cb_disasm[0x0f], curr_pc);
-    clock_m += cb_clock_m_cycles[0x0f];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
+    RRCA();
     break;
   case 0x10:
-    printf(cb_disasm[0x10], curr_pc);
-    clock_m += cb_clock_m_cycles[0x10];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
+    RL_r8(&REGISTERS::b);
     break;
   case 0x11: {
-    printf(cb_disasm[0x11], curr_pc);
-    clock_m += cb_clock_m_cycles[0x11];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
+    RL_r8(&REGISTERS::c);
   } break;
   case 0x12:
-    printf(cb_disasm[0x12], curr_pc);
-    clock_m += cb_clock_m_cycles[0x12];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
+    RL_r8(&REGISTERS::d);
     break;
   case 0x13:
-    printf(cb_disasm[0x13], curr_pc);
-    clock_m += cb_clock_m_cycles[0x13];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
+    RL_r8(&REGISTERS::e);
     break;
   case 0x14:
-    printf(cb_disasm[0x14], curr_pc);
-    clock_m += cb_clock_m_cycles[0x14];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
+    RL_r8(&REGISTERS::h);
     break;
   case 0x15:
-    printf(cb_disasm[0x15], curr_pc);
-    clock_m += cb_clock_m_cycles[0x15];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
+    RL_r8(&REGISTERS::l);
     break;
   case 0x16: {
-    printf(cb_disasm[0x16], curr_pc);
-    clock_m += cb_clock_m_cycles[0x16];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
+    RL_HL();
   } break;
+  case 0x17:
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
+    RLA();
+    break;
   case 0x18: {
-    printf(cb_disasm[0x17], curr_pc);
-    clock_m += cb_clock_m_cycles[0x17];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
+    RR_r8(&REGISTERS::b);
   } break;
   case 0x19:
-    printf(cb_disasm[0x18], curr_pc);
-    clock_m += cb_clock_m_cycles[0x18];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
+    RR_r8(&REGISTERS::c);
     break;
   case 0x1A:
-    printf(cb_disasm[0x19], curr_pc);
-    clock_m += cb_clock_m_cycles[0x19];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
+    RR_r8(&REGISTERS::d);
     break;
   case 0x1B:
-    printf(cb_disasm[0x1a], curr_pc);
-    clock_m += cb_clock_m_cycles[0x1a];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
+    RR_r8(&REGISTERS::e);
     break;
   case 0x1C:
-    printf(cb_disasm[0x1b], curr_pc);
-    clock_m += cb_clock_m_cycles[0x1b];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
+    RR_r8(&REGISTERS::h);
     break;
   case 0x1D:
-    printf(cb_disasm[0x1c], curr_pc);
-    clock_m += cb_clock_m_cycles[0x1c];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
+    RR_r8(&REGISTERS::b);
     break;
   case 0x1E: {
-    printf(cb_disasm[0x1d], curr_pc);
-    clock_m += cb_clock_m_cycles[0x1d];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
+    RR_HL();
   } break;
-  case 0x20: {
-    printf(cb_disasm[0x1e], curr_pc);
-    clock_m += cb_clock_m_cycles[0x1e];
-  } break;
+  case 0x1F:
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
+    RRA();
+    break;
+  case 0x20:
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
+    SLA_r8(&REGISTERS::b);
+    break;
   case 0x21: {
-    printf(cb_disasm[0x1f], curr_pc);
-    clock_m += cb_clock_m_cycles[0x1f];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
+    SLA_r8(&REGISTERS::c);
   } break;
   case 0x22:
-    printf(cb_disasm[0x20], curr_pc);
-    clock_m += cb_clock_m_cycles[0x20];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
+    SLA_r8(&REGISTERS::d);
     break;
   case 0x23:
-    printf(cb_disasm[0x21], curr_pc);
-    clock_m += cb_clock_m_cycles[0x21];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
+    SLA_r8(&REGISTERS::e);
     break;
   case 0x24:
-    printf(cb_disasm[0x22], curr_pc);
-    clock_m += cb_clock_m_cycles[0x22];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
+    SLA_r8(&REGISTERS::h);
     break;
   case 0x25:
-    printf(cb_disasm[0x23], curr_pc);
-    clock_m += cb_clock_m_cycles[0x23];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
+    SLA_r8(&REGISTERS::l);
     break;
   case 0x26: {
-    printf(cb_disasm[0x24], curr_pc);
-    clock_m += cb_clock_m_cycles[0x24];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
+    SLA_HL();
   } break;
-  case 0x27: {
-    printf(cb_disasm[0x25], curr_pc);
-    clock_m += cb_clock_m_cycles[0x25];
-  } break;
+  case 0x27:
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
+    SLA_r8(&REGISTERS::a);
+    break;
   case 0x28: {
-    printf(cb_disasm[0x26], curr_pc);
-    clock_m += cb_clock_m_cycles[0x26];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
+    SRA_r8(&REGISTERS::b);
   } break;
   case 0x29:
-    printf(cb_disasm[0x27], curr_pc);
-    clock_m += cb_clock_m_cycles[0x27];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
+    SRA_r8(&REGISTERS::c);
     break;
   case 0x2A:
-    printf(cb_disasm[0x28], curr_pc);
-    clock_m += cb_clock_m_cycles[0x28];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
+    SRA_r8(&REGISTERS::d);
     break;
   case 0x2B:
-    printf(cb_disasm[0x29], curr_pc);
-    clock_m += cb_clock_m_cycles[0x29];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
+    SRA_r8(&REGISTERS::e);
     break;
   case 0x2C:
-    printf(cb_disasm[0x2a], curr_pc);
-    clock_m += cb_clock_m_cycles[0x2a];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
+    SRA_r8(&REGISTERS::h);
     break;
   case 0x2D:
-    printf(cb_disasm[0x2b], curr_pc);
-    clock_m += cb_clock_m_cycles[0x2b];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
+    SRA_r8(&REGISTERS::b);
     break;
   case 0x2E: {
-    printf(cb_disasm[0x2c], curr_pc);
-    clock_m += cb_clock_m_cycles[0x2c];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
+    SRA_HL();
   } break;
-  case 0x2F: {
-    printf(cb_disasm[0x2d], curr_pc);
-    clock_m += cb_clock_m_cycles[0x2d];
-  } break;
+  case 0x2F:
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
+    SRA_r8(&REGISTERS::a);
+    break;
   case 0x30: {
-    printf(cb_disasm[0x2e], curr_pc);
-    clock_m += cb_clock_m_cycles[0x2e];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
   } break;
   case 0x31: {
-    printf(cb_disasm[0x2f], curr_pc);
-    clock_m += cb_clock_m_cycles[0x2f];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
   } break;
   case 0x32:
-    printf(cb_disasm[0x30], curr_pc);
-    clock_m += cb_clock_m_cycles[0x30];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x33:
-    printf(cb_disasm[0x31], curr_pc);
-    clock_m += cb_clock_m_cycles[0x31];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x34:
-    printf(cb_disasm[0x32], curr_pc);
-    clock_m += cb_clock_m_cycles[0x32];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x35:
-    printf(cb_disasm[0x33], curr_pc);
-    clock_m += cb_clock_m_cycles[0x33];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x36: {
-    printf(cb_disasm[0x34], curr_pc);
-    clock_m += cb_clock_m_cycles[0x34];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
   } break;
   case 0x38: {
-    printf(cb_disasm[0x35], curr_pc);
-    clock_m += cb_clock_m_cycles[0x35];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
   } break;
   case 0x39:
-    printf(cb_disasm[0x36], curr_pc);
-    clock_m += cb_clock_m_cycles[0x36];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x3A:
-    printf(cb_disasm[0x37], curr_pc);
-    clock_m += cb_clock_m_cycles[0x37];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x3B:
-    printf(cb_disasm[0x38], curr_pc);
-    clock_m += cb_clock_m_cycles[0x38];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x3C:
-    printf(cb_disasm[0x39], curr_pc);
-    clock_m += cb_clock_m_cycles[0x39];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x3D:
-    printf(cb_disasm[0x3a], curr_pc);
-    clock_m += cb_clock_m_cycles[0x3a];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x3E: {
-    printf(cb_disasm[0x3b], curr_pc);
-    clock_m += cb_clock_m_cycles[0x3b];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
   } break;
   case 0x3F: {
-    printf(cb_disasm[0x3c], curr_pc);
-    clock_m += cb_clock_m_cycles[0x3c];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
   } break;
   case 0x40:
-    printf(cb_disasm[0x3d], curr_pc);
-    clock_m += cb_clock_m_cycles[0x3d];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x41:
-    printf(cb_disasm[0x3e], curr_pc);
-    clock_m += cb_clock_m_cycles[0x3e];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x42:
-    printf(cb_disasm[0x3f], curr_pc);
-    clock_m += cb_clock_m_cycles[0x3f];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x43:
-    printf(cb_disasm[0x40], curr_pc);
-    clock_m += cb_clock_m_cycles[0x40];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x44:
-    printf(cb_disasm[0x41], curr_pc);
-    clock_m += cb_clock_m_cycles[0x41];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x45:
-    printf(cb_disasm[0x42], curr_pc);
-    clock_m += cb_clock_m_cycles[0x42];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x46:
-    printf(cb_disasm[0x43], curr_pc);
-    clock_m += cb_clock_m_cycles[0x43];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x47:
-    printf(cb_disasm[0x44], curr_pc);
-    clock_m += cb_clock_m_cycles[0x44];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x48:
-    printf(cb_disasm[0x45], curr_pc);
-    clock_m += cb_clock_m_cycles[0x45];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x49:
-    printf(cb_disasm[0x46], curr_pc);
-    clock_m += cb_clock_m_cycles[0x46];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x4A:
-    printf(cb_disasm[0x47], curr_pc);
-    clock_m += cb_clock_m_cycles[0x47];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x4B:
-    printf(cb_disasm[0x48], curr_pc);
-    clock_m += cb_clock_m_cycles[0x48];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x4C:
-    printf(cb_disasm[0x49], curr_pc);
-    clock_m += cb_clock_m_cycles[0x49];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x4D:
-    printf(cb_disasm[0x4a], curr_pc);
-    clock_m += cb_clock_m_cycles[0x4a];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x4E:
-    printf(cb_disasm[0x4b], curr_pc);
-    clock_m += cb_clock_m_cycles[0x4b];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x4F:
-    printf(cb_disasm[0x4c], curr_pc);
-    clock_m += cb_clock_m_cycles[0x4c];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x50:
-    printf(cb_disasm[0x4d], curr_pc);
-    clock_m += cb_clock_m_cycles[0x4d];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x51:
-    printf(cb_disasm[0x4e], curr_pc);
-    clock_m += cb_clock_m_cycles[0x4e];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x52:
-    printf(cb_disasm[0x4f], curr_pc);
-    clock_m += cb_clock_m_cycles[0x4f];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x53:
-    printf(cb_disasm[0x50], curr_pc);
-    clock_m += cb_clock_m_cycles[0x50];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x54:
-    printf(cb_disasm[0x51], curr_pc);
-    clock_m += cb_clock_m_cycles[0x51];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x55:
-    printf(cb_disasm[0x52], curr_pc);
-    clock_m += cb_clock_m_cycles[0x52];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x56:
-    printf(cb_disasm[0x53], curr_pc);
-    clock_m += cb_clock_m_cycles[0x53];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x57:
-    printf(cb_disasm[0x54], curr_pc);
-    clock_m += cb_clock_m_cycles[0x54];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x58:
-    printf(cb_disasm[0x55], curr_pc);
-    clock_m += cb_clock_m_cycles[0x55];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x59:
-    printf(cb_disasm[0x56], curr_pc);
-    clock_m += cb_clock_m_cycles[0x56];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x5A:
-    printf(cb_disasm[0x57], curr_pc);
-    clock_m += cb_clock_m_cycles[0x57];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x5B:
-    printf(cb_disasm[0x58], curr_pc);
-    clock_m += cb_clock_m_cycles[0x58];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x5C:
-    printf(cb_disasm[0x59], curr_pc);
-    clock_m += cb_clock_m_cycles[0x59];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x5D:
-    printf(cb_disasm[0x5a], curr_pc);
-    clock_m += cb_clock_m_cycles[0x5a];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x5E:
-    printf(cb_disasm[0x5b], curr_pc);
-    clock_m += cb_clock_m_cycles[0x5b];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x5F:
-    printf(cb_disasm[0x5c], curr_pc);
-    clock_m += cb_clock_m_cycles[0x5c];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x60:
-    printf(cb_disasm[0x5d], curr_pc);
-    clock_m += cb_clock_m_cycles[0x5d];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x61:
-    printf(cb_disasm[0x5e], curr_pc);
-    clock_m += cb_clock_m_cycles[0x5e];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x62:
-    printf(cb_disasm[0x5f], curr_pc);
-    clock_m += cb_clock_m_cycles[0x5f];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x63:
-    printf(cb_disasm[0x60], curr_pc);
-    clock_m += cb_clock_m_cycles[0x60];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x64:
-    printf(cb_disasm[0x61], curr_pc);
-    clock_m += cb_clock_m_cycles[0x61];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x65:
-    printf(cb_disasm[0x62], curr_pc);
-    clock_m += cb_clock_m_cycles[0x62];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x66:
-    printf(cb_disasm[0x63], curr_pc);
-    clock_m += cb_clock_m_cycles[0x63];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x67:
-    printf(cb_disasm[0x64], curr_pc);
-    clock_m += cb_clock_m_cycles[0x64];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x68:
-    printf(cb_disasm[0x65], curr_pc);
-    clock_m += cb_clock_m_cycles[0x65];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x69:
-    printf(cb_disasm[0x66], curr_pc);
-    clock_m += cb_clock_m_cycles[0x66];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x6A:
-    printf(cb_disasm[0x67], curr_pc);
-    clock_m += cb_clock_m_cycles[0x67];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x6B:
-    printf(cb_disasm[0x68], curr_pc);
-    clock_m += cb_clock_m_cycles[0x68];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x6C:
-    printf(cb_disasm[0x69], curr_pc);
-    clock_m += cb_clock_m_cycles[0x69];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x6D:
-    printf(cb_disasm[0x6a], curr_pc);
-    clock_m += cb_clock_m_cycles[0x6a];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x6E:
-    printf(cb_disasm[0x6b], curr_pc);
-    clock_m += cb_clock_m_cycles[0x6b];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x6F:
-    printf(cb_disasm[0x6c], curr_pc);
-    clock_m += cb_clock_m_cycles[0x6c];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x70:
-    printf(cb_disasm[0x6d], curr_pc);
-    clock_m += cb_clock_m_cycles[0x6d];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x71:
-    printf(cb_disasm[0x6e], curr_pc);
-    clock_m += cb_clock_m_cycles[0x6e];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x72:
-    printf(cb_disasm[0x6f], curr_pc);
-    clock_m += cb_clock_m_cycles[0x6f];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x73:
-    printf(cb_disasm[0x70], curr_pc);
-    clock_m += cb_clock_m_cycles[0x70];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x74:
-    printf(cb_disasm[0x71], curr_pc);
-    clock_m += cb_clock_m_cycles[0x71];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x75:
-    printf(cb_disasm[0x72], curr_pc);
-    clock_m += cb_clock_m_cycles[0x72];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x77:
-    printf(cb_disasm[0x73], curr_pc);
-    clock_m += cb_clock_m_cycles[0x73];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x78:
-    printf(cb_disasm[0x74], curr_pc);
-    clock_m += cb_clock_m_cycles[0x74];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x79:
-    printf(cb_disasm[0x75], curr_pc);
-    clock_m += cb_clock_m_cycles[0x75];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x7A:
-    printf(cb_disasm[0x76], curr_pc);
-    clock_m += cb_clock_m_cycles[0x76];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x7B:
-    printf(cb_disasm[0x77], curr_pc);
-    clock_m += cb_clock_m_cycles[0x77];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x7C:
-    printf(cb_disasm[0x78], curr_pc);
-    clock_m += cb_clock_m_cycles[0x78];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x7D:
-    printf(cb_disasm[0x79], curr_pc);
-    clock_m += cb_clock_m_cycles[0x79];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x7E:
-    printf(cb_disasm[0x7a], curr_pc);
-    clock_m += cb_clock_m_cycles[0x7a];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x7F:
-    printf(cb_disasm[0x7b], curr_pc);
-    clock_m += cb_clock_m_cycles[0x7b];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x80:
-    printf(cb_disasm[0x7c], curr_pc);
-    clock_m += cb_clock_m_cycles[0x7c];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x81:
-    printf(cb_disasm[0x7d], curr_pc);
-    clock_m += cb_clock_m_cycles[0x7d];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x82:
-    printf(cb_disasm[0x7e], curr_pc);
-    clock_m += cb_clock_m_cycles[0x7e];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x83:
-    printf(cb_disasm[0x7f], curr_pc);
-    clock_m += cb_clock_m_cycles[0x7f];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x84:
-    printf(cb_disasm[0x80], curr_pc);
-    clock_m += cb_clock_m_cycles[0x80];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x85:
-    printf(cb_disasm[0x81], curr_pc);
-    clock_m += cb_clock_m_cycles[0x81];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x86:
-    printf(cb_disasm[0x82], curr_pc);
-    clock_m += cb_clock_m_cycles[0x82];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x87:
-    printf(cb_disasm[0x83], curr_pc);
-    clock_m += cb_clock_m_cycles[0x83];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x88:
-    printf(cb_disasm[0x84], curr_pc);
-    clock_m += cb_clock_m_cycles[0x84];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x89:
-    printf(cb_disasm[0x85], curr_pc);
-    clock_m += cb_clock_m_cycles[0x85];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x8A:
-    printf(cb_disasm[0x86], curr_pc);
-    clock_m += cb_clock_m_cycles[0x86];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x8B:
-    printf(cb_disasm[0x87], curr_pc);
-    clock_m += cb_clock_m_cycles[0x87];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x8C:
-    printf(cb_disasm[0x88], curr_pc);
-    clock_m += cb_clock_m_cycles[0x88];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x8D:
-    printf(cb_disasm[0x89], curr_pc);
-    clock_m += cb_clock_m_cycles[0x89];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x8E:
-    printf(cb_disasm[0x8a], curr_pc);
-    clock_m += cb_clock_m_cycles[0x8a];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x8F:
-    printf(cb_disasm[0x8b], curr_pc);
-    clock_m += cb_clock_m_cycles[0x8b];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x90:
-    printf(cb_disasm[0x8c], curr_pc);
-    clock_m += cb_clock_m_cycles[0x8c];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x91:
-    printf(cb_disasm[0x8d], curr_pc);
-    clock_m += cb_clock_m_cycles[0x8d];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x92:
-    printf(cb_disasm[0x8e], curr_pc);
-    clock_m += cb_clock_m_cycles[0x8e];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x93:
-    printf(cb_disasm[0x8f], curr_pc);
-    clock_m += cb_clock_m_cycles[0x8f];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x94:
-    printf(cb_disasm[0x90], curr_pc);
-    clock_m += cb_clock_m_cycles[0x90];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x95:
-    printf(cb_disasm[0x91], curr_pc);
-    clock_m += cb_clock_m_cycles[0x91];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x96:
-    printf(cb_disasm[0x92], curr_pc);
-    clock_m += cb_clock_m_cycles[0x92];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x97:
-    printf(cb_disasm[0x93], curr_pc);
-    clock_m += cb_clock_m_cycles[0x93];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x98:
-    printf(cb_disasm[0x94], curr_pc);
-    clock_m += cb_clock_m_cycles[0x94];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x99:
-    printf(cb_disasm[0x95], curr_pc);
-    clock_m += cb_clock_m_cycles[0x95];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x9A:
-    printf(cb_disasm[0x96], curr_pc);
-    clock_m += cb_clock_m_cycles[0x96];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x9B:
-    printf(cb_disasm[0x97], curr_pc);
-    clock_m += cb_clock_m_cycles[0x97];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x9C:
-    printf(cb_disasm[0x98], curr_pc);
-    clock_m += cb_clock_m_cycles[0x98];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x9D:
-    printf(cb_disasm[0x99], curr_pc);
-    clock_m += cb_clock_m_cycles[0x99];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x9E:
-    printf(cb_disasm[0x9a], curr_pc);
-    clock_m += cb_clock_m_cycles[0x9a];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0x9F:
-    printf(cb_disasm[0x9b], curr_pc);
-    clock_m += cb_clock_m_cycles[0x9b];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0xa0:
-    printf(cb_disasm[0x9c], curr_pc);
-    clock_m += cb_clock_m_cycles[0x9c];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0xa1:
-    printf(cb_disasm[0x9d], curr_pc);
-    clock_m += cb_clock_m_cycles[0x9d];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0xa2:
-    printf(cb_disasm[0x9e], curr_pc);
-    clock_m += cb_clock_m_cycles[0x9e];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0xa3:
-    printf(cb_disasm[0x9f], curr_pc);
-    clock_m += cb_clock_m_cycles[0x9f];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0xa4:
-    printf(cb_disasm[0xa0], curr_pc);
-    clock_m += cb_clock_m_cycles[0xa0];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0xa5:
-    printf(cb_disasm[0xa1], curr_pc);
-    clock_m += cb_clock_m_cycles[0xa1];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0xa6:
-    printf(cb_disasm[0xa2], curr_pc);
-    clock_m += cb_clock_m_cycles[0xa2];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0xa7:
-    printf(cb_disasm[0xa3], curr_pc);
-    clock_m += cb_clock_m_cycles[0xa3];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0xa8:
-    printf(cb_disasm[0xa4], curr_pc);
-    clock_m += cb_clock_m_cycles[0xa4];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0xa9:
-    printf(cb_disasm[0xa5], curr_pc);
-    clock_m += cb_clock_m_cycles[0xa5];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0xaa:
-    printf(cb_disasm[0xa6], curr_pc);
-    clock_m += cb_clock_m_cycles[0xa6];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0xab:
-    printf(cb_disasm[0xa7], curr_pc);
-    clock_m += cb_clock_m_cycles[0xa7];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0xac:
-    printf(cb_disasm[0xa8], curr_pc);
-    clock_m += cb_clock_m_cycles[0xa8];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0xad:
-    printf(cb_disasm[0xa9], curr_pc);
-    clock_m += cb_clock_m_cycles[0xa9];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0xae:
-    printf(cb_disasm[0xaa], curr_pc);
-    clock_m += cb_clock_m_cycles[0xaa];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0xaf:
-    printf(cb_disasm[0xab], curr_pc);
-    clock_m += cb_clock_m_cycles[0xab];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0xb0:
-    printf(cb_disasm[0xac], curr_pc);
-    clock_m += cb_clock_m_cycles[0xac];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0xb1:
-    printf(cb_disasm[0xad], curr_pc);
-    clock_m += cb_clock_m_cycles[0xad];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0xb2:
-    printf(cb_disasm[0xae], curr_pc);
-    clock_m += cb_clock_m_cycles[0xae];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0xb3:
-    printf(cb_disasm[0xaf], curr_pc);
-    clock_m += cb_clock_m_cycles[0xaf];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0xb4:
-    printf(cb_disasm[0xb0], curr_pc);
-    clock_m += cb_clock_m_cycles[0xb0];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0xb5:
-    printf(cb_disasm[0xb1], curr_pc);
-    clock_m += cb_clock_m_cycles[0xb1];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0xb6:
-    printf(cb_disasm[0xb2], curr_pc);
-    clock_m += cb_clock_m_cycles[0xb2];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0xb7:
-    printf(cb_disasm[0xb3], curr_pc);
-    clock_m += cb_clock_m_cycles[0xb3];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0xb8:
-    printf(cb_disasm[0xb4], curr_pc);
-    clock_m += cb_clock_m_cycles[0xb4];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0xb9:
-    printf(cb_disasm[0xb5], curr_pc);
-    clock_m += cb_clock_m_cycles[0xb5];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0xbA:
-    printf(cb_disasm[0xb6], curr_pc);
-    clock_m += cb_clock_m_cycles[0xb6];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0xbB:
-    printf(cb_disasm[0xb7], curr_pc);
-    clock_m += cb_clock_m_cycles[0xb7];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0xbC:
-    printf(cb_disasm[0xb8], curr_pc);
-    clock_m += cb_clock_m_cycles[0xb8];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0xbD:
-    printf(cb_disasm[0xb9], curr_pc);
-    clock_m += cb_clock_m_cycles[0xb9];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0xbE:
-    printf(cb_disasm[0xba], curr_pc);
-    clock_m += cb_clock_m_cycles[0xba];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0xbF:
-    printf(cb_disasm[0xbb], curr_pc);
-    clock_m += cb_clock_m_cycles[0xbb];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0xc0:
-    printf(cb_disasm[0xbc], curr_pc);
-    clock_m += cb_clock_m_cycles[0xbc];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0xc1:
-    printf(cb_disasm[0xbd], curr_pc);
-    clock_m += cb_clock_m_cycles[0xbd];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0xc2: {
-    printf(cb_disasm[0xbe], curr_pc);
-    clock_m += cb_clock_m_cycles[0xbe];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
   } break;
   case 0xc3: {
-    printf(cb_disasm[0xbf], curr_pc);
-    clock_m += cb_clock_m_cycles[0xbf];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
   } break;
   case 0xc4: {
-    printf(cb_disasm[0xc0], curr_pc);
-    clock_m += cb_clock_m_cycles[0xc0];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
   } break;
   case 0xc5:
-    printf(cb_disasm[0xc1], curr_pc);
-    clock_m += cb_clock_m_cycles[0xc1];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0xc6: {
-    printf(cb_disasm[0xc2], curr_pc);
-    clock_m += cb_clock_m_cycles[0xc2];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
   } break;
   case 0xc7:
-    printf(cb_disasm[0xc3], curr_pc);
-    clock_m += cb_clock_m_cycles[0xc3];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0xc8:
-    printf(cb_disasm[0xc4], curr_pc);
-    clock_m += cb_clock_m_cycles[0xc4];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0xc9:
-    printf(cb_disasm[0xc5], curr_pc);
-    clock_m += cb_clock_m_cycles[0xc5];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0xca: {
-    printf(cb_disasm[0xc6], curr_pc);
-    clock_m += cb_clock_m_cycles[0xc6];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
   } break;
   case 0xcb:
-    printf(cb_disasm[0xc7], curr_pc);
-    clock_m += cb_clock_m_cycles[0xc7];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0xcc:
-    printf(cb_disasm[0xc8], curr_pc);
-    clock_m += cb_clock_m_cycles[0xc8];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0xcd: {
-    printf(cb_disasm[0xc9], curr_pc);
-    clock_m += cb_clock_m_cycles[0xc9];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
   } break;
   case 0xce: {
-    printf(cb_disasm[0xca], curr_pc);
-    clock_m += cb_clock_m_cycles[0xca];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
   } break;
   case 0xE0: {
-    printf(cb_disasm[0xcb], curr_pc);
-    clock_m += cb_clock_m_cycles[0xcb];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
   } break;
   case 0xE2:
-    printf(cb_disasm[0xcc], curr_pc);
-    clock_m += cb_clock_m_cycles[0xcc];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0xE6: {
-    printf(cb_disasm[0xcd], curr_pc);
-    clock_m += cb_clock_m_cycles[0xcd];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
   } break;
   case 0xE9:
-    printf(cb_disasm[0xce], curr_pc);
-    clock_m += cb_clock_m_cycles[0xce];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   case 0xEA: {
-    printf(cb_disasm[0xcf], curr_pc);
-    clock_m += cb_clock_m_cycles[0xcf];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
   } break;
   case 0xf0: {
-    printf(cb_disasm[0xd0], curr_pc);
-    clock_m += cb_clock_m_cycles[0xd0];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
   } break;
   case 0xf3: {
-    printf(cb_disasm[0xd1], curr_pc);
-    clock_m += cb_clock_m_cycles[0xd1];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
   } break;
   case 0xFA: {
-    printf(cb_disasm[0xd2], curr_pc);
-    clock_m += cb_clock_m_cycles[0xd2];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
   } break;
   case 0xfb: {
-    printf(cb_disasm[0xd3], curr_pc);
-    clock_m += cb_clock_m_cycles[0xd3];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
   } break;
   case 0xfe: {
-    printf(cb_disasm[0xd4], curr_pc);
-    clock_m += cb_clock_m_cycles[0xd4];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
   } break;
   case 0xFF:
-    printf(cb_disasm[0xd5], curr_pc);
-    clock_m += cb_clock_m_cycles[0xd5];
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
     break;
   default:
     printf("ERROR: DEFAULT 0x%02X\n", curr_pc);
