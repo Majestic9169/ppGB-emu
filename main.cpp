@@ -16,6 +16,12 @@ int main(int argc, char **argv) {
   while (1) {
     gb.INSTRUCTION_DECODER();
     // gb.print_reg();
+    if (gb.clock_m > 0)
+      while (gb.clock_m--) {
+        long long int dummy = 0xffffff;
+        while (dummy--)
+          ;
+      }
   }
 
   ROM.close();

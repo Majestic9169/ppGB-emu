@@ -90,10 +90,10 @@ Below is a tentative timeline of implementing these deliverables
 I will be reading more about the GameBoy specifications. Side-by-side I will be planning out my project structure and setup my build tools. 
 
 **Major achievements**: 
-- [ ] README.md template
-- [ ] Project structure decided
-- [ ] CMake implemented
-- [ ] Libraries installed
+- [x] README.md template
+- [x] Project structure decided
+- [x] CMake implemented
+- [x] Libraries installed
   - SDL3
 - [ ] Pipelines implemented
   - for CI/CD of releases
@@ -105,11 +105,11 @@ I will be reading more about the GameBoy specifications. Side-by-side I will be 
 This will be spent implementing the memory and starting work on the CPU and instruction codes
 
 **Major achievements**: 
-- [ ] Implement memory
+- [x] Implement memory
   - choose between vector and array or any other option
   - implement registers in an easy to access manner[^1]
   - work on memory bank controllers
-- [ ] Begin implementing the CPU
+- [x] Begin implementing the CPU
   - implement around 20% of the opcodes
   - test against tetris rom
 
@@ -130,7 +130,7 @@ Will begin implementing the display and user input. Will expand the opcodes and 
 Will expand all features so far, Implement audio functionality
 
 **Major Achievements**
-- [ ] Progress in CPU
+- [x] Progress in CPU
   - around 80% of the opcodes implemented
 - [ ] Game audio should be working
 - [ ] More games should be playable

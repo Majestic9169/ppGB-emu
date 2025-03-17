@@ -11,8 +11,6 @@ class CPU {
 private:
   Memory ROM;
 
-  int clock_m;
-
   struct REGISTERS {
     union {
       struct {
@@ -49,6 +47,8 @@ private:
   bool IME;
 
 public:
+  int clock_m;
+
   using R8_PTR = uint8_t REGISTERS::*;
   using R16_PTR = uint16_t REGISTERS::*;
 
