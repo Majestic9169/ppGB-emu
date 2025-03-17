@@ -220,7 +220,10 @@ public:
   void RL_HL();
 
   void RLA();
-  void RLC();
+
+  void RLC_r8(R8_PTR r);
+  void RLC_HL();
+
   void RLCA();
   void RR();
   void RRA();
