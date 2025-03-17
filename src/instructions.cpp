@@ -875,3 +875,29 @@ void CPU::SRL_HL() {
   flag_value(H, 0);
   flag_value(C, new_carry);
 }
+
+// SWAP r8
+void CPU::SWAP_r8(CPU::R8_PTR r) {
+  uint8_t val = read_reg(r);
+  uint8_t upper = (val >> 4);
+  uint8_t lower = (val & 0x0f);
+  val = (lower << 3) + upper;
+  write_reg(r, val);
+  set_z_flag(val);
+  flag_value(N, 0);
+  flag_value(H, 0);
+  flag_value(C, 0);
+}
+
+// SWAP [HL]
+void CPU::SWAP_HL() {
+  uint8_t val = read_byte(reg.hl);
+  uint8_t upper = (val >> 4);
+  uint8_t lower = (val & 0x0f);
+  val = (lower << 3) + upper;
+  write_byte(reg.hl, val);
+  set_z_flag(val);
+  flag_value(N, 0);
+  flag_value(H, 0);
+  flag_value(C, 0);
+}

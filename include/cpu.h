@@ -248,7 +248,8 @@ public:
   void SRL_r8(R8_PTR r);
   void SRL_HL();
 
-  void SWAP();
+  void SWAP_r8(R8_PTR r);
+  void SWAP_HL();
 
   /* ====================================
    *          MISCELLANEOUS
