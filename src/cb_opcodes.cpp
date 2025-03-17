@@ -851,62 +851,82 @@ void CPU::CB_INSTRUCTION_DECODER() {
   case 0x70:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
+    BIT_u3_r8(6, &REGISTERS::b);
     break;
   case 0x71:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
+    BIT_u3_r8(6, &REGISTERS::c);
     break;
   case 0x72:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
+    BIT_u3_r8(6, &REGISTERS::d);
     break;
   case 0x73:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
+    BIT_u3_r8(6, &REGISTERS::e);
     break;
   case 0x74:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
+    BIT_u3_r8(6, &REGISTERS::h);
     break;
   case 0x75:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
+    BIT_u3_r8(6, &REGISTERS::l);
+    break;
+  case 0x76:
+    printf(cb_disasm[ASM], curr_pc);
+    clock_m += cb_clock_m_cycles[ASN];
+    BIT_u3_HL(6);
     break;
   case 0x77:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
+    BIT_u3_r8(6, &REGISTERS::a);
     break;
   case 0x78:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
+    BIT_u3_r8(7, &REGISTERS::b);
     break;
   case 0x79:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
+    BIT_u3_r8(7, &REGISTERS::c);
     break;
   case 0x7A:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
+    BIT_u3_r8(7, &REGISTERS::d);
     break;
   case 0x7B:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
+    BIT_u3_r8(7, &REGISTERS::e);
     break;
   case 0x7C:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
+    BIT_u3_r8(7, &REGISTERS::h);
     break;
   case 0x7D:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
+    BIT_u3_r8(7, &REGISTERS::l);
     break;
   case 0x7E:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
+    BIT_u3_HL(7);
     break;
   case 0x7F:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
+    BIT_u3_r8(7, &REGISTERS::a);
     break;
   case 0x80:
     printf(cb_disasm[ASM], curr_pc);
