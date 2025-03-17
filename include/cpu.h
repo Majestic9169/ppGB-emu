@@ -226,10 +226,16 @@ public:
 
   void RLCA();
 
-  void RR();
+  void RR_r8(R8_PTR r);
+  void RR_HL();
+
   void RRA();
-  void RRC();
+
+  void RRC_r8(R8_PTR r);
+  void RRC_HL();
+
   void RRCA();
+
   void SET();
   void SLA();
   void SRA();
