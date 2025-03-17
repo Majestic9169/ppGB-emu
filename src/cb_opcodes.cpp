@@ -293,11 +293,11 @@ void CPU::CB_INSTRUCTION_DECODER() {
     clock_m += cb_clock_m_cycles[ASN];
     RLC_r8(&REGISTERS::b);
     break;
-  case 0x01: {
+  case 0x01:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
     RLC_r8(&REGISTERS::c);
-  } break;
+    break;
   case 0x02:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
@@ -318,21 +318,21 @@ void CPU::CB_INSTRUCTION_DECODER() {
     clock_m += cb_clock_m_cycles[ASN];
     RLC_r8(&REGISTERS::l);
     break;
-  case 0x06: {
+  case 0x06:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
     RLC_HL();
-  } break;
+    break;
   case 0x07:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
     RLCA();
     break;
-  case 0x08: {
+  case 0x08:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
     RRC_r8(&REGISTERS::b);
-  } break;
+    break;
   case 0x09:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
@@ -358,11 +358,11 @@ void CPU::CB_INSTRUCTION_DECODER() {
     clock_m += cb_clock_m_cycles[ASN];
     RRC_r8(&REGISTERS::b);
     break;
-  case 0x0E: {
+  case 0x0E:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
     RRC_HL();
-  } break;
+    break;
   case 0x0F:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
@@ -373,11 +373,11 @@ void CPU::CB_INSTRUCTION_DECODER() {
     clock_m += cb_clock_m_cycles[ASN];
     RL_r8(&REGISTERS::b);
     break;
-  case 0x11: {
+  case 0x11:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
     RL_r8(&REGISTERS::c);
-  } break;
+    break;
   case 0x12:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
@@ -398,21 +398,21 @@ void CPU::CB_INSTRUCTION_DECODER() {
     clock_m += cb_clock_m_cycles[ASN];
     RL_r8(&REGISTERS::l);
     break;
-  case 0x16: {
+  case 0x16:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
     RL_HL();
-  } break;
+    break;
   case 0x17:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
     RLA();
     break;
-  case 0x18: {
+  case 0x18:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
     RR_r8(&REGISTERS::b);
-  } break;
+    break;
   case 0x19:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
@@ -438,11 +438,11 @@ void CPU::CB_INSTRUCTION_DECODER() {
     clock_m += cb_clock_m_cycles[ASN];
     RR_r8(&REGISTERS::b);
     break;
-  case 0x1E: {
+  case 0x1E:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
     RR_HL();
-  } break;
+    break;
   case 0x1F:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
@@ -453,11 +453,11 @@ void CPU::CB_INSTRUCTION_DECODER() {
     clock_m += cb_clock_m_cycles[ASN];
     SLA_r8(&REGISTERS::b);
     break;
-  case 0x21: {
+  case 0x21:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
     SLA_r8(&REGISTERS::c);
-  } break;
+    break;
   case 0x22:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
@@ -478,21 +478,21 @@ void CPU::CB_INSTRUCTION_DECODER() {
     clock_m += cb_clock_m_cycles[ASN];
     SLA_r8(&REGISTERS::l);
     break;
-  case 0x26: {
+  case 0x26:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
     SLA_HL();
-  } break;
+    break;
   case 0x27:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
     SLA_r8(&REGISTERS::a);
     break;
-  case 0x28: {
+  case 0x28:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
     SRA_r8(&REGISTERS::b);
-  } break;
+    break;
   case 0x29:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
@@ -518,11 +518,11 @@ void CPU::CB_INSTRUCTION_DECODER() {
     clock_m += cb_clock_m_cycles[ASN];
     SRA_r8(&REGISTERS::b);
     break;
-  case 0x2E: {
+  case 0x2E:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
     SRA_HL();
-  } break;
+    break;
   case 0x2F:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
@@ -533,11 +533,11 @@ void CPU::CB_INSTRUCTION_DECODER() {
     clock_m += cb_clock_m_cycles[ASN];
     SWAP_r8(&REGISTERS::b);
     break;
-  case 0x31: {
+  case 0x31:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
     SWAP_r8(&REGISTERS::c);
-  } break;
+    break;
   case 0x32:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
@@ -558,21 +558,21 @@ void CPU::CB_INSTRUCTION_DECODER() {
     clock_m += cb_clock_m_cycles[ASN];
     SWAP_r8(&REGISTERS::l);
     break;
-  case 0x36: {
+  case 0x36:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
     SWAP_HL();
-  } break;
+    break;
   case 0x37:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
     SWAP_r8(&REGISTERS::a);
     break;
-  case 0x38: {
+  case 0x38:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
     SRL_r8(&REGISTERS::b);
-  } break;
+    break;
   case 0x39:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
@@ -598,11 +598,11 @@ void CPU::CB_INSTRUCTION_DECODER() {
     clock_m += cb_clock_m_cycles[ASN];
     SRL_r8(&REGISTERS::b);
     break;
-  case 0x3E: {
+  case 0x3E:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
     SRL_HL();
-  } break;
+    break;
   case 0x3F:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
@@ -611,34 +611,42 @@ void CPU::CB_INSTRUCTION_DECODER() {
   case 0x40:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
+    BIT_u3_r8(0, &REGISTERS::b);
     break;
   case 0x41:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
+    BIT_u3_r8(0, &REGISTERS::c);
     break;
   case 0x42:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
+    BIT_u3_r8(0, &REGISTERS::d);
     break;
   case 0x43:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
+    BIT_u3_r8(0, &REGISTERS::e);
     break;
   case 0x44:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
+    BIT_u3_r8(0, &REGISTERS::h);
     break;
   case 0x45:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
+    BIT_u3_r8(0, &REGISTERS::l);
     break;
   case 0x46:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
+    BIT_u3_HL(0);
     break;
   case 0x47:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
+    BIT_u3_r8(0, &REGISTERS::a);
     break;
   case 0x48:
     printf(cb_disasm[ASM], curr_pc);
@@ -1124,26 +1132,26 @@ void CPU::CB_INSTRUCTION_DECODER() {
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
     break;
-  case 0xc2: {
+  case 0xc2:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
-  } break;
-  case 0xc3: {
+    break;
+  case 0xc3:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
-  } break;
-  case 0xc4: {
+    break;
+  case 0xc4:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
-  } break;
+    break;
   case 0xc5:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
     break;
-  case 0xc6: {
+  case 0xc6:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
-  } break;
+    break;
   case 0xc7:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
@@ -1156,10 +1164,10 @@ void CPU::CB_INSTRUCTION_DECODER() {
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
     break;
-  case 0xca: {
+  case 0xca:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
-  } break;
+    break;
   case 0xcb:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
@@ -1168,54 +1176,54 @@ void CPU::CB_INSTRUCTION_DECODER() {
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
     break;
-  case 0xcd: {
+  case 0xcd:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
-  } break;
-  case 0xce: {
+    break;
+  case 0xce:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
-  } break;
-  case 0xE0: {
+    break;
+  case 0xE0:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
-  } break;
+    break;
   case 0xE2:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
     break;
-  case 0xE6: {
+  case 0xE6:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
-  } break;
+    break;
   case 0xE9:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
     break;
-  case 0xEA: {
+  case 0xEA:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
-  } break;
-  case 0xf0: {
+    break;
+  case 0xf0:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
-  } break;
-  case 0xf3: {
+    break;
+  case 0xf3:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
-  } break;
-  case 0xFA: {
+    break;
+  case 0xFA:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
-  } break;
-  case 0xfb: {
+    break;
+  case 0xfb:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
-  } break;
-  case 0xfe: {
+    break;
+  case 0xfe:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
-  } break;
+    break;
   case 0xFF:
     printf(cb_disasm[ASM], curr_pc);
     clock_m += cb_clock_m_cycles[ASN];
