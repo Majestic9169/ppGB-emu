@@ -633,3 +633,17 @@ void CPU::BIT_u3_HL(uint8_t u3) {
   flag_value(N, 0);
   flag_value(H, 1);
 }
+
+// RES u3, r8
+void CPU::RES_u3_r8(uint8_t u3, CPU::R8_PTR r) {
+  uint8_t set_byte = 1 << u3;
+  set_byte = ~set_byte;
+  write_reg(r, read_reg(r) & set_byte);
+}
+
+// RES u3, [HL]
+void CPU::RES_u3_HL(uint8_t u3) {
+  uint8_t set_byte = 1 << u3;
+  set_byte = ~set_byte;
+  write_byte(reg.hl, read_byte(reg.hl) & set_byte);
+}

@@ -213,8 +213,12 @@ public:
   void BIT_u3_r8(uint8_t u3, R8_PTR r);
   void BIT_u3_HL(uint8_t u3);
 
-  void RES();
-  void RL();
+  void RES_u3_r8(uint8_t u3, R8_PTR r);
+  void RES_u3_HL(uint8_t u3);
+
+  void RL_r8(R8_PTR r);
+  void RL_HL();
+
   void RLA();
   void RLC();
   void RLCA();
