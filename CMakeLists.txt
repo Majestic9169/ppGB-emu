@@ -7,6 +7,9 @@ project(
 )
 
 file(GLOB_RECURSE GB_SRC ./src/*.cpp)
+find_package(SDL3 REQUIRED)
 
 add_executable(ppGB main.cpp ${GB_SRC})
 
+target_include_directories(ppGB PUBLIC SDL3::SDL3)
+target_link_libraries(ppGB PUBLIC SDL3::SDL3)
