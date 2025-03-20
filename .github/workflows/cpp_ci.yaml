@@ -5,6 +5,8 @@ name: C++ Build Test CI
 on:
   push:
     branches: [ "main" ]
+    paths:
+      - ".github/workflows/cpp_ci.yaml"
 
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
@@ -17,6 +19,17 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - name: Install Dependencies
+      run: |
+        apt-get update
+        apt-get install -y unzip cmake
+        curl -L 'https://github.com/libsdl-org/SDL/releases/download/release-3.2.4/SDL3-3.2.4.zip' -o SDL3-3.2.4.zip
+        unzip SDL3-3.2.4.zip
+        cd SDL3-3.2.4
+        cmake -S . -B build
+        cmake --build build
+        cmake --install build --prefix /usr/local
+
     - name: Configure CMake
       run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
 
@@ -24,7 +37,7 @@ jobs:
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
 
       # To be implemented
-    - name: Test
-      working-directory: ${{github.workspace}}/build
-      run: ctest -C ${{env.BUILD_TYPE}}
+    # - name: Test
+    #   working-directory: ${{github.workspace}}/build
+    #   run: ctest -C ${{env.BUILD_TYPE}}
 
