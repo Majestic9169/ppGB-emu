@@ -5,8 +5,6 @@ name: C++ Build Test CI
 on:
   push:
     branches: [ "main" ]
-    paths:
-      - ".github/workflows/cpp_ci.yaml"
 
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
