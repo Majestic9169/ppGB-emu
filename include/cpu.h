@@ -6,6 +6,24 @@
 #include <sys/types.h>
 
 enum FLAGS { C = 3, H, N, Z };
+enum LCDC_FLAGS {
+  BG_ENABLE,
+  SPR_ENABLE,
+  SPR_SIZE,
+  BG_MAP_SELECT,
+  TILE_SELECT,
+  WIN_ENABLE,
+  WIN_MAP_SELECT,
+  LCD_ENABLE
+};
+enum STAT_FLAGS {
+  PPU_MODE = 0,
+  COINCIDENCE_FLAG = 2,
+  HBLANK_INTERRUPT,
+  VBLANK_INTERRUPT,
+  OAM_INTERRUPT,
+  COINCIDENCE_INTERRUPT
+};
 
 class CPU {
 private:
@@ -66,12 +84,17 @@ public:
   uint16_t read_reg(R16_PTR r);
   void write_reg(R16_PTR r, uint16_t val);
 
-  bool flag_value(FLAGS);
-  void flag_value(FLAGS, bool set);
+  bool flag_value(uint8_t f, uint8_t mode = 0);
+  void flag_value(uint8_t f, bool set, uint8_t mode = 0);
   void reset_flags();
   void set_z_flag(uint test);
   void set_h_flag(uint test);
   void set_c_flag(uint test);
+
+  void scanline_background(bool *pixel_row);
+  void scanline_window();
+  void scanline_sprites(bool *pixel_row);
+  void scanlines();
 
   void INSTRUCTION_DECODER();
   void CB_INSTRUCTION_DECODER();

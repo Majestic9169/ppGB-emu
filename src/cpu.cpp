@@ -1,7 +1,9 @@
 #include "../include/cpu.h"
 #include <cstdint>
+#include <cstdlib>
 #include <cstring>
 #include <fstream>
+#include <iostream>
 #include <sys/types.h>
 
 const uint8_t RESET_FLAG = 0;
@@ -63,41 +65,62 @@ void CPU::write_reg(CPU::R16_PTR r, uint16_t val) {
   reg.*r = val;
 }
 
-bool CPU::flag_value(FLAGS f) { return (reg.f & (1 << f)) != 0; }
-void CPU::flag_value(FLAGS f, bool set) {
-  if (set) {
-    reg.f |= (1 << f);
+bool CPU::flag_value(uint8_t f, uint8_t mode) {
+  if (mode == 0)
+    return (reg.f & (1 << f)) != 0;
+  else if (mode == 1) {
+    return (read_byte(0xFF40) & (1 << f)) != 0;
+  } else if (mode == 2) {
+    return (read_byte(0xFF41) & (1 << f)) != 0;
   } else {
-    reg.f &= (0xff ^ (1 << f));
+    std::cout << "ERROR: Unsupported Mode " << mode << std::endl;
+    exit(5);
   }
 }
-void CPU::reset_flags() {
-  flag_value(Z, 0);
-  flag_value(N, 0);
-  flag_value(H, 0);
-  flag_value(C, 0);
+void CPU::flag_value(uint8_t f, bool set, uint8_t mode) {
+  if (mode == 0) {
+    if (set) {
+      reg.f |= (1 << f);
+    } else {
+      reg.f &= (0xff ^ (1 << f));
+    }
+  } else if (mode == 1) {
+    if (set) {
+      write_byte(0xFF40, read_byte(0xFF40) | (1 << f));
+    } else {
+      write_byte(0xFF40, read_byte(0xFF40) & (0xff ^ (1 << f)));
+    }
+  } else if (mode == 2) {
+    if (set) {
+      write_byte(0xFF41, read_byte(0xFF41) | (1 << f));
+    } else {
+      write_byte(0xFF41, read_byte(0xFF41) & (0xff ^ (1 << f)));
+    }
+  }
 }
+
+void CPU::reset_flags() { reg.f = 0; }
 
 void CPU::set_z_flag(uint test) {
   if (test == 0) {
-    flag_value(Z, 1);
+    flag_value(Z, 1, reg.f);
   } else {
-    flag_value(Z, 0);
+    flag_value(Z, 0, reg.f);
   }
 }
 
 void CPU::set_h_flag(uint test) {
   if (test > 0xff) {
-    flag_value(H, 1);
+    flag_value(H, 1, reg.f);
   } else {
-    flag_value(H, 0);
+    flag_value(H, 0, reg.f);
   }
 }
 
 void CPU::set_c_flag(uint test) {
   if (test > 0xffff) {
-    flag_value(C, 1);
+    flag_value(C, 1, reg.f);
   } else {
-    flag_value(C, 0);
+    flag_value(C, 0, reg.f);
   }
 }

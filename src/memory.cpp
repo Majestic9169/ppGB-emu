@@ -7,7 +7,12 @@
 #include <ios>
 #include <iostream>
 
-Memory::Memory(std::ifstream &ROM) { load_memory(ROM, 0x8000); }
+Memory::Memory(std::ifstream &ROM) {
+  load_memory(ROM, 0x8000);
+  MEMORY[0xff0f] = 0xe1;
+  MEMORY[0xFF41] = 0x80;
+  MEMORY[0xFF40] = 0x91;
+}
 
 void Memory::print_mem(int n) {
   for (int i = 0; i < n; i++) {
