@@ -19,7 +19,8 @@ Display::Display(Color *framebuf, const int WINDOW_WIDTH,
     exit(1);
   }
 
-  window = SDL_CreateWindow(WINDOW_NAME, WINDOW_WIDTH, WINDOW_HEIGHT, 0);
+  window = SDL_CreateWindow(WINDOW_NAME, WINDOW_WIDTH * 2, WINDOW_HEIGHT * 2,
+                            SDL_WINDOW_VULKAN);
   if (!window) {
     SDL_Log("Failed to create window: %s", SDL_GetError());
     exit(2);
@@ -58,7 +59,7 @@ bool Display::render_frame() {
 
   draw();
 
-  SDL_RenderTexture(renderer, texture, NULL, NULL);
+  SDL_RenderTexture(renderer, texture, NULL, &viewport_rect);
   SDL_RenderPresent(renderer);
   return true;
 };
@@ -84,9 +85,8 @@ void Display::draw() {
   for (int i = 0; i < 144 * 160; i++) {
     Color color = framebuffer[i];
     std::copy(color.colors, color.colors + 4, viewport_pixels.begin() + i * 4);
-    std::cout << "after copy " << i << std::endl;
   }
-  if (SDL_UpdateTexture(texture, NULL, viewport_pixels.data(), WIDTH * 4)) {
+  if (!SDL_UpdateTexture(texture, NULL, viewport_pixels.data(), 160 * 4)) {
     std::cout << "SDL Error" << SDL_GetError() << std::endl;
   }
 }
