@@ -17,7 +17,7 @@ int main(int argc, char **argv) {
   ROM.open(argv[1], std::ios::binary | std::ios::in);
   CPU gb(ROM);
 
-  Display display(WINDOW_WIDTH, WINDOW_HEIGHT, "ppGB emulator");
+  Display display(gb.framebuffer, WINDOW_WIDTH, WINDOW_HEIGHT, "ppGB emulator");
 
   while (display.is_active()) {
     gb.INSTRUCTION_DECODER();

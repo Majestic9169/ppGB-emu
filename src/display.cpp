@@ -1,9 +1,16 @@
 #include "../include/display.h"
+#include <SDL3/SDL_pixels.h>
+#include <SDL3/SDL_render.h>
+#include <SDL3/SDL_video.h>
+#include <algorithm>
 #include <cstdlib>
 
-Display::Display(const int WINDOW_WIDTH, const int WINDOW_HEIGHT,
-                 const char *WINDOW_NAME)
-    : window(nullptr), renderer(nullptr), texture(nullptr), active(false) {
+Display::Display(Color *framebuf, const int WINDOW_WIDTH,
+                 const int WINDOW_HEIGHT, const char *WINDOW_NAME)
+    : framebuffer(framebuf), window(nullptr), renderer(nullptr),
+      texture(nullptr), active(false) {
+
+  viewport_pixels.fill(0xFF);
 
   if (SDL_Init(SDL_INIT_VIDEO)) {
     SDL_Log("SDL3 Initiliasation Successful");
@@ -12,7 +19,7 @@ Display::Display(const int WINDOW_WIDTH, const int WINDOW_HEIGHT,
     exit(1);
   }
 
-  window = SDL_CreateWindow(WINDOW_NAME, 600, 300, 0);
+  window = SDL_CreateWindow(WINDOW_NAME, WINDOW_WIDTH, WINDOW_HEIGHT, 0);
   if (!window) {
     SDL_Log("Failed to create window: %s", SDL_GetError());
     exit(2);
@@ -23,9 +30,11 @@ Display::Display(const int WINDOW_WIDTH, const int WINDOW_HEIGHT,
     SDL_Log("Failed to create renderer: %s", SDL_GetError());
     exit(3);
   }
+  SDL_SetRenderLogicalPresentation(renderer, WINDOW_WIDTH, WINDOW_HEIGHT,
+                                   SDL_LOGICAL_PRESENTATION_STRETCH);
 
   texture =
-      SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888,
+      SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888,
                         SDL_TEXTUREACCESS_TARGET, WINDOW_WIDTH, WINDOW_HEIGHT);
   if (!texture) {
     SDL_Log("Failed to create texture: %s", SDL_GetError());
@@ -41,28 +50,16 @@ Display::Display(const int WINDOW_WIDTH, const int WINDOW_HEIGHT,
 bool Display::is_active() { return active; }
 
 bool Display::render_frame() {
-  for (int i = 0; i < 64 * 32; i++) {
-    SDL_FRect pixel;
-    pixel.w = 10;
-    pixel.h = 10;
-    pixel.x = (i % 64) * pixel.w; // Corrected positioning
-    pixel.y = (i / 64.0) * pixel.h;
-
-    if (!SDL_SetRenderDrawColor(renderer, 255, 0, 255, 255)) {
-      SDL_Log("Error setting render color: %s", SDL_GetError());
-    }
-
-    if (!SDL_RenderFillRect(renderer, &pixel)) {
-      SDL_Log("RenderFillRect Error: %s", SDL_GetError());
-    }
+  if (!SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255)) {
+    SDL_Log("Error setting render color: %s", SDL_GetError());
   }
+  SDL_RenderClear(renderer);
+  SDL_SetRenderTarget(renderer, texture);
 
-  // Present the updated frame
-  if (!SDL_RenderPresent(renderer)) {
-    SDL_Log("Error presenting renderer: %s", SDL_GetError());
-    return false;
-  }
+  draw();
 
+  SDL_RenderTexture(renderer, texture, NULL, NULL);
+  SDL_RenderPresent(renderer);
   return true;
 };
 
@@ -82,3 +79,14 @@ Display::~Display() {
   SDL_DestroyWindow(window);
   SDL_Quit();
 };
+
+void Display::draw() {
+  for (int i = 0; i < 144 * 160; i++) {
+    Color color = framebuffer[i];
+    std::copy(color.colors, color.colors + 4, viewport_pixels.begin() + i * 4);
+    std::cout << "after copy " << i << std::endl;
+  }
+  if (SDL_UpdateTexture(texture, NULL, viewport_pixels.data(), WIDTH * 4)) {
+    std::cout << "SDL Error" << SDL_GetError() << std::endl;
+  }
+}

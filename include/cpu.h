@@ -1,3 +1,6 @@
+#ifndef INCLUDE_CPU
+#define INCLUDE_CPU
+
 #include "memory.h"
 #include <cstdint>
 #include <cstring>
@@ -24,6 +27,8 @@ enum STAT_FLAGS {
   OAM_INTERRUPT,
   COINCIDENCE_INTERRUPT
 };
+enum FLAG_MODE { REG_F, LCD_CONTROL, LCD_STATUS };
+enum LCD_MODE { HBLANK, VBLANK, OAM, DRAW };
 
 class CPU {
 private:
@@ -64,6 +69,9 @@ private:
 
   bool IME;
 
+  LCD_MODE mode;
+  bool can_render;
+
 public:
   int clock_m;
 
@@ -84,8 +92,8 @@ public:
   uint16_t read_reg(R16_PTR r);
   void write_reg(R16_PTR r, uint16_t val);
 
-  bool flag_value(uint8_t f, uint8_t mode = 0);
-  void flag_value(uint8_t f, bool set, uint8_t mode = 0);
+  bool flag_value(uint8_t f, FLAG_MODE = REG_F);
+  void flag_value(uint8_t f, bool set, FLAG_MODE = REG_F);
   void reset_flags();
   void set_z_flag(uint test);
   void set_h_flag(uint test);
@@ -95,6 +103,8 @@ public:
   void scanline_window();
   void scanline_sprites(bool *pixel_row);
   void scanlines();
+  void PPU_STEP();
+  Color framebuffer[160 * 144];
 
   void INSTRUCTION_DECODER();
   void CB_INSTRUCTION_DECODER();
@@ -281,3 +291,5 @@ public:
   void DI();
   void EI();
 };
+
+#endif

@@ -26,6 +26,9 @@ void Memory::load_memory(std::ifstream &ROM, int MEM_END) {
             << MEM_END << std::endl;
   if (ROM.is_open()) {
     ROM.read((char *)&MEMORY, MEM_END);
+    for (int i = 0x8000; i < 0xFF00; i++) {
+      MEMORY[i] = 0;
+    }
     std::cout << "[+] Loaded ROM into memory" << std::endl;
   }
   std::cout << std::dec;
