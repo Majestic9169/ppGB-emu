@@ -6,9 +6,6 @@
 #include <iostream>
 #define DEBUG
 
-#define WINDOW_HEIGHT (64 * 10)
-#define WINDOW_WIDTH (32 * 10)
-
 int main(int argc, char **argv) {
   if (argc < 2) {
     std::cout << "USAGE: " << argv[0] << " <path to rom>" << std::endl;
