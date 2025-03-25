@@ -186,6 +186,7 @@ public:
   void ADD_A_r8(R8_PTR r);
   void ADD_A_HL();
   void ADD_A_n8(uint8_t n8);
+  void ADD_SP_e8(int8_t e8);
 
   void AND_A_r8(R8_PTR r);
   void AND_A_HL();
@@ -232,7 +233,6 @@ public:
 
   void ADD_HL_r16(R16_PTR r);
   void ADD_HL_SP();
-  void ADD_SP_e8(int8_t e8);
 
   void DEC_r16(R16_PTR r);
   void DEC_SP();

@@ -55,5 +55,21 @@ TEST_CASE("ADD TESTS") {
   REQUIRE(gb.flag_value(H) == 0);
   REQUIRE(gb.flag_value(C) == 1);
 
+  gb.write_reg(&CPU::REGISTERS::hl, 0xf0f0);
+  gb.write_reg(&CPU::REGISTERS::de, 0x001f);
+  gb.ADD_HL_r16(&CPU::REGISTERS::de);
+  REQUIRE(gb.read_reg(&CPU::REGISTERS::hl) == 0xf10f);
+  REQUIRE(gb.flag_value(N) == 0);
+  REQUIRE(gb.flag_value(H) == 1);
+  REQUIRE(gb.flag_value(C) == 0);
+
+  gb.write_reg(&CPU::REGISTERS::hl, 0xf000);
+  gb.write_reg(&CPU::REGISTERS::sp, 0x1000);
+  gb.ADD_HL_SP();
+  REQUIRE(gb.read_reg(&CPU::REGISTERS::hl) == 0x0000);
+  REQUIRE(gb.flag_value(N) == 0);
+  REQUIRE(gb.flag_value(H) == 0);
+  REQUIRE(gb.flag_value(C) == 1);
+
   ROM.close();
 }

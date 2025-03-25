@@ -111,8 +111,6 @@ void CPU::set_z_flag(uint test) {
 }
 
 void CPU::set_h_flag(uint test) {
-  std::cout << "[DEBUG]: test value is " << std::hex << test << std::dec
-            << std::endl;
   if (test > 0xf) {
     flag_value(H, 1);
   } else {

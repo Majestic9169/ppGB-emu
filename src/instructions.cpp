@@ -229,23 +229,35 @@ void CPU::ADD_A_n8(uint8_t n8) {
 // ADD HL, r16
 void CPU::ADD_HL_r16(CPU::R16_PTR r) {
   uint tmp = read_reg(r) + reg.hl;
-  uint8_t test_h = H_TEST(reg.hl, read_reg(r));
+  if (((read_reg(r) & 0x00ff) + (reg.hl & 0x00ff)) > 0x00ff) {
+    flag_value(H, 1);
+  } else {
+    flag_value(H, 0);
+  }
   reg.hl = tmp;
-  tmp >>= 7;
   flag_value(N, 0);
-  set_h_flag(test_h);
-  set_c_flag(tmp);
+  if (tmp > 0xffff) {
+    flag_value(C, 1);
+  } else {
+    flag_value(C, 0);
+  }
 }
 
 // ADD HL, SP
 void CPU::ADD_HL_SP() {
   uint tmp = reg.sp + reg.hl;
-  uint8_t test_h = H_TEST(reg.sp, reg.hl);
+  if (((reg.sp & 0x00ff) + (reg.hl & 0x00ff)) > 0x00ff) {
+    flag_value(H, 1);
+  } else {
+    flag_value(H, 0);
+  }
   reg.hl = tmp;
-  tmp >>= 7;
   flag_value(N, 0);
-  set_h_flag(test_h);
-  set_c_flag(tmp);
+  if (tmp > 0xffff) {
+    flag_value(C, 1);
+  } else {
+    flag_value(C, 0);
+  }
 }
 // ADD SP, e8
 void CPU::ADD_SP_e8(int8_t e8) {
