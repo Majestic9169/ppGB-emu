@@ -85,7 +85,7 @@ TEST_CASE("XOR TESTS") {
   gb.write_reg(&CPU::REGISTERS::a, 0xf1);
   gb.XOR_A_r8(&CPU::REGISTERS::b);
   REQUIRE(gb.read_reg(&CPU::REGISTERS::a) == 0x00);
-  REQUIRE(gb.flag_value(Z) == 0);
+  REQUIRE(gb.flag_value(Z) == 1);
   REQUIRE(gb.flag_value(N) == 0);
   REQUIRE(gb.flag_value(H) == 0);
   REQUIRE(gb.flag_value(C) == 0);
