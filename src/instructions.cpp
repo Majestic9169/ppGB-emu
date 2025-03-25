@@ -2,6 +2,8 @@
 #include <cstdint>
 #include <sys/types.h>
 
+#define H_TEST(a, b) ((a & 0x0F) + (b & 0x0F))
+
 /* ====================================
  *          CONTROL/MISC
  * ====================================
@@ -194,59 +196,65 @@ void CPU::ADC_A_n8(uint8_t n8) {
 // ADD A, r8
 void CPU::ADD_A_r8(CPU::R8_PTR r) {
   uint32_t tmp = reg.a + read_reg(r);
+  uint8_t test_h = H_TEST(reg.a, read_reg(r));
   reg.a = tmp;
   set_z_flag(reg.a);
   flag_value(N, 0);
-  set_h_flag(tmp);
+  set_h_flag(test_h);
   set_c_flag(tmp);
 }
 
 // ADD A, [HL]
 void CPU::ADD_A_HL() {
   uint32_t tmp = read_byte(reg.hl) + reg.a;
+  uint8_t test_h = H_TEST(reg.a, read_byte(reg.hl));
   reg.a = tmp;
   set_z_flag(reg.a);
   flag_value(N, 0);
-  set_h_flag(tmp);
+  set_h_flag(test_h);
   set_c_flag(tmp);
 }
 
 // ADD A, n8
 void CPU::ADD_A_n8(uint8_t n8) {
   uint32_t tmp = reg.a + n8;
+  uint8_t test_h = H_TEST(reg.a, n8);
   reg.a = tmp;
   set_z_flag(reg.a);
   flag_value(N, 0);
-  set_h_flag(tmp);
+  set_h_flag(test_h);
   set_c_flag(tmp);
 }
 
 // ADD HL, r16
 void CPU::ADD_HL_r16(CPU::R16_PTR r) {
   uint tmp = read_reg(r) + reg.hl;
+  uint8_t test_h = H_TEST(reg.hl, read_reg(r));
   reg.hl = tmp;
   tmp >>= 7;
   flag_value(N, 0);
-  set_h_flag(tmp);
+  set_h_flag(test_h);
   set_c_flag(tmp);
 }
 
 // ADD HL, SP
 void CPU::ADD_HL_SP() {
   uint tmp = reg.sp + reg.hl;
+  uint8_t test_h = H_TEST(reg.sp, reg.hl);
   reg.hl = tmp;
   tmp >>= 7;
   flag_value(N, 0);
-  set_h_flag(tmp);
+  set_h_flag(test_h);
   set_c_flag(tmp);
 }
 // ADD SP, e8
 void CPU::ADD_SP_e8(int8_t e8) {
   uint tmp = reg.sp + e8;
+  uint8_t test_h = H_TEST(reg.sp, e8);
   reg.sp = tmp;
   flag_value(Z, 0);
   flag_value(N, 0);
-  set_h_flag(tmp);
+  set_h_flag(test_h);
   set_c_flag(tmp);
 }
 

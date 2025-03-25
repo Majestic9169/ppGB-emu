@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <fstream>
+#include <ios>
 #include <iostream>
 #include <sys/types.h>
 
@@ -110,7 +111,9 @@ void CPU::set_z_flag(uint test) {
 }
 
 void CPU::set_h_flag(uint test) {
-  if (test > 0xff) {
+  std::cout << "[DEBUG]: test value is " << std::hex << test << std::dec
+            << std::endl;
+  if (test > 0xf) {
     flag_value(H, 1);
   } else {
     flag_value(H, 0);
@@ -118,7 +121,7 @@ void CPU::set_h_flag(uint test) {
 }
 
 void CPU::set_c_flag(uint test) {
-  if (test > 0xffff) {
+  if (test > 0xff) {
     flag_value(C, 1);
   } else {
     flag_value(C, 0);
