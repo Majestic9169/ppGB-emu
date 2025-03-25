@@ -116,3 +116,34 @@ TEST_CASE("DEC TESTS") {
 
   ROM.close();
 }
+
+TEST_CASE("CP TESTS") {
+  std::ifstream ROM;
+  ROM.open("../roms/Tetris.gb", std::ios::binary | std::ios::in);
+  CPU gb(ROM);
+
+  Display display(gb.framebuffer);
+
+  gb.write_reg(&CPU::REGISTERS::a, 0x94);
+  gb.CP_A_n8(0x94);
+  REQUIRE(gb.flag_value(Z) == 1);
+  REQUIRE(gb.flag_value(N) == 1);
+  REQUIRE(gb.flag_value(H) == 0);
+  REQUIRE(gb.flag_value(C) == 0);
+
+  gb.write_reg(&CPU::REGISTERS::a, 0x84);
+  gb.CP_A_n8(0x94);
+  REQUIRE(gb.flag_value(Z) == 0);
+  REQUIRE(gb.flag_value(N) == 1);
+  REQUIRE(gb.flag_value(H) == 0);
+  REQUIRE(gb.flag_value(C) == 1);
+
+  gb.write_reg(&CPU::REGISTERS::a, 0x93);
+  gb.CP_A_n8(0x94);
+  REQUIRE(gb.flag_value(Z) == 0);
+  REQUIRE(gb.flag_value(N) == 1);
+  REQUIRE(gb.flag_value(H) == 1);
+  REQUIRE(gb.flag_value(C) == 1);
+
+  ROM.close();
+}
