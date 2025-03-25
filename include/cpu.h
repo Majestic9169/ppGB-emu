@@ -34,6 +34,12 @@ class CPU {
 private:
   Memory ROM;
 
+  bool IME;
+
+  LCD_MODE mode;
+  bool can_render;
+
+public:
   struct REGISTERS {
     union {
       struct {
@@ -67,12 +73,6 @@ private:
     std::uint16_t pc;
   } reg;
 
-  bool IME;
-
-  LCD_MODE mode;
-  bool can_render;
-
-public:
   int clock_m;
 
   using R8_PTR = uint8_t REGISTERS::*;
