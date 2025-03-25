@@ -92,3 +92,27 @@ TEST_CASE("XOR TESTS") {
 
   ROM.close();
 }
+
+TEST_CASE("DEC TESTS") {
+  std::ifstream ROM;
+  ROM.open("../roms/Tetris.gb", std::ios::binary | std::ios::in);
+  CPU gb(ROM);
+
+  Display display(gb.framebuffer);
+
+  gb.write_reg(&CPU::REGISTERS::b, 0xf1);
+  gb.DEC_r8(&CPU::REGISTERS::b);
+  REQUIRE(gb.read_reg(&CPU::REGISTERS::b) == 0xf0);
+  REQUIRE(gb.flag_value(Z) == 0);
+  REQUIRE(gb.flag_value(N) == 1);
+  REQUIRE(gb.flag_value(H) == 0);
+
+  gb.write_reg(&CPU::REGISTERS::b, 0xf0);
+  gb.DEC_r8(&CPU::REGISTERS::b);
+  REQUIRE(gb.read_reg(&CPU::REGISTERS::b) == 0xef);
+  REQUIRE(gb.flag_value(Z) == 0);
+  REQUIRE(gb.flag_value(N) == 1);
+  REQUIRE(gb.flag_value(H) == 1);
+
+  ROM.close();
+}
