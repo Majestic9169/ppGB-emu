@@ -17,8 +17,13 @@ int main(int argc, char **argv) {
   Display display(gb.framebuffer);
 
   while (display.is_active()) {
-    gb.INSTRUCTION_DECODER();
-    // gb.print_reg();
+
+    bool interrupted = gb.interrupt_check();
+    if (!interrupted) {
+      gb.INSTRUCTION_DECODER();
+      // gb.print_reg();
+    }
+
     if (gb.clock_m > 0) {
       while (gb.clock_m--) {
         long long int dummy = 0xffffff;
@@ -26,6 +31,7 @@ int main(int argc, char **argv) {
           ;
       }
     }
+
     gb.PPU_STEP();
     display.poll_event();
     display.render_frame();

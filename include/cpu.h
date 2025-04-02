@@ -8,7 +8,8 @@
 #include <iostream>
 #include <sys/types.h>
 
-enum FLAGS { C = 3, H, N, Z };
+enum INTERRUPTS { INT_VBLANK, INT_LCD, INT_TIMER, INT_SERIAL, INT_JOYPAD };
+enum FLAGS { C = 4, H, N, Z };
 enum LCDC_FLAGS {
   BG_ENABLE,
   SPR_ENABLE,
@@ -82,11 +83,13 @@ public:
 
   void print_reg();
 
+  // MMU Functions
   uint8_t read_byte(uint16_t addr);
   uint16_t read_word(uint16_t addr);
   void write_byte(uint16_t addr, uint8_t val);
   void write_word(uint16_t addr, uint16_t val);
 
+  // CPU reg functions
   uint8_t read_reg(R8_PTR r);
   void write_reg(R8_PTR r, uint8_t val);
   uint16_t read_reg(R16_PTR r);
@@ -99,6 +102,7 @@ public:
   void set_h_flag(uint test);
   void set_c_flag(uint test);
 
+  // PPU Functions
   void scanline_background(bool *pixel_row);
   void scanline_window();
   void scanline_sprites(bool *pixel_row);
@@ -106,8 +110,13 @@ public:
   void PPU_STEP();
   Color framebuffer[160 * 144];
 
+  // opcodes
   void INSTRUCTION_DECODER();
   void CB_INSTRUCTION_DECODER();
+
+  // Interrupt handling
+  bool interrupt_check();
+  void interrupt_handle(INTERRUPTS interrupt, uint8_t jump_addr);
 
   /* ====================================
    *          CONTROL/MISC
@@ -126,6 +135,7 @@ public:
 
   void RET();
   void RET_CC(bool condition);
+  void RETI();
 
   void JP_n16(uint16_t n16);
   void JP_CC_n16(bool condition, uint16_t n16);
@@ -134,7 +144,7 @@ public:
   void CALL_n16(uint16_t n16);
   void CALL_CC_n16(bool condition, uint16_t n16);
 
-  void RST(); // 0xe7, 0xd7, 0xc7, 0xd7, 0xcf, 0xdf, 0xef, 0xff
+  void RST_vec(uint8_t);
 
   /* ====================================
    *       8-bit LOAD/STORE/MOVE

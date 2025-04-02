@@ -586,6 +586,15 @@ void CPU::RET_CC(bool condition) {
   }
 }
 
+// RETI
+void CPU::RETI() {
+  EI();
+  RET();
+}
+
+// RST vec
+void CPU::RST_vec(uint8_t vec) { CALL_n16(vec); }
+
 // JP n16
 void CPU::JP_n16(uint16_t n16) { reg.pc = n16; }
 
