@@ -166,10 +166,11 @@ void CPU::POP_r16(CPU::R16_PTR r) {
 // ADC A, r8
 void CPU::ADC_A_r8(CPU::R8_PTR r) {
   uint32_t tmp = reg.a + read_reg(r) + flag_value(C);
+  uint8_t test_h = H_TEST(reg.a, read_reg(r) + flag_value(C));
   reg.a = tmp;
   set_z_flag(reg.a);
   flag_value(N, 0);
-  set_h_flag(tmp);
+  set_h_flag(test_h);
   set_c_flag(tmp);
 }
 
@@ -612,7 +613,7 @@ void CPU::JP_HL() { reg.pc = reg.hl; }
 // CALL n16
 void CPU::CALL_n16(uint16_t n16) {
   DEC_SP();
-  write_word(reg.sp, reg.pc + 1);
+  write_word(reg.sp, reg.pc);
   DEC_SP();
   JP_n16(n16);
 }
