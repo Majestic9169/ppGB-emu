@@ -33,7 +33,9 @@ uint8_t CPU::read_byte(uint16_t addr) {
 
 uint16_t CPU::read_word(uint16_t addr) {
   // clock_m += 1;
-  return (ROM.read_byte(addr)) + (ROM.read_byte(addr + 1) << 8);
+  uint8_t low = ROM.read_byte(addr);
+  uint8_t high = ROM.read_byte(addr + 1);
+  return (high << 8) | low;
 }
 
 void CPU::write_byte(uint16_t addr, uint8_t val) {
@@ -42,8 +44,8 @@ void CPU::write_byte(uint16_t addr, uint8_t val) {
 }
 
 void CPU::write_word(uint16_t addr, uint16_t val) {
-  write_byte(addr, val & 0x00ff);
-  write_byte(addr + 1, val >> 8);
+  write_byte(addr, val & 0xFF);   // Write low byte first
+  write_byte(addr + 1, val >> 8); // Write high byte second
 }
 
 uint8_t CPU::read_reg(CPU::R8_PTR r) {

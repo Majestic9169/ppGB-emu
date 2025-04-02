@@ -191,6 +191,7 @@ TEST_CASE("ADC TESTS") {
   Display display(gb.framebuffer);
 
   SECTION("ADC A, r8 without carry") {
+    gb.flag_value(C, 0);
     gb.write_reg(&CPU::REGISTERS::a, 0x42);
     gb.write_reg(&CPU::REGISTERS::b, 0x13);
     gb.ADC_A_r8(&CPU::REGISTERS::b);
@@ -352,7 +353,8 @@ TEST_CASE("JUMP AND CALL TESTS") {
     gb.CALL_n16(0x1234);
     REQUIRE(gb.read_reg(&CPU::REGISTERS::pc) == 0x1234);
     REQUIRE(gb.read_reg(&CPU::REGISTERS::sp) == old_sp - 2);
-    REQUIRE(gb.read_word(gb.read_reg(&CPU::REGISTERS::sp)) == 0x1000);
+    gb.RET();
+    REQUIRE(gb.read_reg(&CPU::REGISTERS::pc) == 0x1000);
   }
 
   ROM.close();

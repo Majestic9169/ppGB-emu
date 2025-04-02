@@ -165,8 +165,10 @@ void CPU::POP_r16(CPU::R16_PTR r) {
 
 // ADC A, r8
 void CPU::ADC_A_r8(CPU::R8_PTR r) {
-  uint32_t tmp = reg.a + read_reg(r) + flag_value(C);
-  uint8_t test_h = H_TEST(reg.a, read_reg(r) + flag_value(C));
+  uint8_t val = read_reg(r);
+  uint8_t carry = flag_value(C);
+  uint16_t tmp = reg.a + val + carry;
+  uint8_t test_h = H_TEST(reg.a, val) + carry;
   reg.a = tmp;
   set_z_flag(reg.a);
   flag_value(N, 0);
@@ -176,21 +178,27 @@ void CPU::ADC_A_r8(CPU::R8_PTR r) {
 
 // ADC A, [HL]
 void CPU::ADC_A_HL() {
-  uint32_t tmp = read_byte(reg.hl) + flag_value(C) + reg.a;
+  uint8_t val = read_byte(reg.hl);
+  uint8_t carry = flag_value(C);
+  uint16_t tmp = reg.a + val + carry;
+  uint8_t test_h = H_TEST(reg.a, val) + carry;
   reg.a = tmp;
   set_z_flag(reg.a);
   flag_value(N, 0);
-  set_h_flag(tmp);
+  set_h_flag(test_h);
   set_c_flag(tmp);
 }
 
 // ADC A, n8
 void CPU::ADC_A_n8(uint8_t n8) {
-  uint32_t tmp = reg.a + n8 + flag_value(C);
+  uint8_t val = n8;
+  uint8_t carry = flag_value(C);
+  uint16_t tmp = reg.a + val + carry;
+  uint8_t test_h = H_TEST(reg.a, val) + carry;
   reg.a = tmp;
   set_z_flag(reg.a);
   flag_value(N, 0);
-  set_h_flag(tmp);
+  set_h_flag(test_h);
   set_c_flag(tmp);
 }
 
@@ -612,8 +620,9 @@ void CPU::JP_HL() { reg.pc = reg.hl; }
 
 // CALL n16
 void CPU::CALL_n16(uint16_t n16) {
+  uint16_t return_addr = reg.pc;
   DEC_SP();
-  write_word(reg.sp, reg.pc);
+  write_word(reg.sp, return_addr);
   DEC_SP();
   JP_n16(n16);
 }
