@@ -324,8 +324,9 @@ void CPU::INSTRUCTION_DECODER() {
     LD_r8_n8(&REGISTERS::b, val);
   } break;
   case 0x07:
-    printf("ERROR 0x07 0x%04X\n", read_byte(reg.pc));
-    exit(1);
+    printf(disasm[0x07], curr_pc);
+    clock_m += clock_m_cycles[0x07];
+    RLCA();
     break;
   case 0x08: {
     uint16_t val = read_word(reg.pc++);
@@ -366,14 +367,15 @@ void CPU::INSTRUCTION_DECODER() {
     LD_r8_n8(&REGISTERS::c, val);
   } break;
   case 0x0F:
-    printf("ERROR 0x0F 0x%04X\n", read_byte(reg.pc));
-    exit(1);
+    printf(disasm[0x0F], curr_pc);
+    clock_m += clock_m_cycles[0x0F];
+    RRCA();
     break;
   case 0x10:
     printf(disasm[0x10], curr_pc);
     clock_m += clock_m_cycles[0x10];
     // printf("ERROR 0x10 0x%04X\n", read_byte(reg.pc));
-    // exit(1);
+    exit(1);
     break;
   case 0x11: {
     uint16_t val = read_word(reg.pc++);
@@ -1368,6 +1370,13 @@ void CPU::INSTRUCTION_DECODER() {
     clock_m += clock_m_cycles[0xd9];
     RETI();
   } break;
+  case 0xDA: {
+    uint16_t val = read_word(reg.pc++);
+    reg.pc++;
+    printf(disasm[0xDA], curr_pc, val);
+    clock_m += clock_m_cycles[0xDA];
+    JP_CC_n16(flag_value(C), val);
+  } break;
   case 0xE0: {
     uint8_t val = read_byte(reg.pc++);
     printf(disasm[0xe0], curr_pc, val);
@@ -1412,6 +1421,10 @@ void CPU::INSTRUCTION_DECODER() {
     clock_m += clock_m_cycles[0xea];
     LD_n16_A(val);
   } break;
+  case 0xEC: {
+    printf(disasm[0xEC], curr_pc);
+    clock_m += clock_m_cycles[0xEC];
+  } break;
   case 0xEE: {
     uint8_t val = read_byte(reg.pc++);
     printf(disasm[0xEE], curr_pc, val);
@@ -1439,6 +1452,17 @@ void CPU::INSTRUCTION_DECODER() {
     clock_m += clock_m_cycles[0xf5];
     PUSH_r16(&REGISTERS::af);
   } break;
+  case 0xF8: {
+    int val = read_byte(reg.pc++);
+    printf(disasm[0xF8], curr_pc, val);
+    clock_m += clock_m_cycles[0xF8];
+    LD_HL_SP_e8(val);
+  } break;
+  case 0xF9: {
+    printf(disasm[0xF9], curr_pc);
+    clock_m += clock_m_cycles[0xF9];
+    LD_SP_HL();
+  } break;
   case 0xFA: {
     uint16_t val = read_word(reg.pc++);
     reg.pc++;
@@ -1450,14 +1474,21 @@ void CPU::INSTRUCTION_DECODER() {
     clock_m += clock_m_cycles[0xfb];
     EI();
   } break;
-  case 0xfe: {
+  case 0xFC: {
+    printf(disasm[0xFC], curr_pc);
+    clock_m += clock_m_cycles[0xFC];
+  } break;
+  case 0xFE: {
     uint8_t val = read_byte(reg.pc++);
-    printf(disasm[0xfe], curr_pc, val);
-    clock_m += clock_m_cycles[0xfe];
+    printf(disasm[0xFE], curr_pc, val);
+    clock_m += clock_m_cycles[0xFE];
     CP_A_n8(val);
   } break;
-  case 0xFF:
-    break;
+  case 0xFF: {
+    printf(disasm[0xFF], curr_pc);
+    clock_m += clock_m_cycles[0xFF];
+    RST_vec(0x38);
+  } break;
   default:
     printf("ERROR: DEFAULT 0x%02X\n", curr_pc);
     printf("ERROR 0x%04X\n", read_byte(curr_pc));
