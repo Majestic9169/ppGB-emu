@@ -87,6 +87,19 @@ public:
   LCD_MODE mode;
   bool can_render;
 
+  // PPU timing variables
+  int ppu_clock;
+  uint8_t interrupt_flags;
+
+  // PPU timing constants
+  static constexpr int CYCLES_PER_SCANLINE = 456;
+  static constexpr int CYCLES_PER_FRAME = CYCLES_PER_SCANLINE * 154;
+  static constexpr int OAM_CYCLES = 80;
+  static constexpr int DRAW_CYCLES = 172;
+  static constexpr int HBLANK_CYCLES = 87;
+  static constexpr int VBLANK_START_LINE = 144;
+  static constexpr int VBLANK_END_LINE = 153;
+
   using R8_PTR = uint8_t REGISTERS::*;
   using R16_PTR = uint16_t REGISTERS::*;
 
@@ -100,7 +113,7 @@ public:
   void write_byte(uint16_t addr, uint8_t val);
   void write_word(uint16_t addr, uint16_t val);
 
-  // CPU reg functions
+  // CPU reg functionsl
   uint8_t read_reg(R8_PTR r);
   void write_reg(R8_PTR r, uint8_t val);
   uint16_t read_reg(R16_PTR r);

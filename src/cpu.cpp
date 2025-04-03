@@ -14,21 +14,29 @@ const uint8_t H_FLAG = 0b00100000;
 const uint8_t C_FLAG = 0b00010000;
 
 CPU::CPU(std::ifstream &ROM_)
-    : reg{.f = 0xb0,
-          .a = 0x01,
-          .c = 0x13,
-          .b = 0x00,
-          .e = 0xd8,
-          .d = 0x00,
-          .l = 0x4d,
-          .h = 0x01,
-          .sp = 0xfffe,
-          .pc = 0x100},
-      IME(0), ROM(ROM_), clock_m(0) {
+    : ROM(ROM_), clock_m(0), IME(false), // Interrupts disabled initially
+      mode(OAM),                         // Start in OAM mode
+      can_render(true), ppu_clock(0), interrupt_flags(0) {
+
+  // Initialize registers with default values
+  reg.a = 0x01;
+  reg.f = 0xB0;
+  reg.b = 0x00;
+  reg.c = 0x13;
+  reg.d = 0x00;
+  reg.e = 0xD8;
+  reg.h = 0x01;
+  reg.l = 0x4D;
+  reg.sp = 0xFFFE;
+  reg.pc = 0x0100; // Start at 0x100 (skip boot ROM)
+
+  // Initialize framebuffer
   for (int i = 0; i < framebuffer.size(); i++) {
-    Color color = {192, 192, 192, (uint8_t)(i % 0x100)};
-    framebuffer[i] = color;
+    framebuffer[i] = ROM.colors[3];
   }
+
+  // Initialize interrupt enable register
+  write_byte(0xFFFF, 0x00); // All interrupts disabled initially
 }
 
 uint8_t CPU::read_byte(uint16_t addr) {

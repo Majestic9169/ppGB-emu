@@ -1,9 +1,4 @@
 #include "../include/cpu.h"
-#include <SDL3/SDL_events.h>
-#include <SDL3/SDL_keycode.h>
-#include <SDL3/SDL_pixels.h>
-#include <SDL3/SDL_render.h>
-#include <SDL3/SDL_video.h>
 #include <cstdint>
 
 bool helper(uint8_t test, INTERRUPTS shift) {
@@ -11,101 +6,77 @@ bool helper(uint8_t test, INTERRUPTS shift) {
 }
 
 bool CPU::interrupt_check() {
-  uint8_t IE = read_byte(0xFFFF);
-  uint8_t IF = read_byte(0xFF0F);
-  uint8_t pending = IF & IE & 0x1F;
+  // If CPU is halted, check if we should wake up
   if (halted) {
+    uint8_t IE = read_byte(0xFFFF);
+    uint8_t IF = read_byte(0xFF0F);
+    uint8_t pending = IF & IE & 0x1F;
+    
     if (pending) {
+      // Wake up from halt
       halted = false;
+      
+      // If interrupts are disabled, just wake up but don't process the interrupt
       if (!IME) {
         return false;
       }
     } else {
+      // Still halted, increment clock
       clock_m += 1;
+      return false;
     }
   }
+  
+  // If interrupts are disabled, don't process any
   if (!IME) {
     return false;
   }
+  
+  // Get interrupt enable and flag registers
+  uint8_t IE = read_byte(0xFFFF);
+  uint8_t IF = read_byte(0xFF0F);
+  
+  // Check interrupts in priority order
   if (helper(IF, INT_VBLANK) && helper(IE, INT_VBLANK)) {
-    // interrupt_handle(INT_VBLANK, 0x40);
-    // return true;
+    interrupt_handle(INT_VBLANK, 0x40);
+    return true;
   }
   if (helper(IF, INT_LCD) && helper(IE, INT_LCD)) {
-    // interrupt_handle(INT_LCD, 0x48);
-    // return true;
+    interrupt_handle(INT_LCD, 0x48);
+    return true;
   }
   if (helper(IF, INT_TIMER) && helper(IE, INT_TIMER)) {
-    // interrupt_handle(INT_TIMER, 0x50);
-    // return true;
+    interrupt_handle(INT_TIMER, 0x50);
+    return true;
+  }
+  if (helper(IF, INT_SERIAL) && helper(IE, INT_SERIAL)) {
+    interrupt_handle(INT_SERIAL, 0x58);
+    return true;
   }
   if (helper(IF, INT_JOYPAD) && helper(IE, INT_JOYPAD)) {
-    // interrupt_handle(INT_JOYPAD, 0x60);
-    // SDL_Event event;
-    // while (SDL_PollEvent(&event)) {
-    //   switch (event.type) {
-    //   case SDL_EVENT_KEY_DOWN:
-    //     switch (event.key.key) {
-    //     case SDLK_RIGHT:
-    //       key_down(JOYPAD_RIGHT);
-    //       break;
-    //     case SDLK_LEFT:
-    //       key_down(JOYPAD_LEFT);
-    //       break;
-    //     case SDLK_UP:
-    //       key_down(JOYPAD_UP);
-    //       break;
-    //     case SDLK_DOWN:
-    //       key_down(JOYPAD_DOWN);
-    //       break;
-    //     case SDLK_Z:
-    //       key_down(JOYPAD_A);
-    //       break;
-    //     case SDLK_X:
-    //       key_down(JOYPAD_B);
-    //       break;
-    //     case SDLK_SPACE:
-    //       key_down(JOYPAD_START);
-    //       break;
-    //     case SDLK_RETURN:
-    //       key_down(JOYPAD_SELECT);
-    //       break;
-    //     }
-    //     break;
-    //
-    //   case SDL_EVENT_KEY_UP:
-    //     switch (event.key.key) {
-    //     case SDLK_RIGHT:
-    //       key_up(JOYPAD_RIGHT);
-    //       break;
-    //     case SDLK_LEFT:
-    //       key_up(JOYPAD_LEFT);
-    //       break;
-    //     case SDLK_UP:
-    //       key_up(JOYPAD_UP);
-    //       break;
-    //     case SDLK_DOWN:
-    //       key_up(JOYPAD_DOWN);
-    //       break;
-    //     case SDLK_Z:
-    //       key_up(JOYPAD_A);
-    //       break;
-    //     case SDLK_X:
-    //       key_up(JOYPAD_B);
-    //       break;
-    //     case SDLK_SPACE:
-    //       key_up(JOYPAD_START);
-    //       break;
-    //     case SDLK_RETURN:
-    //       key_up(JOYPAD_SELECT);
-    //       break;
-    //     }
-    //     break;
-    //   }
-    // }
-    // return true;
+    interrupt_handle(INT_JOYPAD, 0x60);
+    return true;
   }
+  
   return false;
+}
+
+void CPU::interrupt_handle(INTERRUPTS interrupt, uint8_t jump_addr) {
+  // Save current PC to stack
+  reg.sp -= 2;
+  write_word(reg.sp, reg.pc);
+  
+  // Jump to interrupt vector
+  reg.pc = jump_addr;
+  
+  // Disable interrupts
+  IME = false;
+  
+  // Clear the interrupt flag
+  write_byte(0xFF0F, read_byte(0xFF0F) & ~(1 << interrupt));
+  
+  // Add cycles for interrupt handling
+  clock_m += 20;
 }
 
 void CPU::key_down(JOYPAD_BUTTON butt) {

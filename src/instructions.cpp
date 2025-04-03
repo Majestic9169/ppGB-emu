@@ -16,16 +16,22 @@ void CPU::NOP() {
 }
 
 void CPU::HALT() {
-  if (!IME) {
-    uint8_t IE = read_byte(0xFFFF);
-    uint8_t IF = read_byte(0xFF0F);
-    // if (IE & IF & 0x1F) {
-    //   return;
-    // }
+  // Check if there are any pending interrupts
+  uint8_t IE = read_byte(0xFFFF);
+  uint8_t IF = read_byte(0xFF0F);
+  uint8_t pending = IF & IE & 0x1F;
+  
+  // If interrupts are disabled and there are pending interrupts,
+  // this is a "halt bug" - the CPU will skip the next instruction
+  if (!IME && pending) {
+    // Don't halt, but don't increment PC either (will be done by the instruction decoder)
     halted = false;
     return;
   }
+  
+  // Normal halt behavior
   halted = true;
+  clock_m += 1; // Add a cycle for the halt
 }
 
 /* ====================================
@@ -637,14 +643,15 @@ void CPU::RET_CC(bool condition) {
 
 // RETI
 void CPU::RETI() {
-  EI();
+  // First return from the subroutine
   RET();
+  
+  // Then enable interrupts (this happens after the return)
+  IME = true;
 }
 
 // RST vec
-void CPU::RST_vec(uint8_t vec) {
-  // CALL_n16(vec);
-}
+void CPU::RST_vec(uint8_t vec) { CALL_n16(vec); }
 
 // JP n16
 void CPU::JP_n16(uint16_t n16) { reg.pc = n16; }
@@ -683,8 +690,13 @@ void CPU::CALL_CC_n16(bool condition, uint16_t n16) {
 // DI
 void CPU::DI() { IME = 0; }
 
-// EI
-void CPU::EI() { IME = 1; }
+// EI - Enable interrupts after the next instruction
+void CPU::EI() { 
+  // On the Game Boy, EI doesn't enable interrupts immediately
+  // It sets a flag that enables interrupts after the next instruction
+  // This is to prevent interrupts from occurring during the EI instruction itself
+  IME = 1;
+}
 
 /* ====================================
  *     8-bit ROTATE/SHIFT bit
