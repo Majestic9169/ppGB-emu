@@ -44,29 +44,29 @@ public:
   struct REGISTERS {
     union {
       struct {
-        std::uint8_t f;
         std::uint8_t a;
+        std::uint8_t f;
       };
       std::uint16_t af;
     };
     union {
       struct {
-        std::uint8_t c;
         std::uint8_t b;
+        std::uint8_t c;
       };
       std::uint16_t bc;
     };
     union {
       struct {
-        std::uint8_t e;
         std::uint8_t d;
+        std::uint8_t e;
       };
       std::uint16_t de;
     };
     union {
       struct {
-        std::uint8_t l;
         std::uint8_t h;
+        std::uint8_t l;
       };
       std::uint16_t hl;
     };

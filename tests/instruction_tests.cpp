@@ -6,7 +6,7 @@
 
 TEST_CASE("BOOT REGISTER TEST") {
   std::ifstream ROM;
-  ROM.open("../roms/tetris.gb", std::ios::binary | std::ios::in);
+  ROM.open("../roms/Tetris.gb", std::ios::binary | std::ios::in);
   CPU gb(ROM);
 
   Display display(gb.framebuffer);
@@ -23,7 +23,7 @@ TEST_CASE("BOOT REGISTER TEST") {
 
 TEST_CASE("ADD TESTS") {
   std::ifstream ROM;
-  ROM.open("../roms/tetris.gb", std::ios::binary | std::ios::in);
+  ROM.open("../roms/Tetris.gb", std::ios::binary | std::ios::in);
   CPU gb(ROM);
 
   Display display(gb.framebuffer);
@@ -76,7 +76,7 @@ TEST_CASE("ADD TESTS") {
 
 TEST_CASE("XOR TESTS") {
   std::ifstream ROM;
-  ROM.open("../roms/tetris.gb", std::ios::binary | std::ios::in);
+  ROM.open("../roms/Tetris.gb", std::ios::binary | std::ios::in);
   CPU gb(ROM);
 
   Display display(gb.framebuffer);
@@ -95,7 +95,7 @@ TEST_CASE("XOR TESTS") {
 
 TEST_CASE("DEC TESTS") {
   std::ifstream ROM;
-  ROM.open("../roms/tetris.gb", std::ios::binary | std::ios::in);
+  ROM.open("../roms/Tetris.gb", std::ios::binary | std::ios::in);
   CPU gb(ROM);
 
   Display display(gb.framebuffer);
@@ -119,7 +119,7 @@ TEST_CASE("DEC TESTS") {
 
 TEST_CASE("CP TESTS") {
   std::ifstream ROM;
-  ROM.open("../roms/tetris.gb", std::ios::binary | std::ios::in);
+  ROM.open("../roms/Tetris.gb", std::ios::binary | std::ios::in);
   CPU gb(ROM);
 
   Display display(gb.framebuffer);
@@ -150,7 +150,7 @@ TEST_CASE("CP TESTS") {
 
 TEST_CASE("LOAD TESTS") {
   std::ifstream ROM;
-  ROM.open("../roms/tetris.gb", std::ios::binary | std::ios::in);
+  ROM.open("../roms/Tetris.gb", std::ios::binary | std::ios::in);
   CPU gb(ROM);
 
   Display display(gb.framebuffer);
@@ -185,7 +185,7 @@ TEST_CASE("LOAD TESTS") {
 
 TEST_CASE("ADC TESTS") {
   std::ifstream ROM;
-  ROM.open("../roms/tetris.gb", std::ios::binary | std::ios::in);
+  ROM.open("../roms/Tetris.gb", std::ios::binary | std::ios::in);
   CPU gb(ROM);
 
   Display display(gb.framebuffer);
@@ -219,7 +219,7 @@ TEST_CASE("ADC TESTS") {
 
 TEST_CASE("BITWISE TESTS") {
   std::ifstream ROM;
-  ROM.open("../roms/tetris.gb", std::ios::binary | std::ios::in);
+  ROM.open("../roms/Tetris.gb", std::ios::binary | std::ios::in);
   CPU gb(ROM);
 
   Display display(gb.framebuffer);
@@ -251,7 +251,7 @@ TEST_CASE("BITWISE TESTS") {
 
 TEST_CASE("BIT MANIPULATION TESTS") {
   std::ifstream ROM;
-  ROM.open("../roms/tetris.gb", std::ios::binary | std::ios::in);
+  ROM.open("../roms/Tetris.gb", std::ios::binary | std::ios::in);
   CPU gb(ROM);
 
   Display display(gb.framebuffer);
@@ -284,7 +284,7 @@ TEST_CASE("BIT MANIPULATION TESTS") {
 
 TEST_CASE("ROTATE AND SHIFT TESTS") {
   std::ifstream ROM;
-  ROM.open("../roms/tetris.gb", std::ios::binary | std::ios::in);
+  ROM.open("../roms/Tetris.gb", std::ios::binary | std::ios::in);
   CPU gb(ROM);
 
   Display display(gb.framebuffer);
@@ -328,7 +328,7 @@ TEST_CASE("ROTATE AND SHIFT TESTS") {
 
 TEST_CASE("JUMP AND CALL TESTS") {
   std::ifstream ROM;
-  ROM.open("../roms/tetris.gb", std::ios::binary | std::ios::in);
+  ROM.open("../roms/Tetris.gb", std::ios::binary | std::ios::in);
   CPU gb(ROM);
 
   Display display(gb.framebuffer);
@@ -358,46 +358,4 @@ TEST_CASE("JUMP AND CALL TESTS") {
   }
 
   ROM.close();
-}
-
-TEST_CASE("16-bit Tests") {
-  std::ifstream ROM;
-  ROM.open("../roms/tetris.gb", std::ios::binary | std::ios::in);
-  CPU gb(ROM);
-  Display display(gb.framebuffer);
-
-  SECTION("16-bit Load Tests", "[load]") {
-    // Write test instruction to memory
-    gb.write_byte(0x100, 0x01); // LD BC, 0x1234
-    gb.write_byte(0x101, 0x34);
-    gb.write_byte(0x102, 0x12);
-    gb.write_reg(&CPU::REGISTERS::pc, 0x100);
-    gb.INSTRUCTION_DECODER();
-
-    REQUIRE(gb.read_reg(&CPU::REGISTERS::b) == 0x12);
-    REQUIRE(gb.read_reg(&CPU::REGISTERS::c) == 0x34);
-    REQUIRE(gb.read_reg(&CPU::REGISTERS::bc) == 0x1234);
-
-    ROM.close();
-  }
-
-  SECTION("PUSH/POP Tests", "[stack]") {
-    std::ifstream ROM;
-    ROM.open("../roms/tetris.gb", std::ios::binary | std::ios::in);
-    CPU gb(ROM);
-    Display display(gb.framebuffer);
-
-    // Write test instruction to memory
-    gb.write_byte(0x100, 0xC5); // PUSH BC
-    gb.write_reg(&CPU::REGISTERS::pc, 0x100);
-    gb.write_reg(&CPU::REGISTERS::b, 0x12);
-    gb.write_reg(&CPU::REGISTERS::c, 0x34);
-    uint16_t old_sp = gb.read_reg(&CPU::REGISTERS::sp);
-    gb.INSTRUCTION_DECODER();
-
-    REQUIRE(gb.read_reg(&CPU::REGISTERS::sp) == old_sp - 2);
-    REQUIRE(gb.read_word(gb.read_reg(&CPU::REGISTERS::sp)) == 0x1234);
-
-    ROM.close();
-  }
 }

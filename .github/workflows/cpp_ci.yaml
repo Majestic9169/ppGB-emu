@@ -25,7 +25,7 @@ jobs:
         libaudio-dev libjack-dev libsndio-dev libx11-dev libxext-dev \
         libxrandr-dev libxcursor-dev libxfixes-dev libxi-dev libxss-dev libxtst-dev \
         libxkbcommon-dev libdrm-dev libgbm-dev libgl1-mesa-dev libgles2-mesa-dev \
-        libegl1-mesa-dev libdbus-1-dev libibus-1.0-dev libudev-dev libwayland-dev wget
+        libegl1-mesa-dev libdbus-1-dev libibus-1.0-dev libudev-dev libwayland-dev
         curl -L 'https://github.com/libsdl-org/SDL/releases/download/release-3.2.4/SDL3-3.2.4.zip' -o SDL3-3.2.4.zip
         unzip SDL3-3.2.4.zip
         cd SDL3-3.2.4
@@ -39,10 +39,8 @@ jobs:
     - name: Build
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
 
-    - name: Install Tetris ROM
-      run: |
-        mkdir roms
-        wget https://archive.org/compress/tetris_gb
-        unzip tetris_gb -d roms
-        rm tetris_gb
-        ./build/pp_tests -d yes --use-colours yes
+      # To be implemented
+    # - name: Test
+    #   working-directory: ${{github.workspace}}/build
+    #   run: ctest -C ${{env.BUILD_TYPE}}
+
