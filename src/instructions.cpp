@@ -147,8 +147,9 @@ void CPU::LDH_A_C() {
 // PUSH r16
 void CPU::PUSH_r16(CPU::R16_PTR r) {
   DEC_SP();
-  write_word(reg.sp, read_reg(r));
+  write_byte(reg.sp, (read_reg(r) & 0xFF00) >> 8);
   DEC_SP();
+  write_byte(reg.sp, read_reg(r) & 0x00FF);
 }
 
 // POP r16

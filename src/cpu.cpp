@@ -14,14 +14,14 @@ const uint8_t H_FLAG = 0b00100000;
 const uint8_t C_FLAG = 0b00010000;
 
 CPU::CPU(std::ifstream &ROM_)
-    : reg{.a = 0x01,
-          .f = 0xb0,
-          .b = 0x00,
+    : reg{.f = 0xb0,
+          .a = 0x01,
           .c = 0x13,
-          .d = 0x00,
+          .b = 0x00,
           .e = 0xd8,
-          .h = 0x01,
+          .d = 0x00,
           .l = 0x4d,
+          .h = 0x01,
           .sp = 0xfffe,
           .pc = 0x100},
       IME(0), ROM(ROM_), clock_m(0) {}

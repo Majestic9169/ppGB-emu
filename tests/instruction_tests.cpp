@@ -1,3 +1,4 @@
+#include <cstdint>
 #define CATCH_CONFIG_MAIN
 #include "../include/catch.hpp"
 #include "../include/cpu.h"
@@ -358,4 +359,49 @@ TEST_CASE("JUMP AND CALL TESTS") {
   }
 
   ROM.close();
+}
+
+TEST_CASE("16-bit Tests") {
+  std::ifstream ROM;
+  ROM.open("../roms/tetris.gb", std::ios::binary | std::ios::in);
+  CPU gb(ROM);
+  Display display(gb.framebuffer);
+
+  SECTION("16-bit Load Tests", "[load]") {
+    // Write test instruction to memory
+    gb.write_byte(0x100, 0x01); // LD BC, 0x1234
+    gb.write_byte(0x101, 0x34);
+    gb.write_byte(0x102, 0x12);
+    gb.write_reg(&CPU::REGISTERS::pc, 0x100);
+    gb.INSTRUCTION_DECODER();
+
+    REQUIRE(gb.read_reg(&CPU::REGISTERS::b) == 0x12);
+    REQUIRE(gb.read_reg(&CPU::REGISTERS::c) == 0x34);
+    REQUIRE(gb.read_reg(&CPU::REGISTERS::bc) == 0x1234);
+
+    ROM.close();
+  }
+
+  SECTION("PUSH/POP Tests", "[stack]") {
+    std::ifstream ROM;
+    ROM.open("../roms/tetris.gb", std::ios::binary | std::ios::in);
+    CPU gb(ROM);
+    Display display(gb.framebuffer);
+
+    // Write test instruction to memory
+    gb.write_byte(0x100, 0xC5); // PUSH BC
+    gb.write_reg(&CPU::REGISTERS::pc, 0x100);
+    gb.write_reg(&CPU::REGISTERS::b, 0x12);
+    gb.write_reg(&CPU::REGISTERS::c, 0x34);
+    uint16_t old_sp = gb.read_reg(&CPU::REGISTERS::sp);
+    gb.INSTRUCTION_DECODER();
+
+    REQUIRE(gb.read_reg(&CPU::REGISTERS::bc) == 0x1234);
+    REQUIRE(gb.read_reg(&CPU::REGISTERS::sp) == old_sp - 2);
+    uint16_t sp = gb.read_reg(&CPU::REGISTERS::sp);
+    REQUIRE(gb.read_byte(sp) == 0x34);
+    REQUIRE(gb.read_byte(sp + 1) == 0x12);
+
+    ROM.close();
+  }
 }
