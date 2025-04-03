@@ -2,7 +2,6 @@
 #include <cstdint>
 
 void CPU::PPU_STEP() {
-#ifndef DISABLE_DISPLAY
   if (!flag_value(LCD_ENABLE, LCD_CONTROL)) {
     mode = HBLANK;
     return;
@@ -56,11 +55,9 @@ void CPU::PPU_STEP() {
     }
   } break;
   }
-#endif
 }
 
 void CPU::scanline_background(bool *pixel_row) {
-#ifndef DISABLE_DISPLAY
   uint16_t addr = 0x9800;
   if (flag_value(BG_MAP_SELECT, LCD_CONTROL)) {
     addr += 0x400;
@@ -109,11 +106,9 @@ void CPU::scanline_background(bool *pixel_row) {
     }
     x = 0;
   }
-#endif
 }
 
 void CPU::scanline_window() {
-#ifndef DISABLE_DISPLAY
   if (!flag_value(WIN_ENABLE, LCD_CONTROL)) {
     return;
   }
@@ -154,11 +149,9 @@ void CPU::scanline_window() {
     }
     x = 0;
   }
-#endif
 }
 
 void CPU::scanline_sprites(bool *pixel_row) {
-#ifndef DISABLE_DISPLAY
   int sprite_height = flag_value(SPR_SIZE, LCD_CONTROL) ? 16 : 8;
 
   bool visible_sprites[40];
@@ -222,14 +215,11 @@ void CPU::scanline_sprites(bool *pixel_row) {
       }
     }
   }
-#endif
 }
 
 void CPU::scanlines() {
-#ifndef DISABLE_DISPLAY
   bool pixel_row[160] = {0};
   scanline_background(pixel_row);
   scanline_window();
   scanline_sprites(pixel_row);
-#endif
 }
