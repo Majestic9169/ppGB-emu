@@ -1,4 +1,6 @@
 #include <cstdint>
+#include <ios>
+#include <iostream>
 #define CATCH_CONFIG_MAIN
 #include "../include/catch.hpp"
 #include "../include/cpu.h"
@@ -404,4 +406,78 @@ TEST_CASE("16-bit Tests") {
 
     ROM.close();
   }
+
+  SECTION("POP BC") {
+    std::ifstream ROM;
+    ROM.open("../roms/tetris.gb", std::ios::binary | std::ios::in);
+    CPU gb(ROM);
+    Display display(gb.framebuffer);
+
+    // Set up initial stack pointer and push test value
+    gb.write_reg(&CPU::REGISTERS::sp, 0xFFFE);
+    gb.write_reg(&CPU::REGISTERS::bc, 0x1234);
+    gb.PUSH_r16(&CPU::REGISTERS::bc);
+    gb.write_reg(&CPU::REGISTERS::bc, 0x6969);
+    REQUIRE(gb.read_reg(&CPU::REGISTERS::bc) == 0x6969);
+    REQUIRE(gb.read_reg(&CPU::REGISTERS::sp) == 0xFFFC);
+
+    // Test POP BC
+    gb.POP_r16(&CPU::REGISTERS::bc);
+    REQUIRE(gb.read_reg(&CPU::REGISTERS::bc) == 0x1234);
+    REQUIRE(gb.read_reg(&CPU::REGISTERS::sp) == 0xFFFE);
+  }
+
+  SECTION("POP DE") {
+    gb.write_reg(&CPU::REGISTERS::sp, 0xFFFE);
+    gb.write_reg(&CPU::REGISTERS::de, 0xFFFF);
+
+    gb.PUSH_r16(&CPU::REGISTERS::de);
+    REQUIRE(gb.read_reg(&CPU::REGISTERS::sp) == 0xFFFC);
+    REQUIRE(gb.read_byte(0xFFFC) == 0xFF);
+    REQUIRE(gb.read_byte(0xFFFD) == 0xFF);
+
+    gb.write_reg(&CPU::REGISTERS::de, 0x0000);
+    gb.POP_r16(&CPU::REGISTERS::de);
+    REQUIRE(gb.read_reg(&CPU::REGISTERS::de) == 0xFFFF);
+    REQUIRE(gb.read_reg(&CPU::REGISTERS::sp) == 0xFFFE);
+  }
+
+  SECTION("POP HL") {
+    gb.write_reg(&CPU::REGISTERS::sp, 0xFFFE);
+    gb.write_reg(&CPU::REGISTERS::hl, 0x5AF0);
+
+    gb.PUSH_r16(&CPU::REGISTERS::hl);
+    REQUIRE(gb.read_reg(&CPU::REGISTERS::sp) == 0xFFFC);
+    REQUIRE(gb.read_byte(0xFFFC) == 0xF0);
+    REQUIRE(gb.read_byte(0xFFFD) == 0x5A);
+
+    gb.write_reg(&CPU::REGISTERS::hl, 0x0000);
+    gb.POP_r16(&CPU::REGISTERS::hl);
+    REQUIRE(gb.read_reg(&CPU::REGISTERS::hl) == 0x5AF0);
+    REQUIRE(gb.read_reg(&CPU::REGISTERS::sp) == 0xFFFE);
+  }
+
+  SECTION("POP AF with flag bits") {
+    // Set up stack with value that will test flag bits
+    gb.write_reg(&CPU::REGISTERS::sp, 0xFFFE);
+    gb.write_reg(&CPU::REGISTERS::a, 0x5A);
+    gb.write_reg(&CPU::REGISTERS::f, 0xF0);
+    gb.PUSH_AF();
+    // TODO: wtf is this error how tf do i fix it
+    REQUIRE(gb.read_byte(0xFFFC) == 0xF0);
+    REQUIRE(gb.read_byte(0xFFFD) == 0x5A);
+    gb.write_reg(&CPU::REGISTERS::af, 0x6969);
+    REQUIRE(gb.read_reg(&CPU::REGISTERS::af) == 0x6969);
+    REQUIRE(gb.read_reg(&CPU::REGISTERS::sp) == 0xFFFC);
+
+    gb.POP_AF();
+    REQUIRE(gb.read_reg(&CPU::REGISTERS::a) == 0x5A);
+    REQUIRE(gb.read_reg(&CPU::REGISTERS::f) == 0xF0);
+    REQUIRE(gb.flag_value(Z) == 1);
+    REQUIRE(gb.flag_value(N) == 1);
+    REQUIRE(gb.flag_value(H) == 1);
+    REQUIRE(gb.flag_value(C) == 1);
+  }
+
+  ROM.close();
 }

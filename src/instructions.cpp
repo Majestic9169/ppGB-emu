@@ -1,5 +1,6 @@
 #include "../include/cpu.h"
 #include <cstdint>
+#include <iostream>
 #include <sys/types.h>
 
 #define H_TEST(a, b) ((a & 0x0F) + (b & 0x0F))
@@ -152,11 +153,34 @@ void CPU::PUSH_r16(CPU::R16_PTR r) {
   write_byte(reg.sp, read_reg(r) & 0x00FF);
 }
 
+// PUSH AF
+void CPU::PUSH_AF() {
+  DEC_SP();
+  write_byte(reg.sp, reg.a);
+  DEC_SP();
+  write_byte(reg.sp, flag_value(Z) << 7 | flag_value(N) << 6 |
+                         flag_value(H) << 5 | flag_value(C) << 4);
+}
+
 // POP r16
 void CPU::POP_r16(CPU::R16_PTR r) {
+  uint8_t low = read_byte(reg.sp);
   INC_SP();
-  write_reg(r, read_word(reg.sp));
+  uint8_t high = read_byte(reg.sp);
   INC_SP();
+  write_reg(r, ((uint16_t)high << 8) | low);
+}
+
+// POP AF
+void CPU::POP_AF() {
+  reg.f = read_byte(reg.sp) & 0xF0;
+  INC_SP();
+  reg.a = read_byte(reg.sp);
+  INC_SP();
+  flag_value(Z, (reg.f & (1 << 7)) != 0, REG_F);
+  flag_value(N, (reg.f & (1 << 6)) != 0, REG_F);
+  flag_value(H, (reg.f & (1 << 5)) != 0, REG_F);
+  flag_value(C, (reg.f & (1 << 4)) != 0, REG_F);
 }
 
 /* ====================================
@@ -429,16 +453,10 @@ void CPU::INC_HL() {
 void CPU::INC_r16(CPU::R16_PTR r) {
   uint res = read_reg(r) + 1;
   write_reg(r, res);
-  set_z_flag((uint16_t)res);
-  flag_value(N, 0);
-  set_h_flag(res);
 }
 
-// INC r16
-void CPU::INC_SP() {
-  uint16_t res = read_reg(&CPU::REGISTERS::sp) + 1;
-  write_reg(&CPU::REGISTERS::sp, res);
-}
+// INC SP
+void CPU::INC_SP() { reg.sp += 1; }
 
 // CCF
 void CPU::CCF() {

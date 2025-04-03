@@ -1437,20 +1437,20 @@ void CPU::INSTRUCTION_DECODER() {
     clock_m += clock_m_cycles[0xf0];
     LDH_A_n16(val);
   } break;
-  case 0xf1: {
-    printf(disasm[0xf1], curr_pc);
-    clock_m += clock_m_cycles[0xf1];
-    POP_r16(&REGISTERS::af);
+  case 0xF1: {
+    printf(disasm[0xF1], curr_pc);
+    clock_m += clock_m_cycles[0xF1];
+    POP_AF();
   } break;
   case 0xf3: {
     printf(disasm[0xf3], curr_pc);
     clock_m += clock_m_cycles[0xf3];
     DI();
   } break;
-  case 0xf5: {
-    printf(disasm[0xf5], curr_pc);
-    clock_m += clock_m_cycles[0xf5];
-    PUSH_r16(&REGISTERS::af);
+  case 0xF5: {
+    printf(disasm[0xF5], curr_pc);
+    clock_m += clock_m_cycles[0xF5];
+    PUSH_AF();
   } break;
   case 0xF8: {
     int val = read_byte(reg.pc++);

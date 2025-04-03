@@ -9,7 +9,7 @@
 #include <sys/types.h>
 
 enum INTERRUPTS { INT_VBLANK, INT_LCD, INT_TIMER, INT_SERIAL, INT_JOYPAD };
-enum FLAGS { C = 4, H, N, Z };
+enum FLAGS { C = 4, H = 5, N = 6, Z = 7 };
 enum LCDC_FLAGS {
   BG_ENABLE,
   SPR_ENABLE,
@@ -182,8 +182,10 @@ public:
   void LD_SP_HL();
 
   void POP_r16(R16_PTR r);
+  void POP_AF();
 
   void PUSH_r16(R16_PTR r);
+  void PUSH_AF();
 
   /* ====================================
    *     8-bit ARITHMETIC LOGIC UNIT

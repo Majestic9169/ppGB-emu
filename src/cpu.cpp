@@ -85,19 +85,19 @@ void CPU::flag_value(uint8_t f, bool set, FLAG_MODE mode) {
     if (set) {
       reg.f |= (1 << f);
     } else {
-      reg.f &= (0xff ^ (1 << f));
+      reg.f &= ~(1 << f);
     }
   } else if (mode == 1) {
     if (set) {
       write_byte(0xFF40, read_byte(0xFF40) | (1 << f));
     } else {
-      write_byte(0xFF40, read_byte(0xFF40) & (0xff ^ (1 << f)));
+      write_byte(0xFF40, read_byte(0xFF40) & ~(1 << f));
     }
   } else if (mode == 2) {
     if (set) {
       write_byte(0xFF41, read_byte(0xFF41) | (1 << f));
     } else {
-      write_byte(0xFF41, read_byte(0xFF41) & (0xff ^ (1 << f)));
+      write_byte(0xFF41, read_byte(0xFF41) & ~(1 << f));
     }
   }
 }
