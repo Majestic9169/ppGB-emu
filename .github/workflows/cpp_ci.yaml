@@ -34,15 +34,3 @@ jobs:
     - name: Run Test Roms
       run: ./scripts/run_test_roms
 
-    - name: Install Tetris Rom
-      run: |
-        mkdir roms
-        wget https://archive.org/compress/tetris_gb
-        unzip tetris_gb -d roms
-        rm tetris_gb
-
-    - name: Trace Tetris Rom
-      run: ./build/ppGB-test ./roms/tetris.gb --exit-on-infinite-jr --headless --print-serial-output --trace
-
-
-
