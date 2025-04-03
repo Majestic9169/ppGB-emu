@@ -1,14 +1,20 @@
 #include "../include/display.h"
+#include "../include/cpu.h"
+#include <SDL3/SDL_events.h>
+#include <SDL3/SDL_keycode.h>
 #include <SDL3/SDL_pixels.h>
 #include <SDL3/SDL_render.h>
 #include <SDL3/SDL_video.h>
 #include <algorithm>
+#include <array>
 #include <cstdlib>
+#include <memory.h>
 
-Display::Display(Color *framebuf, const int WINDOW_WIDTH,
-                 const int WINDOW_HEIGHT, const char *WINDOW_NAME)
+Display::Display(std::array<Color, 160 * 144> &framebuf, CPU *cpu_ptr,
+                 const int WINDOW_WIDTH, const int WINDOW_HEIGHT,
+                 const char *WINDOW_NAME)
     : framebuffer(framebuf), window(nullptr), renderer(nullptr),
-      texture(nullptr), active(false) {
+      texture(nullptr), active(false), cpu(cpu_ptr) {
 
   viewport_pixels.fill(0xFF);
 
@@ -68,8 +74,68 @@ void Display::poll_event() {
   SDL_Event event;
 
   while (SDL_PollEvent(&event)) {
-    if (event.type == SDL_EVENT_QUIT) {
+    switch (event.type) {
+    case SDL_EVENT_KEY_DOWN:
+      switch (event.key.key) {
+      case SDLK_RIGHT:
+        cpu->key_down(JOYPAD_RIGHT);
+        break;
+      case SDLK_LEFT:
+        cpu->key_down(JOYPAD_LEFT);
+        break;
+      case SDLK_UP:
+        cpu->key_down(JOYPAD_UP);
+        break;
+      case SDLK_DOWN:
+        cpu->key_down(JOYPAD_DOWN);
+        break;
+      case SDLK_Z:
+        cpu->key_down(JOYPAD_A);
+        break;
+      case SDLK_X:
+        cpu->key_down(JOYPAD_B);
+        break;
+      case SDLK_SPACE:
+        cpu->key_down(JOYPAD_START);
+        break;
+      case SDLK_RETURN:
+        cpu->key_down(JOYPAD_SELECT);
+        break;
+      }
+      break;
+
+    case SDL_EVENT_KEY_UP:
+      switch (event.key.key) {
+      case SDLK_RIGHT:
+        cpu->key_up(JOYPAD_RIGHT);
+        break;
+      case SDLK_LEFT:
+        cpu->key_up(JOYPAD_LEFT);
+        break;
+      case SDLK_UP:
+        cpu->key_up(JOYPAD_UP);
+        break;
+      case SDLK_DOWN:
+        cpu->key_up(JOYPAD_DOWN);
+        break;
+      case SDLK_Z:
+        cpu->key_up(JOYPAD_A);
+        break;
+      case SDLK_X:
+        cpu->key_up(JOYPAD_B);
+        break;
+      case SDLK_SPACE:
+        cpu->key_up(JOYPAD_START);
+        break;
+      case SDLK_RETURN:
+        cpu->key_up(JOYPAD_SELECT);
+        break;
+      }
+      break;
+
+    case SDL_EVENT_QUIT:
       active = false;
+      break;
     }
   }
 }

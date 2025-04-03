@@ -33,9 +33,9 @@ uint8_t boot_rom[0x100] = {
 
 Memory::Memory(std::ifstream &ROM) {
   load_memory(ROM, 0xFD00);
-  // for (int i = 0; i < 0x100; i++) {
-  //   MEMORY[i] = boot_rom[i];
-  // }
+  for (int i = 0; i < 0x100; i++) {
+    MEMORY[i] = boot_rom[i];
+  }
   MEMORY[0xFF0F] = 0xe1;
   MEMORY[0xFF41] = 0x80;
   MEMORY[0xFF40] = 0x91;

@@ -1354,6 +1354,13 @@ void CPU::INSTRUCTION_DECODER() {
     clock_m += clock_m_cycles[0xd1];
     POP_r16(&REGISTERS::de);
   } break;
+  case 0xD2: {
+    uint16_t val = read_word(reg.pc++);
+    reg.pc++;
+    printf(disasm[0xD2], curr_pc, val);
+    clock_m += clock_m_cycles[0xD2];
+    JP_CC_n16(flag_value(C) && flag_value(N), val);
+  } break;
   case 0xd5: {
     printf(disasm[0xd5], curr_pc);
     clock_m += clock_m_cycles[0xd5];
@@ -1430,6 +1437,11 @@ void CPU::INSTRUCTION_DECODER() {
     printf(disasm[0xEE], curr_pc, val);
     clock_m += clock_m_cycles[0xEE];
     XOR_A_n8(val);
+  } break;
+  case 0xEF: {
+    printf(disasm[0xEF], curr_pc);
+    clock_m += clock_m_cycles[0xEF];
+    RST_vec(0x28);
   } break;
   case 0xf0: {
     uint8_t val = read_byte(reg.pc++);

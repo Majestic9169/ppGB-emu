@@ -1,6 +1,7 @@
 #ifndef INCLUDE_DISPLAY
 #define INCLUDE_DISPLAY
 
+#include "cpu.h"
 #include "memory.h"
 #include <SDL3/SDL_error.h>
 #include <SDL3/SDL_events.h>
@@ -24,14 +25,15 @@ private:
   SDL_Renderer *renderer;
   SDL_Texture *texture;
   bool active;
+  CPU *cpu;
 
   std::array<uint8_t, 160 * 144 * 4> viewport_pixels;
   SDL_FRect viewport_rect = {0, 0, WIDTH, HEIGHT};
-  Color *framebuffer;
+  std::array<Color, 160 * 144> framebuffer;
 
 public:
-  Display(Color *framebuf, const int WINDOW_WIDTH = WIDTH,
-          const int WINDOW_HEIGHT = HEIGHT,
+  Display(std::array<Color, 160 * 144> &framebuf, CPU *cpu_ptr,
+          const int WINDOW_WIDTH = WIDTH, const int WINDOW_HEIGHT = HEIGHT,
           const char *WINDOW_NAME = "ppGB Emulator");
   bool render_frame();
   bool is_active();

@@ -12,14 +12,19 @@ TEST_CASE("BOOT REGISTER TEST") {
   ROM.open("../roms/Tetris.gb", std::ios::binary | std::ios::in);
   CPU gb(ROM);
 
-  Display display(gb.framebuffer);
+  Display display(gb.framebuffer, &gb);
 
   REQUIRE(gb.read_byte(0xFF50) == 0xFF);
-
-  gb.write_reg(&CPU::REGISTERS::b, 0x02);
-  gb.write_reg(&CPU::REGISTERS::a, 0x01);
-  gb.ADD_A_r8(&CPU::REGISTERS::b);
-  REQUIRE(gb.read_reg(&CPU::REGISTERS::a) == 0x03);
+  REQUIRE(gb.read_reg(&CPU::REGISTERS::f) == 0xB0);
+  REQUIRE(gb.read_reg(&CPU::REGISTERS::a) == 0x01);
+  REQUIRE(gb.read_reg(&CPU::REGISTERS::c) == 0x13);
+  REQUIRE(gb.read_reg(&CPU::REGISTERS::b) == 0x00);
+  REQUIRE(gb.read_reg(&CPU::REGISTERS::e) == 0xD8);
+  REQUIRE(gb.read_reg(&CPU::REGISTERS::d) == 0x00);
+  REQUIRE(gb.read_reg(&CPU::REGISTERS::l) == 0x4D);
+  REQUIRE(gb.read_reg(&CPU::REGISTERS::h) == 0x01);
+  REQUIRE(gb.read_reg(&CPU::REGISTERS::sp) == 0xFFFE);
+  REQUIRE(gb.read_reg(&CPU::REGISTERS::pc) == 0x100);
 
   ROM.close();
 }
@@ -29,7 +34,7 @@ TEST_CASE("ADD TESTS") {
   ROM.open("../roms/Tetris.gb", std::ios::binary | std::ios::in);
   CPU gb(ROM);
 
-  Display display(gb.framebuffer);
+  Display display(gb.framebuffer, &gb);
 
   gb.write_reg(&CPU::REGISTERS::b, 0x02);
   gb.write_reg(&CPU::REGISTERS::a, 0x01);
@@ -82,7 +87,7 @@ TEST_CASE("XOR TESTS") {
   ROM.open("../roms/Tetris.gb", std::ios::binary | std::ios::in);
   CPU gb(ROM);
 
-  Display display(gb.framebuffer);
+  Display display(gb.framebuffer, &gb);
 
   gb.write_reg(&CPU::REGISTERS::b, 0xf1);
   gb.write_reg(&CPU::REGISTERS::a, 0xf1);
@@ -101,7 +106,7 @@ TEST_CASE("DEC TESTS") {
   ROM.open("../roms/Tetris.gb", std::ios::binary | std::ios::in);
   CPU gb(ROM);
 
-  Display display(gb.framebuffer);
+  Display display(gb.framebuffer, &gb);
 
   gb.write_reg(&CPU::REGISTERS::b, 0xf1);
   gb.DEC_r8(&CPU::REGISTERS::b);
@@ -125,7 +130,7 @@ TEST_CASE("CP TESTS") {
   ROM.open("../roms/Tetris.gb", std::ios::binary | std::ios::in);
   CPU gb(ROM);
 
-  Display display(gb.framebuffer);
+  Display display(gb.framebuffer, &gb);
 
   gb.write_reg(&CPU::REGISTERS::a, 0x94);
   gb.CP_A_n8(0x94);
@@ -156,7 +161,7 @@ TEST_CASE("LOAD TESTS") {
   ROM.open("../roms/Tetris.gb", std::ios::binary | std::ios::in);
   CPU gb(ROM);
 
-  Display display(gb.framebuffer);
+  Display display(gb.framebuffer, &gb);
 
   SECTION("LD r8, r8") {
     gb.write_reg(&CPU::REGISTERS::b, 0x42);
@@ -191,7 +196,7 @@ TEST_CASE("ADC TESTS") {
   ROM.open("../roms/Tetris.gb", std::ios::binary | std::ios::in);
   CPU gb(ROM);
 
-  Display display(gb.framebuffer);
+  Display display(gb.framebuffer, &gb);
 
   SECTION("ADC A, r8 without carry") {
     gb.flag_value(C, 0);
@@ -225,7 +230,7 @@ TEST_CASE("BITWISE TESTS") {
   ROM.open("../roms/Tetris.gb", std::ios::binary | std::ios::in);
   CPU gb(ROM);
 
-  Display display(gb.framebuffer);
+  Display display(gb.framebuffer, &gb);
 
   SECTION("AND A, r8") {
     gb.write_reg(&CPU::REGISTERS::a, 0xF0);
@@ -257,7 +262,7 @@ TEST_CASE("BIT MANIPULATION TESTS") {
   ROM.open("../roms/Tetris.gb", std::ios::binary | std::ios::in);
   CPU gb(ROM);
 
-  Display display(gb.framebuffer);
+  Display display(gb.framebuffer, &gb);
 
   SECTION("BIT u3, r8") {
     gb.write_reg(&CPU::REGISTERS::b, 0x80);
@@ -290,7 +295,7 @@ TEST_CASE("ROTATE AND SHIFT TESTS") {
   ROM.open("../roms/Tetris.gb", std::ios::binary | std::ios::in);
   CPU gb(ROM);
 
-  Display display(gb.framebuffer);
+  Display display(gb.framebuffer, &gb);
 
   SECTION("RL r8") {
     gb.write_reg(&CPU::REGISTERS::b, 0x80);
@@ -334,7 +339,7 @@ TEST_CASE("JUMP AND CALL TESTS") {
   ROM.open("../roms/Tetris.gb", std::ios::binary | std::ios::in);
   CPU gb(ROM);
 
-  Display display(gb.framebuffer);
+  Display display(gb.framebuffer, &gb);
 
   SECTION("JP n16") {
     gb.JP_n16(0x1234);
@@ -367,7 +372,7 @@ TEST_CASE("16-bit Tests") {
   std::ifstream ROM;
   ROM.open("../roms/tetris.gb", std::ios::binary | std::ios::in);
   CPU gb(ROM);
-  Display display(gb.framebuffer);
+  Display display(gb.framebuffer, &gb);
 
   SECTION("16-bit Load Tests", "[load]") {
     // Write test instruction to memory
@@ -388,7 +393,7 @@ TEST_CASE("16-bit Tests") {
     std::ifstream ROM;
     ROM.open("../roms/tetris.gb", std::ios::binary | std::ios::in);
     CPU gb(ROM);
-    Display display(gb.framebuffer);
+    Display display(gb.framebuffer, &gb);
 
     // Write test instruction to memory
     gb.write_byte(0x100, 0xC5); // PUSH BC
@@ -411,7 +416,7 @@ TEST_CASE("16-bit Tests") {
     std::ifstream ROM;
     ROM.open("../roms/tetris.gb", std::ios::binary | std::ios::in);
     CPU gb(ROM);
-    Display display(gb.framebuffer);
+    Display display(gb.framebuffer, &gb);
 
     // Set up initial stack pointer and push test value
     gb.write_reg(&CPU::REGISTERS::sp, 0xFFFE);
@@ -455,20 +460,29 @@ TEST_CASE("16-bit Tests") {
     gb.POP_r16(&CPU::REGISTERS::hl);
     REQUIRE(gb.read_reg(&CPU::REGISTERS::hl) == 0x5AF0);
     REQUIRE(gb.read_reg(&CPU::REGISTERS::sp) == 0xFFFE);
+
+    ROM.close();
   }
 
   SECTION("POP AF with flag bits") {
+    std::ifstream ROM;
+    ROM.open("../roms/tetris.gb", std::ios::binary | std::ios::in);
+    CPU gb(ROM);
+    Display display(gb.framebuffer, &gb);
+
     // Set up stack with value that will test flag bits
-    gb.write_reg(&CPU::REGISTERS::sp, 0xFFFE);
+    gb.write_reg(&CPU::REGISTERS::sp, 0xFFF0);
     gb.write_reg(&CPU::REGISTERS::a, 0x5A);
+    // gb.reg.f = 0xF0;
     gb.write_reg(&CPU::REGISTERS::f, 0xF0);
     gb.PUSH_AF();
+    // gb.write_byte(0xFFEF, 0xF0);
     // TODO: wtf is this error how tf do i fix it
-    REQUIRE(gb.read_byte(0xFFFC) == 0xF0);
-    REQUIRE(gb.read_byte(0xFFFD) == 0x5A);
+    REQUIRE(gb.read_byte(0xFFEF) == 0x5A);
+    REQUIRE(gb.read_byte(0xFFEE) == 0xF0);
     gb.write_reg(&CPU::REGISTERS::af, 0x6969);
     REQUIRE(gb.read_reg(&CPU::REGISTERS::af) == 0x6969);
-    REQUIRE(gb.read_reg(&CPU::REGISTERS::sp) == 0xFFFC);
+    REQUIRE(gb.read_reg(&CPU::REGISTERS::sp) == 0xFFEE);
 
     gb.POP_AF();
     REQUIRE(gb.read_reg(&CPU::REGISTERS::a) == 0x5A);

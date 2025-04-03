@@ -16,12 +16,17 @@ file(GLOB_RECURSE TEST_SRC ./tests/*.cpp)
 find_package(SDL3 REQUIRED)
 
 add_executable(ppGB main.cpp ${GB_SRC})
-add_executable(pp_test ${TEST_SRC} ${GB_SRC})
+add_executable(cpu_test ./tests/instruction_tests.cpp ${GB_SRC})
+add_executable(ppu_test ./tests/ppu_tests.cpp ${GB_SRC})
 
 target_include_directories(ppGB PUBLIC SDL3::SDL3)
 target_link_libraries(ppGB PUBLIC SDL3::SDL3)
 
-target_include_directories(pp_test PUBLIC SDL3::SDL3)
-target_link_libraries(pp_test PUBLIC SDL3::SDL3)
+target_include_directories(cpu_test PUBLIC SDL3::SDL3)
+target_link_libraries(cpu_test PUBLIC SDL3::SDL3)
 
-add_test(NAME ALU_Tests COMMAND pp_test)
+target_include_directories(ppu_test PUBLIC SDL3::SDL3)
+target_link_libraries(ppu_test PUBLIC SDL3::SDL3)
+
+add_test(NAME CPU_TESTS COMMAND cpu_test)
+add_test(NAME PPU_TESTS COMMAND ppu_test)

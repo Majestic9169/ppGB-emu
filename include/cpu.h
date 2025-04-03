@@ -2,12 +2,23 @@
 #define INCLUDE_CPU
 
 #include "memory.h"
+#include <array>
 #include <cstdint>
 #include <cstring>
 #include <fstream>
 #include <iostream>
 #include <sys/types.h>
 
+enum JOYPAD_BUTTON {
+  JOYPAD_A = (1 << 0),
+  JOYPAD_B = (1 << 1),
+  JOYPAD_SELECT = (1 << 2),
+  JOYPAD_START = (1 << 3),
+  JOYPAD_RIGHT = (1 << 4),
+  JOYPAD_LEFT = (1 << 5),
+  JOYPAD_UP = (1 << 6),
+  JOYPAD_DOWN = (1 << 7),
+};
 enum INTERRUPTS { INT_VBLANK, INT_LCD, INT_TIMER, INT_SERIAL, INT_JOYPAD };
 enum FLAGS { C = 4, H = 5, N = 6, Z = 7 };
 enum LCDC_FLAGS {
@@ -34,11 +45,6 @@ enum LCD_MODE { HBLANK, VBLANK, OAM, DRAW };
 class CPU {
 private:
   Memory ROM;
-
-  bool IME;
-
-  LCD_MODE mode;
-  bool can_render;
 
 public:
   struct REGISTERS {
@@ -75,6 +81,11 @@ public:
   } reg;
 
   int clock_m;
+  bool halted = false;
+  bool IME;
+
+  LCD_MODE mode;
+  bool can_render;
 
   using R8_PTR = uint8_t REGISTERS::*;
   using R16_PTR = uint16_t REGISTERS::*;
@@ -108,7 +119,7 @@ public:
   void scanline_sprites(bool *pixel_row);
   void scanlines();
   void PPU_STEP();
-  Color framebuffer[160 * 144];
+  std::array<Color, 160 * 144> framebuffer;
 
   // opcodes
   void INSTRUCTION_DECODER();
@@ -117,6 +128,10 @@ public:
   // Interrupt handling
   bool interrupt_check();
   void interrupt_handle(INTERRUPTS interrupt, uint8_t jump_addr);
+  void key_up(JOYPAD_BUTTON butt);
+  void key_down(JOYPAD_BUTTON butt);
+  uint8_t read_joypad();
+  void write_joypad(uint8_t value);
 
   /* ====================================
    *          CONTROL/MISC

@@ -24,7 +24,12 @@ CPU::CPU(std::ifstream &ROM_)
           .h = 0x01,
           .sp = 0xfffe,
           .pc = 0x100},
-      IME(0), ROM(ROM_), clock_m(0) {}
+      IME(0), ROM(ROM_), clock_m(0) {
+  for (int i = 0; i < framebuffer.size(); i++) {
+    Color color = {192, 192, 192, (uint8_t)(i % 0x100)};
+    framebuffer[i] = color;
+  }
+}
 
 uint8_t CPU::read_byte(uint16_t addr) {
   // clock_m += 1;
@@ -69,11 +74,11 @@ void CPU::write_reg(CPU::R16_PTR r, uint16_t val) {
 }
 
 bool CPU::flag_value(uint8_t f, FLAG_MODE mode) {
-  if (mode == 0)
+  if (mode == REG_F)
     return (reg.f & (1 << f)) != 0;
-  else if (mode == 1) {
+  else if (mode == LCD_CONTROL) {
     return (read_byte(0xFF40) & (1 << f)) != 0;
-  } else if (mode == 2) {
+  } else if (mode == LCD_STATUS) {
     return (read_byte(0xFF41) & (1 << f)) != 0;
   } else {
     std::cout << "ERROR: Unsupported Mode " << mode << std::endl;
@@ -81,19 +86,19 @@ bool CPU::flag_value(uint8_t f, FLAG_MODE mode) {
   }
 }
 void CPU::flag_value(uint8_t f, bool set, FLAG_MODE mode) {
-  if (mode == 0) {
+  if (mode == REG_F) {
     if (set) {
       reg.f |= (1 << f);
     } else {
       reg.f &= ~(1 << f);
     }
-  } else if (mode == 1) {
+  } else if (mode == LCD_CONTROL) {
     if (set) {
       write_byte(0xFF40, read_byte(0xFF40) | (1 << f));
     } else {
       write_byte(0xFF40, read_byte(0xFF40) & ~(1 << f));
     }
-  } else if (mode == 2) {
+  } else if (mode == LCD_STATUS) {
     if (set) {
       write_byte(0xFF41, read_byte(0xFF41) | (1 << f));
     } else {

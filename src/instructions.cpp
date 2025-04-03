@@ -15,6 +15,19 @@ void CPU::NOP() {
   clock_m = 1;
 }
 
+void CPU::HALT() {
+  if (!IME) {
+    uint8_t IE = read_byte(0xFFFF);
+    uint8_t IF = read_byte(0xFF0F);
+    // if (IE & IF & 0x1F) {
+    //   return;
+    // }
+    halted = false;
+    return;
+  }
+  halted = true;
+}
+
 /* ====================================
  *          LOAD/STORE/MOVE
  * ====================================
@@ -158,10 +171,18 @@ void CPU::PUSH_AF() {
   DEC_SP();
   write_byte(reg.sp, reg.a);
   DEC_SP();
-  write_byte(reg.sp, flag_value(Z) << 7 | flag_value(N) << 6 |
-                         flag_value(H) << 5 | flag_value(C) << 4);
+  uint8_t f_value = 0;
+  // if (flag_value(Z))
+  //   f_value |= 0x80;
+  // if (flag_value(N))
+  //   f_value |= 0x40;
+  // if (flag_value(H))
+  //   f_value |= 0x20;
+  // if (flag_value(C))
+  //   f_value |= 0x10;
+  // write_byte(reg.sp, f_value);
+  write_byte(reg.sp, (uint8_t)reg.f);
 }
-
 // POP r16
 void CPU::POP_r16(CPU::R16_PTR r) {
   uint8_t low = read_byte(reg.sp);
@@ -621,7 +642,9 @@ void CPU::RETI() {
 }
 
 // RST vec
-void CPU::RST_vec(uint8_t vec) { CALL_n16(vec); }
+void CPU::RST_vec(uint8_t vec) {
+  // CALL_n16(vec);
+}
 
 // JP n16
 void CPU::JP_n16(uint16_t n16) { reg.pc = n16; }

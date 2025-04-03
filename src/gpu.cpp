@@ -14,6 +14,11 @@ void CPU::PPU_STEP() {
     write_byte(0xFF44, ++scanline);
     uint8_t lyc = read_byte(0xFF45);
     flag_value(COINCIDENCE_FLAG, (lyc == scanline), LCD_STATUS);
+    // if (lyc == scanline) {
+    //   write_byte(0xFF40, read_byte(0xFF40) | (1 << COINCIDENCE_FLAG));
+    // } else {
+    //   write_byte(0xFF40, read_byte(0xFF40) & ~(1 << COINCIDENCE_FLAG));
+    // }
     if (lyc == scanline && flag_value(COINCIDENCE_INTERRUPT, LCD_STATUS)) {
     }
 
@@ -32,6 +37,11 @@ void CPU::PPU_STEP() {
     write_byte(0xFF44, ++scanline);
     uint8_t lyc = read_byte(0xFF45);
     flag_value(COINCIDENCE_FLAG, (lyc == scanline), LCD_STATUS);
+    // if (lyc == scanline) {
+    //   write_byte(0xFF40, read_byte(0xFF40) | (1 << COINCIDENCE_FLAG));
+    // } else {
+    //   write_byte(0xFF40, read_byte(0xFF40) & ~(1 << COINCIDENCE_FLAG));
+    // }
     if (lyc == scanline && flag_value(COINCIDENCE_INTERRUPT, LCD_STATUS)) {
     }
 

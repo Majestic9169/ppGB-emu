@@ -14,27 +14,28 @@ int main(int argc, char **argv) {
   ROM.open(argv[1], std::ios::binary | std::ios::in);
   CPU gb(ROM);
 
-  Display display(gb.framebuffer);
+  Display display(gb.framebuffer, &gb);
 
   while (display.is_active()) {
 
-    bool interrupted = gb.interrupt_check();
-    if (!interrupted) {
-      gb.INSTRUCTION_DECODER();
-      // gb.print_reg();
-    }
-
-    if (gb.clock_m > 0) {
-      while (gb.clock_m--) {
-        long long int dummy = 0xffffff;
-        while (dummy--)
-          ;
+    if (!gb.halted) {
+      bool interrupted = gb.interrupt_check();
+      if (!interrupted) {
+        gb.INSTRUCTION_DECODER();
+        // gb.print_reg();
       }
+      if (gb.clock_m > 0) {
+        while (gb.clock_m--) {
+          long long int dummy = 0xffffff;
+          while (dummy--)
+            ;
+        }
+      }
+      // gb.PPU_STEP();
+      display.render_frame();
     }
 
-    gb.PPU_STEP();
     display.poll_event();
-    display.render_frame();
   }
 
   ROM.close();
