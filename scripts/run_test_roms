@@ -1,0 +1,43 @@
+#!/bin/bash
+
+set -o nounset
+
+TEST_ROM_DIR="./scripts/test_roms"
+
+RED="\e[31m"
+GREEN="\e[32m"
+RESET="\e[0m"
+
+run_test_rom() {
+    local FILENAME=$(basename "$1")
+
+    printf "%-30s" "${FILENAME}"
+
+    local OUTPUT=$(./build/gbemu-test "$1" --headless --print-serial-output --exit-on-infinite-jr)
+    echo $OUTPUT | grep 'Passed' &> /dev/null
+
+    if [ $? == 0 ]; then
+        printf "${GREEN}Passed${RESET}\n"
+        return 0
+    else
+        printf "${RED}Failed${RESET}\n"
+        return 1
+    fi
+}
+
+main() {
+    local failed_test=0
+
+    for test_rom in ${TEST_ROM_DIR}/*; do
+        run_test_rom "$test_rom"
+
+        if [ $? != 0 ]; then
+            failed_test=1
+        fi
+    done
+
+    return $failed_test
+}
+
+main
+exit $?

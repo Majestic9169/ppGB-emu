@@ -1,33 +1,37 @@
-cmake_minimum_required(VERSION 3.15)
-
-project(
-  plusplusGameBoyEmulator
-  VERSION 0.1.0
-  LANGUAGES CXX
+cmake_minimum_required(VERSION 3.0)
+list(APPEND CMAKE_MODULE_PATH
+  ${CMAKE_CURRENT_SOURCE_DIR}/cmake
+  ${CMAKE_CURRENT_SOURCE_DIR}/platforms/sfml
 )
 
-enable_testing()
+include(add_warnings)
+include(add_sources)
 
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
+project(gbemu)
 
-file(GLOB_RECURSE GB_SRC ./src/*.cpp)
-file(GLOB_RECURSE TEST_SRC ./tests/*.cpp)
+add_definitions(-std=c++17)
+add_warnings()
 
-find_package(SDL2 REQUIRED)
+declare_library(gbemu-core src)
 
-add_executable(ppGB main.cpp ${GB_SRC})
-add_executable(cpu_test ./tests/instruction_tests.cpp ${GB_SRC})
-add_executable(ppu_test ./tests/ppu_tests.cpp ${GB_SRC})
+# SFML target
+# find_package(SFML 2 COMPONENTS system window graphics)
 
-target_include_directories(ppGB PUBLIC SDL2::SDL2)
-target_link_libraries(ppGB PUBLIC SDL2::SDL2)
+# if (SFML_FOUND)
+#   declare_executable(gbemu-sfml platforms/sfml)
+#   include_directories(SYSTEM ${SFML_INCLUDE_DIR})
+#   target_link_libraries(gbemu-sfml gbemu-core ${SFML_LIBRARIES})
+# endif()
 
-target_include_directories(cpu_test PUBLIC SDL2::SDL2)
-target_link_libraries(cpu_test PUBLIC SDL2::SDL2)
+# SDL target
+find_package(SDL2)
 
-target_include_directories(ppu_test PUBLIC SDL2::SDL2)
-target_link_libraries(ppu_test PUBLIC SDL2::SDL2)
+if (SDL2_FOUND)
+  declare_executable(gbemu platforms/sdl)
+  include_directories(SYSTEM ${SDL2_INCLUDE_DIRS})
+  target_link_libraries(gbemu gbemu-core ${SDL2_LIBRARIES})
+endif()
 
-add_test(NAME CPU_TESTS COMMAND cpu_test)
-add_test(NAME PPU_TESTS COMMAND ppu_test)
+# Test target
+declare_executable(gbemu-test platforms/test)
+target_link_libraries(gbemu-test gbemu-core)

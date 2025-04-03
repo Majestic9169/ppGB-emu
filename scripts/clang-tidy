@@ -1,0 +1,6 @@
+#!/bin/bash
+
+for i in $(find src -name "*.cc"); do
+    clang-tidy --config-file="./.clang-tidy" -header-filter=.* $i \
+        2> >(grep -v "warnings generated." | grep -v "in non-user code" | grep -v "Use -header-filter=*" 1>&2) $@ --
+done
