@@ -19,62 +19,58 @@
 #include "string_utils.h"
 
 #include <cstdarg>
+#define BCYN "\e[1;36m"
 
 Logger global_logger;
-const char* COLOR_TRACE = "\033[1;30m";
-const char* COLOR_DEBUG = "\033[1;37m";
-const char* COLOR_UNIMPLEMENTED = "\033[1;35m";
-const char* COLOR_INFO = "\033[1;34m";
-const char* COLOR_WARNING = "\033[1;33m";
-const char* COLOR_ERROR = "\033[1;31m";
-const char* COLOR_RESET = "\033[0m";
+const char *COLOR_TRACE = "\033[1;30m";
+const char *COLOR_DEBUG = "\033[1;37m";
+const char *COLOR_UNIMPLEMENTED = "\033[1;35m";
+const char *COLOR_INFO = "\033[1;34m";
+const char *COLOR_WARNING = "\033[1;33m";
+const char *COLOR_ERROR = "\033[1;31m";
+const char *COLOR_RESET = "\033[0m";
 
-void Logger::log(LogLevel level, const char* fmt, ...) {
-    if (!should_log(level)) {
-        return;
-    }
+void Logger::log(LogLevel level, const char *fmt, ...) {
+  if (!should_log(level)) {
+    return;
+  }
 
-    va_list args;
-    va_start(args, fmt);
-    std::string msg = str_format(fmt, args);
-    va_end(args);
+  va_list args;
+  va_start(args, fmt);
+  std::string msg = str_format(fmt, args);
+  va_end(args);
 
-    fprintf((level < LogLevel::Error) ? stdout : stderr,
-        "%s| %s%s\n",
-        level_color(level), COLOR_RESET, msg.c_str());
+  fprintf((level < LogLevel::Error) ? stdout : stderr, "%s| %s%s\n",
+          level_color(level), COLOR_RESET, msg.c_str());
 }
 
-void Logger::set_level(LogLevel level) {
-    current_level = level;
-}
+void Logger::set_level(LogLevel level) { current_level = level; }
 
-void Logger::enable_tracing() {
-    tracing_enabled = true;
-}
+void Logger::enable_tracing() { tracing_enabled = true; }
 
 auto Logger::should_log(LogLevel level) const -> bool {
-    if (!tracing_enabled && level == LogLevel::Trace) { return false; }
+  if (!tracing_enabled && level == LogLevel::Trace) {
+    return false;
+  }
 
-    return enabled && (current_level <= level);
+  return enabled && (current_level <= level);
 }
 
-inline auto Logger::level_color(LogLevel level) -> const char* {
-    switch (level) {
-        case LogLevel::Trace:
-            return COLOR_TRACE;
-        case LogLevel::Debug:
-            return COLOR_DEBUG;
-        case LogLevel::Unimplemented:
-            return COLOR_UNIMPLEMENTED;
-        case LogLevel::Info:
-            return COLOR_INFO;
-        case LogLevel::Warning:
-            return COLOR_WARNING;
-        case LogLevel::Error:
-            return COLOR_ERROR;
-    }
+inline auto Logger::level_color(LogLevel level) -> const char * {
+  switch (level) {
+  case LogLevel::Trace:
+    return COLOR_TRACE;
+  case LogLevel::Debug:
+    return COLOR_DEBUG;
+  case LogLevel::Unimplemented:
+    return COLOR_UNIMPLEMENTED;
+  case LogLevel::Info:
+    return COLOR_INFO;
+  case LogLevel::Warning:
+    return COLOR_WARNING;
+  case LogLevel::Error:
+    return COLOR_ERROR;
+  }
 }
 
-void log_set_level(LogLevel level) {
-    global_logger.set_level(level);
-}
+void log_set_level(LogLevel level) { global_logger.set_level(level); }

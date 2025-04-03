@@ -1,106 +1,117 @@
 #include "cpu.h"
 
 #include "../gameboy.h"
-#include "opcode_cycles.h"
-#include "opcode_names.h"
 #include "../util/bitwise.h"
 #include "../util/log.h"
+#include "opcode_cycles.h"
+#include "opcode_names.h"
 
 using bitwise::compose_bytes;
 
-CPU::CPU(Gameboy& inGb, Options& inOptions) :
-    gb(inGb),
-    options(inOptions),
-    af(a, f),
-    bc(b, c),
-    de(d, e),
-    hl(h, l)
-{
-}
+CPU::CPU(Gameboy &inGb, Options &inOptions)
+    : gb(inGb), options(inOptions), af(a, f), bc(b, c), de(d, e), hl(h, l) {}
 
 auto CPU::tick() -> Cycles {
-    handle_interrupts();
+  handle_interrupts();
 
-    if (halted) { return 1; }
+  if (halted) {
+    return 1;
+  }
 
-    u16 opcode_pc = pc.value();
-    auto opcode = get_byte_from_pc();
-    auto cycles = execute_opcode(opcode, opcode_pc);
-    return cycles;
+  u16 opcode_pc = pc.value();
+  auto opcode = get_byte_from_pc();
+  auto cycles = execute_opcode(opcode, opcode_pc);
+  return cycles;
 }
 
 auto CPU::execute_opcode(const u8 opcode, u16 opcode_pc) -> Cycles {
-    branch_taken = false;
+  branch_taken = false;
 
-    if (opcode == 0xCB) {
-        u8 cb_opcode = get_byte_from_pc();
-        return execute_cb_opcode(cb_opcode, opcode_pc);
-    }
+  if (opcode == 0xCB) {
+    u8 cb_opcode = get_byte_from_pc();
+    return execute_cb_opcode(cb_opcode, opcode_pc);
+  }
 
-    return execute_normal_opcode(opcode, opcode_pc);
+  return execute_normal_opcode(opcode, opcode_pc);
 }
 
 void CPU::handle_interrupts() {
-    u8 fired_interrupts = interrupt_flag.value() & interrupt_enabled.value();
-    if (!fired_interrupts) { return; }
+  u8 fired_interrupts = interrupt_flag.value() & interrupt_enabled.value();
+  if (!fired_interrupts) {
+    return;
+  }
 
-    if (halted && fired_interrupts != 0x0) {
-        // TODO: Handle halt bug
-        halted = false;
-    }
+  if (halted && fired_interrupts != 0x0) {
+    // TODO: Handle halt bug
+    halted = false;
+  }
 
-    if (!interrupts_enabled) {
-        return;
-    }
+  if (!interrupts_enabled) {
+    return;
+  }
 
-    stack_push(pc);
+  stack_push(pc);
 
-    bool handled_interrupt = false;
+  bool handled_interrupt = false;
 
-    handled_interrupt = handle_interrupt(0, interrupts::vblank, fired_interrupts);
-    if (handled_interrupt) { return; }
+  handled_interrupt = handle_interrupt(0, interrupts::vblank, fired_interrupts);
+  if (handled_interrupt) {
+    return;
+  }
 
-    handled_interrupt = handle_interrupt(1, interrupts::lcdc_status, fired_interrupts);
-    if (handled_interrupt) { return; }
+  handled_interrupt =
+      handle_interrupt(1, interrupts::lcdc_status, fired_interrupts);
+  if (handled_interrupt) {
+    return;
+  }
 
-    handled_interrupt = handle_interrupt(2, interrupts::timer, fired_interrupts);
-    if (handled_interrupt) { return; }
+  handled_interrupt = handle_interrupt(2, interrupts::timer, fired_interrupts);
+  if (handled_interrupt) {
+    return;
+  }
 
-    handled_interrupt = handle_interrupt(3, interrupts::serial, fired_interrupts);
-    if (handled_interrupt) { return; }
+  handled_interrupt = handle_interrupt(3, interrupts::serial, fired_interrupts);
+  if (handled_interrupt) {
+    return;
+  }
 
-    handled_interrupt = handle_interrupt(4, interrupts::joypad, fired_interrupts);
-    if (handled_interrupt) { return; }
+  handled_interrupt = handle_interrupt(4, interrupts::joypad, fired_interrupts);
+  if (handled_interrupt) {
+    return;
+  }
 }
 
-auto CPU::handle_interrupt(u8 interrupt_bit, u16 interrupt_vector, u8 fired_interrupts) -> bool {
-    using bitwise::check_bit;
+auto CPU::handle_interrupt(u8 interrupt_bit, u16 interrupt_vector,
+                           u8 fired_interrupts) -> bool {
+  using bitwise::check_bit;
 
-    if (!check_bit(fired_interrupts, interrupt_bit)) { return false; }
+  if (!check_bit(fired_interrupts, interrupt_bit)) {
+    return false;
+  }
 
-    interrupt_flag.set_bit_to(interrupt_bit, false);
-    pc.set(interrupt_vector);
-    interrupts_enabled = false;
-    return true;
+  interrupt_flag.set_bit_to(interrupt_bit, false);
+  pc.set(interrupt_vector);
+  interrupts_enabled = false;
+  return true;
 }
 
 auto CPU::get_byte_from_pc() -> u8 {
-    u8 byte = gb.mmu.read(Address(pc));
-    pc.increment();
+  u8 byte = gb.mmu.read(Address(pc));
+  pc.increment();
 
-    return byte;
+  return byte;
 }
 
 auto CPU::get_signed_byte_from_pc() -> s8 {
-    u8 byte = get_byte_from_pc();
-    return static_cast<s8>(byte);
+  u8 byte = get_byte_from_pc();
+  return static_cast<s8>(byte);
 }
 
 auto CPU::get_word_from_pc() -> u16 {
-    u8 low_byte = get_byte_from_pc();
-    u8 high_byte = get_byte_from_pc();
+  u8 low_byte = get_byte_from_pc();
+  u8 high_byte = get_byte_from_pc();
 
-    return compose_bytes(high_byte, low_byte);
+  return compose_bytes(high_byte, low_byte);
 }
 
 void CPU::set_flag_zero(bool set) { f.set_flag_zero(set); }
@@ -109,49 +120,49 @@ void CPU::set_flag_half_carry(bool set) { f.set_flag_half_carry(set); }
 void CPU::set_flag_carry(bool set) { f.set_flag_carry(set); }
 
 auto CPU::is_condition(Condition condition) -> bool {
-    bool should_branch;
+  bool should_branch;
 
-    switch (condition) {
-        case Condition::C:
-            should_branch = f.flag_carry();
-            break;
-        case Condition::NC:
-            should_branch = !f.flag_carry();
-            break;
-        case Condition::Z:
-            should_branch = f.flag_zero();
-            break;
-        case Condition::NZ:
-            should_branch = !f.flag_zero();
-            break;
-    }
+  switch (condition) {
+  case Condition::C:
+    should_branch = f.flag_carry();
+    break;
+  case Condition::NC:
+    should_branch = !f.flag_carry();
+    break;
+  case Condition::Z:
+    should_branch = f.flag_zero();
+    break;
+  case Condition::NZ:
+    should_branch = !f.flag_zero();
+    break;
+  }
 
-    /* If the branch is taken, remember so that the correct processor cycles
-     * can be used */
-    branch_taken = should_branch;
-    return should_branch;
+  /* If the branch is taken, remember so that the correct processor cycles
+   * can be used */
+  branch_taken = should_branch;
+  return should_branch;
 }
 
-void CPU::stack_push(const WordValue& reg) {
-    sp.decrement();
-    gb.mmu.write(Address(sp), reg.high());
-    sp.decrement();
-    gb.mmu.write(Address(sp), reg.low());
+void CPU::stack_push(const WordValue &reg) {
+  sp.decrement();
+  gb.mmu.write(Address(sp), reg.high());
+  sp.decrement();
+  gb.mmu.write(Address(sp), reg.low());
 }
 
-void CPU::stack_pop(WordValue& reg) {
-    u8 low_byte = gb.mmu.read(Address(sp));
-    sp.increment();
-    u8 high_byte = gb.mmu.read(Address(sp));
-    sp.increment();
+void CPU::stack_pop(WordValue &reg) {
+  u8 low_byte = gb.mmu.read(Address(sp));
+  sp.increment();
+  u8 high_byte = gb.mmu.read(Address(sp));
+  sp.increment();
 
-    u16 value = compose_bytes(high_byte, low_byte);
-    reg.set(value);
+  u16 value = compose_bytes(high_byte, low_byte);
+  reg.set(value);
 }
 
 /* clang-format off */
 auto CPU::execute_normal_opcode(const u8 opcode, u16 opcode_pc) -> Cycles {
-    log_trace("0x%04X: %s (0x%x)", opcode_pc, opcode_names[opcode].c_str(), opcode);
+    log_trace("\e[1;36m0x%04X: \e[0m[\e[0;33m%02X\e[0m] \e[0m%s", opcode_pc, opcode, opcode_names[opcode].c_str());
 
     switch (opcode) {
         case 0x00: opcode_00(); break; case 0x01: opcode_01(); break; case 0x02: opcode_02(); break; case 0x03: opcode_03(); break; case 0x04: opcode_04(); break; case 0x05: opcode_05(); break; case 0x06: opcode_06(); break; case 0x07: opcode_07(); break; case 0x08: opcode_08(); break; case 0x09: opcode_09(); break; case 0x0A: opcode_0A(); break; case 0x0B: opcode_0B(); break; case 0x0C: opcode_0C(); break; case 0x0D: opcode_0D(); break; case 0x0E: opcode_0E(); break; case 0x0F: opcode_0F(); break;
@@ -178,7 +189,7 @@ auto CPU::execute_normal_opcode(const u8 opcode, u16 opcode_pc) -> Cycles {
 }
 
 auto CPU::execute_cb_opcode(const u8 opcode, u16 opcode_pc) -> Cycles {
-    log_trace("0x%04X: %s (CB 0x%x)", opcode_pc, opcode_cb_names[opcode].c_str(), opcode);
+    log_trace("\e[1;36m0x%04X: \e[0m[\e[0;32mCB%02X\e[0m] \e[0m%s", opcode_pc, opcode, opcode_names[opcode].c_str());
 
     switch (opcode) {
         case 0x00: opcode_CB_00(); break; case 0x01: opcode_CB_01(); break; case 0x02: opcode_CB_02(); break; case 0x03: opcode_CB_03(); break; case 0x04: opcode_CB_04(); break; case 0x05: opcode_CB_05(); break; case 0x06: opcode_CB_06(); break; case 0x07: opcode_CB_07(); break; case 0x08: opcode_CB_08(); break; case 0x09: opcode_CB_09(); break; case 0x0A: opcode_CB_0A(); break; case 0x0B: opcode_CB_0B(); break; case 0x0C: opcode_CB_0C(); break; case 0x0D: opcode_CB_0D(); break; case 0x0E: opcode_CB_0E(); break; case 0x0F: opcode_CB_0F(); break;
