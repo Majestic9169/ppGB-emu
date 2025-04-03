@@ -45,4 +45,6 @@ jobs:
         wget https://archive.org/compress/tetris_gb
         unzip tetris_gb -d roms
         rm tetris_gb
-        ./build/pp_tests -d yes --use-colours yes
+
+    - name: Run Unit Tests
+      run: ./build/pp_test -d yes --use-colour yes
