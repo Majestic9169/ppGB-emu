@@ -27,9 +27,7 @@ if (SDL2_FOUND)
 
   # Static linking only for Release builds
   if (CMAKE_BUILD_TYPE STREQUAL "Release")
-    message(STATUS "Building release: Enabling static linking")
-    set(BUILD_SHARED_LIBS OFF)  # Ensure we prefer static libraries
-    target_link_options(ppGB PRIVATE -static -static-libgcc -static-libstdc++)
+    message(STATUS "Building release")
   else()
     message(STATUS "Building in ${CMAKE_BUILD_TYPE} mode: Using dynamic linking")
   endif()
