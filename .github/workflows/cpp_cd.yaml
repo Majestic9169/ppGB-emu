@@ -9,6 +9,10 @@ on:
     paths:
       - '.github/workflows/**'
 
+# Add permissions block at the workflow level
+permissions:
+  contents: write
+
 jobs:
   release:
     if: startsWith(github.ref, 'refs/tags')
