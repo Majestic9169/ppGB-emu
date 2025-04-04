@@ -95,7 +95,7 @@ I will be reading more about the GameBoy specifications. Side-by-side I will be 
 - [x] CMake implemented
 - [x] Libraries installed
   - SDL3
-- [ ] Pipelines implemented
+- [x] Pipelines implemented
   - for CI/CD of releases
   - for conventional commits
 
@@ -118,10 +118,10 @@ This will be spent implementing the memory and starting work on the CPU and inst
 Will begin implementing the display and user input. Will expand the opcodes and memory functionality (OAM tables etc)
 
 **Major Achievements**: 
-- [ ] Functioning display and user input
-  - using SDL3
+- [x] Functioning display and user input
+  - using ~~SDL3~~ SDL2
   - basic games might be playable now
-- [ ] Release v0.1.0
+- [x] Release v0.1.0
   - provided basic games are playable
   - around 60% of the opcodes should be implemented
 
@@ -132,10 +132,10 @@ Will expand all features so far, Implement audio functionality
 **Major Achievements**
 - [x] Progress in CPU
   - around 80% of the opcodes implemented
-- [ ] Game audio should be working
-- [ ] More games should be playable
+- [ ] ~~Game audio should be working~~
+- [x] More games should be playable
   - Super Mario Land should function
-  - Legend of Zelda should work
+  - ~~Legend of Zelda should work~~
 
 ### **Week 4**
 
