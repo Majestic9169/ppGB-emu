@@ -3,8 +3,11 @@ name: Release
 on:
   push:
     branches: ["main"]
+    paths:
+      - '.github/workflows/cpp_cd.yaml'
+  push:
     tags:
-      - 'v*.*.*' 
+      - 'v*.*.*'
 
 jobs:
   release:
@@ -20,10 +23,16 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt update
-          sudo apt install -y git-cliff 
+          GIT_CLIFF_VERSION=$(curl -s "https://api.github.com/repos/orhun/git-cliff/releases/latest" | grep -Po '"tag_name": "v\K[0-9.]+')
+          wget -qO git-cliff.tar.gz https://github.com/orhun/git-cliff/releases/latest/download/git-cliff-$GIT_CLIFF_VERSION-x86_64-unknown-linux-gnu.tar.gz
+          mkdir git-cliff-temp
+          tar xf git-cliff.tar.gz --strip-components=1 -C git-cliff-temp
+          sudo mv git-cliff-temp/git-cliff /usr/local/bin
+          git cliff --version
+          rm -rf git-cliff.tar.gz git-cliff-temp
 
       - name: Install project dependencies
-        run: sudo apt install -y libsdl2-static
+        run: sudo apt install -y libsdl2-dev
 
       - name: Compile project
         run: |
