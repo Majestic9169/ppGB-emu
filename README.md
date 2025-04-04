@@ -127,6 +127,10 @@ The `build/` directory should now contain your executables
 - `ppGB` - the main emulator
 - `ppGB-test` - a headless version for tests and debugging
 
+> [!TIP]
+> Or just download the latest stable release from [releases](https://github.com/Majestic9169/ppGB-emu/releases).
+> You will still need to install SDL2 as it can not be compiled statically
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ### Usage
