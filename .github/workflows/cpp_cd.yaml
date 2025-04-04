@@ -1,0 +1,48 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*' 
+
+jobs:
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  
+
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y git-cliff 
+
+      - name: Install project dependencies
+        run: sudo apt install -y libsdl2-static
+
+      - name: Compile project
+        run: |
+          mkdir build && cd build
+          cmake .. -DCMAKE_BUILD_TYPE=Release
+          make -j$(nproc)
+
+      - name: Generate changelog
+        run: |
+          git cliff --init
+          git-cliff -o CHANGELOG.md
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: Release ${{ github.ref_name }}
+          body_path: CHANGELOG.md
+          files: |
+            ./build/ppGB
+
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
