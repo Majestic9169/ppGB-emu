@@ -1,3 +1,4 @@
+#include "../include/ANSI-color-codes.h"
 #include "../include/cpu.h"
 #include <cstdint>
 #include <cstdio>
@@ -288,7 +289,7 @@ void CPU::INSTRUCTION_DECODER() {
   clock_m += clock_m_cycles[curr_op];
 
   if (curr_op != 0xcb) {
-    printf("0x%04X: [%02x] ", curr_pc, curr_op);
+    printf(COLOR_RESET CYN "0x%04X:" BYEL " [%02x] " RED, curr_pc, curr_op);
   }
 
   switch (curr_op) {
