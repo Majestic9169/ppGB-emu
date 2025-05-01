@@ -63,6 +63,8 @@
       <ul>
         <li><a href="#prerequisites">Prerequisites</a></li>
         <li><a href="#installation">Installation</a></li>
+        <li><a href="#usage">Usage</a></li>
+        <li><a href="#tests">Tests</a></li>
       </ul>
     </li>
     <li><a href="#top-contributors">Top Contributors</a></li>
@@ -93,35 +95,22 @@ This project aims to implement a basic featured Gameboy Emulator that will allow
 
 ### Prerequisites
 
-This project uses SDL3 as a dependency.
+This project uses ~~SDL3~~ SDL2 as a dependency.
 
-You can install SDL3 on Arch Linux from the extra repository as 
-
-```bash
-sudo pacman -S sdl3
-```
-
-On linux mint and similar systems you may need to build from source (this has not been verified)
+You can install SDL2 on Arch Linux from the extra repository as 
 
 ```bash
-curl -L 'https://github.com/libsdl-org/SDL/releases/download/release-3.2.4/SDL3-3.2.4.zip' -o SDL3-3.2.4.zip
-unzip SDL3-3.2.4.zip
-cd SDL3-3.2.4
-cmake -S . -B build
-cmake --build build
-sudo cmake --install build --prefix /usr/local
+sudo pacman -S sdl2
 ```
 
-### Installation
+On linux mint and similar systems
 
-1. **Clone via CLI:**
+```bash
+sudo apt-get install libsdl2-2.0.0
+```
 
-  ```bash
-  git clone https://github.com/Majestic9169/ppGB-emu.git
-  ```
-
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+> [!NOTE]
+> SDL3 is newly released and not stable. Up until April 3rd I was trying to use SDL3 not realising that it simply was not functional yet
 
 ---
 
