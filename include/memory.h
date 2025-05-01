@@ -20,7 +20,7 @@ struct Color {
 };
 
 class Memory {
-private:
+protected:
   std::array<std::uint8_t, MEMORY_SIZE> MEMORY;
 
 public:
