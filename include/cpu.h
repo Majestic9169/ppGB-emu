@@ -114,6 +114,8 @@ public:
   void write_word(uint16_t addr, uint16_t val);
 
   // CPU reg functionsl
+  uint16_t read_word_from_pc();
+  uint8_t read_byte_from_pc();
   uint8_t read_reg(R8_PTR r);
   void write_reg(R8_PTR r, uint8_t val);
   uint16_t read_reg(R16_PTR r);

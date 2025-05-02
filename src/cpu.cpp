@@ -1,7 +1,7 @@
 #include "../include/cpu.h"
 #include <cstdint>
 #include <cstdlib>
-#include <cstring>
+// #include <cstring>
 #include <fstream>
 // #include <ios>
 #include <iostream>
@@ -45,10 +45,21 @@ uint8_t CPU::read_byte(uint16_t addr) {
 }
 
 uint16_t CPU::read_word(uint16_t addr) {
-  // clock_m += 1;
   uint8_t low = ROM.read_byte(addr);
   uint8_t high = ROM.read_byte(addr + 1);
   return (high << 8) | low;
+}
+
+uint16_t CPU::read_word_from_pc() {
+  uint16_t word = read_word(reg.pc);
+  reg.pc += 2;
+  return word;
+}
+
+uint8_t CPU::read_byte_from_pc() {
+  uint8_t byte = read_byte(reg.pc);
+  reg.pc += 1;
+  return byte;
 }
 
 void CPU::write_byte(uint16_t addr, uint8_t val) {
