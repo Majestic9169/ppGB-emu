@@ -1,3 +1,9 @@
+/*
+ * cli_opts.hpp
+ * - take cli arguments
+ * - parse them to check for test mode and debug mode
+ */
+
 #ifndef CLI_OPTS_H
 #define CLI_OPTS_H
 
@@ -15,9 +21,8 @@ private:
   std::string ROM_FILE;
   std::string TEST_FLAG = "-t";
   std::string DEBUG_FLAG = "-d";
-  std::string USAGE = COLOR_RESET + "[ppGB] ./ppGB [-td] ROM_FILE\n" + "  " +
-                      TEST_FLAG + "\ttesting mode\n" + "  " + DEBUG_FLAG +
-                      "\tdebugging mode\n";
+  std::string USAGE = "ppGB: ppGB [-t -d] ROM_FILE\n  " + TEST_FLAG +
+                      "\ttesting mode\n  " + DEBUG_FLAG + "\tdebugging mode\n";
 
 public:
   // create vector of arguments
@@ -58,6 +63,20 @@ public:
 
   // return ROM_FILE
   std::string rom_name() { return args.back(); }
+
+  void print_debug() {
+    if (debug_enabled()) {
+      std::cout
+          << YEL
+          << "[~] Debug Mode is enabled. Debug information will be printed\n"
+          << COLOR_RESET;
+      std::cout << "ROM FILE   " << rom_name() << std::endl;
+      std::cout << "TEST MODE  " << std::boolalpha << test_enabled()
+                << std::endl;
+      std::cout << "DEBUG MODE " << debug_enabled() << std::noboolalpha
+                << std::endl;
+    }
+  }
 };
 
 #endif

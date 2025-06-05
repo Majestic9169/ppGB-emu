@@ -6,12 +6,13 @@
  */
 
 #include "include/cli_opts.hpp"
-#include <iostream>
+#include "include/gb.hpp"
 
 int main(int argc, char **argv) {
   Opts cli_options(argc, argv);
-  std::cout << cli_options.rom_name() << std::endl;
-  std::cout << cli_options.test_enabled() << std::endl;
-  std::cout << cli_options.debug_enabled() << std::endl;
+  cli_options.print_debug();
+
+  Gameboy gb{&cli_options};
+
   return 0;
 }
