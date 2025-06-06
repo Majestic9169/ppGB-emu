@@ -1,11 +1,3 @@
-#ifndef MMU_H
-#define MMU_H
-
-#include "cli_opts.hpp"
-#include <fstream>
-#include <iostream>
-#include <vector>
-
 /*
  * MMU
  * - Class to manage all ROM accesses
@@ -13,23 +5,57 @@
  * - learncpp said std::vector for non-constexpr uses and i have to load from a
  * file so...
  */
-// TODO: define copy constructors. This is necessary because we have a pointer
+
+#ifndef MMU_H
+#define MMU_H
+
+#include "cli_opts.hpp"
+#include <cstdint>
+#include <fstream>
+#include <ios>
+#include <iostream>
+#include <ostream>
+#include <string>
+#include <vector>
+
+constexpr std::size_t ROM_SIZE{0x10000};
+
 class MMU {
 private:
-  std::vector<std::byte> ROM;
+  // i considered std::byte but that's really restrictive and i usually need to
+  // work with numbers
+  std::vector<std::uint8_t> ROM;
   Opts *cli_opts;
+  // delete copy constructor and assignment operator, don't wanna mess with
+  // pointers. look at this btw lol
+  // https://stackoverflow.com/questions/33776697/
+  MMU(const MMU &) = delete;
+  MMU &operator=(const MMU &) = delete;
+
+  void header_information() {
+    std::string title{std::string{ROM.begin() + 0x134, ROM.begin() + 0x143}};
+    bool gbc_support = ROM[0x143] == 0x80 || ROM[0x143] == 0xc0 ? true : false;
+    int rom_size = 0x8000 * (1 << ROM[0x148]);
+    int rom_banks = rom_size / 0x4000;
+    std::cout << YEL << "[~] ROM Header Information\n" << COLOR_RESET;
+    std::cout << "Title       " << title << std::endl;
+    std::cout << "GBC support " << std::boolalpha << gbc_support
+              << std::noboolalpha << std::endl;
+    std::cout << "ROM size    " << rom_size << std::endl;
+    std::cout << "No. Banks   " << rom_banks << std::endl;
+  }
 
 public:
-  MMU(Opts *opts_) : ROM{}, cli_opts{opts_} {
+  MMU(Opts *opts_) : ROM(ROM_SIZE), cli_opts{opts_} {
     std::ifstream rom_file{cli_opts->rom_name(), std::ios::binary};
     if (!rom_file.good()) {
       std::cerr << RED << "[!] Error loading ROM_FILE\n" << COLOR_RESET;
       exit(2);
     }
-    ROM.reserve(0xffff);
-    rom_file.read(reinterpret_cast<char *>(ROM.data()), 0xffff);
+    rom_file.read(reinterpret_cast<char *>(ROM.data()), ROM_SIZE);
     if (cli_opts->debug_enabled()) {
       std::cout << GRN << "[+] ROM successfully loaded\n" << COLOR_RESET;
+      header_information();
     }
   }
 };

@@ -1,0 +1,60 @@
+/*
+ * Registers
+ * - make use of struct/union for ease of access
+ * - take care of endianness
+ * - interface for working with flag register
+ */
+
+#ifndef REG_H
+#define REG_H
+
+#include <cstdint>
+
+class Registers {
+public:
+// ISO C++ doesn't allow anonymous structs which is so stupid
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpedantic"
+  struct {
+    union {
+      struct {
+        uint8_t f;
+        uint8_t a;
+      };
+      uint16_t af;
+    };
+  };
+  struct {
+    union {
+      struct {
+        uint8_t c;
+        uint8_t b;
+      };
+      uint16_t bc;
+    };
+  };
+  struct {
+    union {
+      struct {
+        uint8_t e;
+        uint8_t d;
+      };
+      uint16_t de;
+    };
+  };
+  struct {
+    union {
+      struct {
+        uint8_t l;
+        uint8_t h;
+      };
+      uint16_t hl;
+    };
+  };
+#pragma GCC diagnostic pop
+
+  uint16_t sp;
+  uint16_t pc;
+};
+
+#endif

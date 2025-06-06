@@ -2,6 +2,7 @@
 #define GB_H
 
 #include "cli_opts.hpp"
+#include "cpu.hpp"
 #include "mmu.hpp"
 
 /*
@@ -12,9 +13,10 @@
 class Gameboy {
 private:
   MMU mmu;
+  CPU cpu;
 
 public:
-  Gameboy(Opts *opts_) : mmu(opts_) {};
+  Gameboy(Opts *opts_) : mmu(opts_), cpu{} {};
 };
 
 #endif

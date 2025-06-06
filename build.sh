@@ -1,25 +1,25 @@
 #!/usr/bin/bash
 
-echo "building"
+echo "build: building"
 g++ -ggdb -pedantic-errors -Wall -Weffc++ -Wextra -Wconversion -o ppGB main.cpp
-echo "built"
+echo "build: built"
 
 while getopts 'rdc' OPTION; do
   case "$OPTION" in
     r)
-      echo "running"
-      ./ppGB example.gb
+      echo "build: running"
+      ./ppGB ../gb-test-roms/cpu_instrs/cpu_instrs.gb
       ;;
     d)
-      echo "running with debug"
-      ./ppGB -d example.gb
+      echo "build: running with debug"
+      ./ppGB -d ../gb-test-roms/cpu_instrs/cpu_instrs.gb
       ;;
     c)
-      echo "cleaning"
+      echo "build: cleaning"
       rm ppGB
       ;;
     ?)
-      echo "exiting"
+      echo "build: exiting"
       ;;
   esac
 done
