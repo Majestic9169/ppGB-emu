@@ -20,6 +20,7 @@ while getopts 'rdct' OPTION; do
       cd ./tests/ && make clean
       ;;
     t)
+      echo "build: testing"
       cd ./tests/
       make
       ;;

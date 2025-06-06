@@ -18,7 +18,13 @@ public:
   struct {
     union {
       struct {
-        uint8_t f;
+        struct {
+          uint8_t ignore : 4;
+          uint8_t c : 1;
+          uint8_t h : 1;
+          uint8_t n : 1;
+          uint8_t z : 1;
+        } f;
         uint8_t a;
       };
       uint16_t af;
