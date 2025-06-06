@@ -58,6 +58,14 @@ public:
       header_information();
     }
   }
+
+  uint8_t read_byte(uint16_t addr) { return ROM[addr]; }
+  uint16_t read_word(uint16_t addr) { return ROM[addr] | ROM[addr + 1] << 8; }
+  void write_byte(uint16_t addr, uint8_t val) { ROM[addr] = val; }
+  void write_word(uint16_t addr, uint16_t val) {
+    write_byte(addr, static_cast<uint8_t>(val));
+    write_byte(addr + 1, static_cast<uint8_t>(val >> 8));
+  }
 };
 
 #endif

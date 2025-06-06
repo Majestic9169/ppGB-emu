@@ -16,7 +16,12 @@ private:
   CPU cpu;
 
 public:
-  Gameboy(Opts *opts_) : mmu(opts_), cpu{} {};
+  Gameboy(Opts *opts_) : mmu(opts_), cpu{&mmu} {};
+  void run() {
+    while (1) {
+      cpu.cpu_step();
+    }
+  }
 };
 
 #endif

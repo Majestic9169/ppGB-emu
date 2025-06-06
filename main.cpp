@@ -13,6 +13,7 @@ int main(int argc, char **argv) {
   cli_options.print_debug();
 
   Gameboy gb{&cli_options};
+  gb.run();
 
   return 0;
 }

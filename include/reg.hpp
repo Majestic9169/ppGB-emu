@@ -61,6 +61,22 @@ public:
 
   uint16_t sp;
   uint16_t pc;
+
+  void set_z(uint8_t val) {
+    if (val == 0) {
+      f.z = 1;
+    } else {
+      f.z = 0;
+    }
+  }
+
+  void set_h(uint8_t val) {
+    if ((val & 0x0f) == 0x0f) {
+      f.h = 1;
+    } else {
+      f.h = 0;
+    }
+  }
 };
 
 #endif
