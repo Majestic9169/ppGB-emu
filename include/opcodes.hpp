@@ -3,6 +3,9 @@
  * - all opcodes stored as class members
  * - include helper functions and switch statements
  * - can access mmu and registers
+ * - the goal is to have all opcode functions be single lines,
+ *   and if that's not possible then introduce helper instructions
+ * - and use instructions anyway when there are flags to be set
  */
 
 #ifndef OPCODE_H
@@ -16,6 +19,7 @@ class Opcodes {
 private:
   MMU *mmu;
   Registers *reg;
+  // INC INSTRUCTIONS Z0H-
   void inc(uint8_t &val) {
     reg->set_h(val);
     val++;
@@ -30,60 +34,110 @@ private:
     reg->set_z(val);
     reg->f.n = 0;
   }
+  // DEC INSTRUCTIONS Z1H-
+  void dec(uint8_t &val) {
+    if ((val & 0x0f) == 0x00) {
+      reg->f.h = 1;
+    } else {
+      reg->f.h = 0;
+    }
+    val--;
+    reg->set_z(val);
+    reg->f.n = 1;
+  }
+  void dec_16(uint16_t addr) {
+    uint8_t val = mmu->read_byte(addr);
+    if ((val & 0x0f) == 0x00) {
+      reg->f.h = 1;
+    } else {
+      reg->f.h = 0;
+    }
+    val--;
+    mmu->write_byte(addr, val);
+    reg->set_z(val);
+    reg->f.n = 1;
+  }
+  // ROTATE INSTRUCTIONS 000C
+  void rlca() {
+    reg->f.z = 0;
+    reg->f.n = 0;
+    reg->f.h = 0;
+    reg->f.c = (reg->a & 0x80) >> 7;
+    reg->a = (reg->a << 1) | reg->f.c;
+  }
+  void rla() {
+    reg->f.z = 0;
+    reg->f.n = 0;
+    reg->f.h = 0;
+    uint8_t tmp = 0 + reg->f.c;
+    reg->f.c = (reg->a & 0x80) >> 7;
+    reg->a = (reg->a << 1) | tmp;
+  }
 
 public:
   Opcodes(MMU *_mmu, Registers *_reg) : mmu{_mmu}, reg{_reg} {}
   // NOP
   void opcode_00() { return; }
   // LD BC, u16
-  void opcode_01() {
-    uint16_t word = mmu->read_word(reg->pc++);
-    reg->bc = word;
-  }
-  // LD [BC], A
+  void opcode_01() { reg->bc = mmu->read_word(reg->pc++); }
+  // LD (BC), A
   void opcode_02() { mmu->write_byte(reg->bc, reg->a); }
   // INC BC
   void opcode_03() { reg->bc++; }
   // INC B
   void opcode_04() { inc(reg->b); }
-  void opcode_05();
-  void opcode_06();
-  void opcode_07();
+  // DEC B
+  void opcode_05() { dec(reg->b); };
+  // LD B, u8
+  void opcode_06() { reg->b = mmu->read_byte(reg->pc++); };
+  // RLCA
+  void opcode_07() { rlca(); };
   void opcode_08();
   void opcode_09();
   void opcode_0a();
   void opcode_0b();
   // INC C
   void opcode_0c() { inc(reg->c); };
-  void opcode_0d();
+  // DEC C
+  void opcode_0d() { dec(reg->c); };
   void opcode_0e();
   void opcode_0f();
   void opcode_10();
-  void opcode_11();
-  void opcode_12();
+  // LD DE, u16
+  void opcode_11() { reg->de = mmu->read_word(reg->pc++); };
+  // LD (DE), A
+  void opcode_12() { mmu->write_byte(reg->de, reg->a); };
   void opcode_13();
   // INC D
   void opcode_14() { inc(reg->d); }
-  void opcode_15();
-  void opcode_16();
-  void opcode_17();
+  // DEC D
+  void opcode_15() { dec(reg->d); };
+  // LD D, u8
+  void opcode_16() { reg->d = mmu->read_byte(reg->pc++); };
+  // RLA
+  void opcode_17() { rla(); };
   void opcode_18();
   void opcode_19();
   void opcode_1a();
   void opcode_1b();
   // INC E
   void opcode_1c() { inc(reg->e); };
-  void opcode_1d();
+  // DEC E
+  void opcode_1d() { dec(reg->e); };
   void opcode_1e();
   void opcode_1f();
   void opcode_20();
-  void opcode_21();
-  void opcode_22();
+  // LD HL, u16
+  void opcode_21() { reg->hl = mmu->read_word(reg->pc++); };
+  // LD (HL+), A
+  void opcode_22() { mmu->write_byte(reg->hl++, reg->a); };
   void opcode_23();
   // INC H
   void opcode_24() { inc(reg->h); };
-  void opcode_25();
-  void opcode_26();
+  // DEC H
+  void opcode_25() { dec(reg->h); };
+  // LD H, u8
+  void opcode_26() { reg->h = mmu->read_byte(reg->pc++); };
   void opcode_27();
   void opcode_28();
   void opcode_29();
@@ -91,17 +145,22 @@ public:
   void opcode_2b();
   // INC L
   void opcode_2c() { inc(reg->l); };
-  void opcode_2d();
+  // DEC L
+  void opcode_2d() { dec(reg->l); };
   void opcode_2e();
   void opcode_2f();
   void opcode_30();
-  void opcode_31();
-  void opcode_32();
+  // LD SP, u16
+  void opcode_31() { reg->sp = mmu->read_word(reg->pc++); };
+  // LD (HL-), A
+  void opcode_32() { mmu->write_byte(reg->hl--, reg->a); };
   void opcode_33();
-  // INC [HL]
+  // INC (HL)
   void opcode_34() { inc_16(reg->hl); };
-  void opcode_35();
-  void opcode_36();
+  // DEC (HL)
+  void opcode_35() { dec_16(reg->hl); };
+  // LD (HL), u8
+  void opcode_36() { mmu->write_byte(reg->hl, mmu->read_byte(reg->pc++)); };
   void opcode_37();
   void opcode_38();
   void opcode_39();
@@ -109,7 +168,8 @@ public:
   void opcode_3b();
   // INC A
   void opcode_3c() { inc(reg->a); };
-  void opcode_3d();
+  // DEC A
+  void opcode_3d() { dec(reg->a); };
   void opcode_3e();
   void opcode_3f();
   void opcode_40();
