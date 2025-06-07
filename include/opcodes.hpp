@@ -295,70 +295,136 @@ public:
   void opcode_3e() { reg->a = mmu->read_byte(reg->pc++); };
   // CCF
   void opcode_3f() { ccf(); };
-  void opcode_40();
-  void opcode_41();
-  void opcode_42();
-  void opcode_43();
-  void opcode_44();
-  void opcode_45();
-  void opcode_46();
-  void opcode_47();
-  void opcode_48();
-  void opcode_49();
-  void opcode_4a();
-  void opcode_4b();
-  void opcode_4c();
-  void opcode_4d();
-  void opcode_4e();
-  void opcode_4f();
-  void opcode_50();
-  void opcode_51();
-  void opcode_52();
-  void opcode_53();
-  void opcode_54();
-  void opcode_55();
-  void opcode_56();
-  void opcode_57();
-  void opcode_58();
-  void opcode_59();
-  void opcode_5a();
-  void opcode_5b();
-  void opcode_5c();
-  void opcode_5d();
-  void opcode_5e();
-  void opcode_5f();
-  void opcode_60();
-  void opcode_61();
-  void opcode_62();
-  void opcode_63();
-  void opcode_64();
-  void opcode_65();
-  void opcode_66();
-  void opcode_67();
-  void opcode_68();
-  void opcode_69();
-  void opcode_6a();
-  void opcode_6b();
-  void opcode_6c();
-  void opcode_6d();
-  void opcode_6e();
-  void opcode_6f();
-  void opcode_70();
-  void opcode_71();
-  void opcode_72();
-  void opcode_73();
-  void opcode_74();
-  void opcode_75();
-  void opcode_76();
-  void opcode_77();
-  void opcode_78();
-  void opcode_79();
-  void opcode_7a();
-  void opcode_7b();
-  void opcode_7c();
-  void opcode_7d();
-  void opcode_7e();
-  void opcode_7f();
+  // LD B, B
+  void opcode_40() { return; };
+  // LD B, C
+  void opcode_41() { reg->b = reg->c; };
+  // LD B, D
+  void opcode_42() { reg->b = reg->d; };
+  // LD B, E
+  void opcode_43() { reg->b = reg->e; };
+  // LD B, H
+  void opcode_44() { reg->b = reg->h; };
+  // LD B, L
+  void opcode_45() { reg->b = reg->l; };
+  // LD B, (HL)
+  void opcode_46() { reg->b = mmu->read_byte(reg->hl); };
+  // LD B, A
+  void opcode_47() { reg->b = reg->a; };
+  // LD C, B
+  void opcode_48() { reg->c = reg->b; };
+  // LD C, C
+  void opcode_49() { return; };
+  // LD C, D
+  void opcode_4a() { reg->c = reg->d; };
+  // LD C, E
+  void opcode_4b() { reg->c = reg->e; };
+  // LD C, H
+  void opcode_4c() { reg->c = reg->h; };
+  // LD C, L
+  void opcode_4d() { reg->c = reg->l; };
+  // LD C, (HL)
+  void opcode_4e() { reg->c = mmu->read_byte(reg->hl); };
+  // LD C, A
+  void opcode_4f() { reg->c = reg->a; };
+  // LD D, B
+  void opcode_50() { reg->d = reg->b; };
+  // LD D, C
+  void opcode_51() { reg->d = reg->c; };
+  // LD D, D
+  void opcode_52() { return; };
+  // LD D, E
+  void opcode_53() { reg->d = reg->e; };
+  // LD D, H
+  void opcode_54() { reg->d = reg->h; };
+  // LD D, L
+  void opcode_55() { reg->d = reg->l; };
+  // LD D, (HL)
+  void opcode_56() { reg->d = mmu->read_byte(reg->hl); };
+  // LD D, A
+  void opcode_57() { reg->d = reg->a; };
+  // LD E, B
+  void opcode_58() { reg->e = reg->b; };
+  // LD E, C
+  void opcode_59() { reg->e = reg->c; };
+  // LD E, D
+  void opcode_5a() { reg->e = reg->d; };
+  // LD E, E
+  void opcode_5b() { return; };
+  // LD E, H
+  void opcode_5c() { reg->e = reg->h; };
+  // LD E, L
+  void opcode_5d() { reg->e = reg->l; };
+  // LD E, (HL)
+  void opcode_5e() { reg->e = mmu->read_byte(reg->hl); };
+  // LD E, A
+  void opcode_5f() { reg->e = reg->a; };
+  // LD H, B
+  void opcode_60() { reg->h = reg->b; };
+  // LD H, C
+  void opcode_61() { reg->h = reg->c; };
+  // LD H, D
+  void opcode_62() { reg->h = reg->d; };
+  // LD H, E
+  void opcode_63() { reg->h = reg->e; };
+  // LD H, H
+  void opcode_64() { return; };
+  // LD H, L
+  void opcode_65() { reg->h = reg->l; };
+  // LD H, (HL)
+  void opcode_66() { reg->h = mmu->read_byte(reg->hl); };
+  // LD H, A
+  void opcode_67() { reg->h = reg->a; };
+  // LD L, B
+  void opcode_68() { reg->l = reg->b; };
+  // LD L, C
+  void opcode_69() { reg->l = reg->c; };
+  // LD L, D
+  void opcode_6a() { reg->l = reg->d; };
+  // LD L, E
+  void opcode_6b() { reg->l = reg->e; };
+  // LD L, H
+  void opcode_6c() { reg->l = reg->h; };
+  // LD L, L
+  void opcode_6d() { return; };
+  // LD L, (HL)
+  void opcode_6e() { reg->l = mmu->read_byte(reg->hl); };
+  // LD L, A
+  void opcode_6f() { reg->l = reg->a; };
+  // LD (HL), B
+  void opcode_70() { mmu->write_byte(reg->hl, reg->b); };
+  // LD (HL), C
+  void opcode_71() { mmu->write_byte(reg->hl, reg->c); };
+  // LD (HL), D
+  void opcode_72() { mmu->write_byte(reg->hl, reg->d); };
+  // LD (HL), E
+  void opcode_73() { mmu->write_byte(reg->hl, reg->e); };
+  // LD (HL), H
+  void opcode_74() { mmu->write_byte(reg->hl, reg->h); };
+  // LD (HL), L
+  void opcode_75() { mmu->write_byte(reg->hl, reg->l); };
+  // HALT
+  // TODO: implement halt properly once IME etc are added
+  // will probably need a new instruction
+  void opcode_76() { reg->stopped = true; };
+  // LD (HL), A
+  void opcode_77() { mmu->write_byte(reg->hl, reg->a); };
+  // LD A, B
+  void opcode_78() { reg->a = reg->b; };
+  // LD A, C
+  void opcode_79() { reg->a = reg->c; };
+  // LD A, D
+  void opcode_7a() { reg->a = reg->d; };
+  // LD A, E
+  void opcode_7b() { reg->a = reg->e; };
+  // LD A, H
+  void opcode_7c() { reg->a = reg->h; };
+  // LD A, L
+  void opcode_7d() { reg->a = reg->l; };
+  // LD A, (HL)
+  void opcode_7e() { reg->a = mmu->read_byte(reg->hl); };
+  // LD A, A
+  void opcode_7f() { return; };
   // ADD A, B
   void opcode_80() { add(reg->b); };
   // ADD A, C
