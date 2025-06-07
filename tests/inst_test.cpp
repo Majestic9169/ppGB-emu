@@ -132,4 +132,83 @@ TEST_CASE("rotate tests", "[flags, rlca, rla]") {
   reg.af = 0x81f0;
   op.opcode_17();
   REQUIRE(reg.af == 0x0310);
+  reg.af = 0x81f0;
+  op.opcode_0f();
+  REQUIRE(reg.af == 0xc010);
+  reg.af = 0x0210;
+  op.opcode_1f();
+  REQUIRE(reg.af == 0x8100);
+}
+
+TEST_CASE("jr tests", "[flags, jr]") {
+  reg.pc = 0x104;
+  mmu.write_byte(reg.pc, 0xff); // -1
+  op.opcode_18();
+  REQUIRE(reg.pc == 0x104);
+  reg.f.z = 0;
+  op.opcode_28();
+  REQUIRE(reg.pc == 0x105);
+  reg.pc = 0x104;
+  reg.f.n = 1;
+  reg.f.c = 1;
+  op.opcode_30();
+  REQUIRE(reg.pc == 0x104);
+}
+
+TEST_CASE("add tests", "[flags, add]") {
+  reg.af = 0xfff0;
+  reg.hl = 0x0069;
+  reg.sp = 0x0420;
+  op.opcode_39();
+  REQUIRE(reg.hl == 0x489);
+  REQUIRE(reg.af == 0xff80);
+  reg.hl = 0x00f9;
+  reg.de = 0x202c;
+  op.opcode_19();
+  REQUIRE(reg.hl == 0x2125);
+  REQUIRE(reg.af == 0xffa0);
+  reg.hl = 0x8fff;
+  op.opcode_29();
+  REQUIRE(reg.hl == 0x1ffe);
+  REQUIRE(reg.af == 0xffb0);
+  reg.af = 0x6990;
+  reg.b = 0x67;
+  op.opcode_80();
+  REQUIRE(reg.af == 0xd020);
+}
+
+TEST_CASE("misc tests", "[flags, daa, ccf, cpl, scf]") {
+  // DAA
+  // 0x54 + 0x70 = 124
+  reg.a = 0x54;
+  reg.c = 0x70;
+  op.opcode_81();
+  op.opcode_27();
+  REQUIRE(reg.af == 0x2410);
+  // 0x42 + 0x35 = 77
+  reg.a = 0x42;
+  reg.d = 0x35;
+  op.opcode_82();
+  op.opcode_27();
+  REQUIRE(reg.af == 0x7700);
+  // 0x42 + 0x29 = 71
+  reg.a = 0x42;
+  reg.e = 0x29;
+  op.opcode_83();
+  op.opcode_27();
+  REQUIRE(reg.af == 0x7100);
+  op.opcode_37();
+  REQUIRE(reg.f.c == 1);
+  REQUIRE(reg.f.n == 0);
+  REQUIRE(reg.f.h == 0);
+  reg.a = 0x0f;
+  op.opcode_2f();
+  REQUIRE(reg.a == 0xf0);
+  REQUIRE(reg.f.n == 1);
+  REQUIRE(reg.f.h == 1);
+  reg.f.c = 0;
+  op.opcode_3f();
+  REQUIRE(reg.f.c == 1);
+  REQUIRE(reg.f.n == 0);
+  REQUIRE(reg.f.h == 0);
 }

@@ -6,6 +6,7 @@
  * - the goal is to have all opcode functions be single lines,
  *   and if that's not possible then introduce helper instructions
  * - and use instructions anyway when there are flags to be set
+ * - for the sake of readibility
  */
 
 #ifndef OPCODE_H
@@ -19,6 +20,48 @@ class Opcodes {
 private:
   MMU *mmu;
   Registers *reg;
+  // MISC INSTRUCTIONS
+  void cpl() {
+    reg->a = ~reg->a;
+    reg->f.n = 1;
+    reg->f.h = 1;
+  }
+  void ccf() {
+    reg->f.c = !reg->f.c;
+    reg->f.n = 0;
+    reg->f.h = 0;
+  }
+  void scf() {
+    reg->f.c = 1;
+    reg->f.n = 0;
+    reg->f.h = 0;
+  }
+  void daa() {
+    uint8_t adj = 0;
+    if (reg->f.n) {
+      if (reg->f.h) {
+        adj += 0x6;
+      }
+      if (reg->f.c) {
+        adj += 0x60;
+      }
+      reg->a = reg->a - adj;
+    } else {
+      if (reg->f.h || ((reg->a & 0x0f) > 0x09)) {
+        // just the addition of 0x06 can not trigger a carry unless a was
+        // greater than 0x99 anyway which is we can relegate the carry to be
+        // dependent only on if adj>=0x60
+        adj += 0x6;
+      }
+      if (reg->f.c || (reg->a > 0x99)) {
+        adj += 0x60;
+      }
+      reg->f.c = adj >= 0x60 ? 1 : 0;
+      reg->a = reg->a + adj;
+    }
+    reg->set_z(reg->a);
+    reg->f.h = 0;
+  }
   // INC INSTRUCTIONS Z0H-
   void inc(uint8_t &val) {
     reg->set_h(val);
@@ -73,6 +116,54 @@ private:
     reg->f.c = (reg->a & 0x80) >> 7;
     reg->a = (reg->a << 1) | tmp;
   }
+  void rrca() {
+    reg->f.z = 0;
+    reg->f.n = 0;
+    reg->f.h = 0;
+    reg->f.c = reg->a & 0x01;
+    reg->a = (reg->a >> 1) | (reg->f.c << 7);
+  }
+  void rra() {
+    reg->f.z = 0;
+    reg->f.n = 0;
+    reg->f.h = 0;
+    uint8_t tmp = 0 + reg->f.c;
+    reg->f.c = reg->a & 0x01;
+    reg->a = (reg->a >> 1) | (tmp << 7);
+  }
+  // ADD INSTRUCTIONS -0HC
+  void add_hl(uint16_t r16) {
+    reg->f.n = 0;
+    // check overflow from bit 11
+    if (((reg->hl & 0x00ff) + (r16 & 0x00ff)) & 0xff00) {
+      reg->f.h = 1;
+    } else {
+      reg->f.h = 0;
+    }
+    // check overflow from bit 15
+    uint32_t res = reg->hl + r16;
+    if (res & 0xffff0000) {
+      reg->f.c = 1;
+    } else {
+      reg->f.c = 0;
+    }
+    reg->hl = reg->hl + r16;
+  }
+  void add(uint8_t val) {
+    reg->set_h(reg->a, val);
+    reg->set_c(reg->a, val);
+    reg->f.n = 0;
+    reg->a = reg->a + val;
+    reg->set_z(reg->a);
+  }
+  // JR INSTRUCTIONS
+  void jr(bool condition) {
+    // TODO: add cycles diff for taken/untaken whenever i add clock
+    int8_t i8 = mmu->read_byte(reg->pc++);
+    if (condition) {
+      reg->pc = reg->pc + i8;
+    }
+  }
 
 public:
   Opcodes(MMU *_mmu, Registers *_reg) : mmu{_mmu}, reg{_reg} {}
@@ -92,22 +183,30 @@ public:
   void opcode_06() { reg->b = mmu->read_byte(reg->pc++); };
   // RLCA
   void opcode_07() { rlca(); };
-  void opcode_08();
-  void opcode_09();
-  void opcode_0a();
-  void opcode_0b();
+  // LD (u16), SP
+  void opcode_08() { mmu->write_word(mmu->read_byte(reg->pc++), reg->sp); };
+  // ADD HL, BC
+  void opcode_09() { add_hl(reg->bc); };
+  // LD A, (BC)
+  void opcode_0a() { reg->a = mmu->read_byte(reg->bc); };
+  // DEC BC
+  void opcode_0b() { reg->bc--; };
   // INC C
   void opcode_0c() { inc(reg->c); };
   // DEC C
   void opcode_0d() { dec(reg->c); };
-  void opcode_0e();
-  void opcode_0f();
-  void opcode_10();
+  // LD C, u8
+  void opcode_0e() { reg->c = mmu->read_byte(reg->pc++); };
+  // RRCA
+  void opcode_0f() { rrca(); };
+  // STOP
+  void opcode_10() { reg->stopped = true; };
   // LD DE, u16
   void opcode_11() { reg->de = mmu->read_word(reg->pc++); };
   // LD (DE), A
   void opcode_12() { mmu->write_byte(reg->de, reg->a); };
-  void opcode_13();
+  // INC DE
+  void opcode_13() { reg->de++; };
   // INC D
   void opcode_14() { inc(reg->d); }
   // DEC D
@@ -116,62 +215,86 @@ public:
   void opcode_16() { reg->d = mmu->read_byte(reg->pc++); };
   // RLA
   void opcode_17() { rla(); };
-  void opcode_18();
-  void opcode_19();
-  void opcode_1a();
-  void opcode_1b();
+  // JR i8
+  void opcode_18() { jr(true); };
+  // ADD HL, DE
+  void opcode_19() { add_hl(reg->de); };
+  // LD A, (BC)
+  void opcode_1a() { reg->a = mmu->read_byte(reg->de); };
+  // DEC DE
+  void opcode_1b() { reg->de--; };
   // INC E
   void opcode_1c() { inc(reg->e); };
   // DEC E
   void opcode_1d() { dec(reg->e); };
-  void opcode_1e();
-  void opcode_1f();
-  void opcode_20();
+  // LD E, u8
+  void opcode_1e() { reg->e = mmu->read_byte(reg->pc++); };
+  // RRA
+  void opcode_1f() { rra(); };
+  // JR NZ, i8
+  void opcode_20() { jr(reg->f.n && reg->f.z); };
   // LD HL, u16
   void opcode_21() { reg->hl = mmu->read_word(reg->pc++); };
   // LD (HL+), A
   void opcode_22() { mmu->write_byte(reg->hl++, reg->a); };
-  void opcode_23();
+  // INC HL
+  void opcode_23() { reg->hl++; };
   // INC H
   void opcode_24() { inc(reg->h); };
   // DEC H
   void opcode_25() { dec(reg->h); };
   // LD H, u8
   void opcode_26() { reg->h = mmu->read_byte(reg->pc++); };
-  void opcode_27();
-  void opcode_28();
-  void opcode_29();
-  void opcode_2a();
-  void opcode_2b();
+  // DAA
+  void opcode_27() { daa(); };
+  // JR Z, i8
+  void opcode_28() { jr(reg->f.z); };
+  // ADD HL, HL
+  void opcode_29() { add_hl(reg->hl); };
+  // LD A, (HL+)
+  void opcode_2a() { reg->a = mmu->read_byte(reg->hl++); };
+  // DEC HL
+  void opcode_2b() { reg->hl--; };
   // INC L
   void opcode_2c() { inc(reg->l); };
   // DEC L
   void opcode_2d() { dec(reg->l); };
-  void opcode_2e();
-  void opcode_2f();
-  void opcode_30();
+  // LD L, u8
+  void opcode_2e() { reg->l = mmu->read_byte(reg->pc++); };
+  // CPL
+  void opcode_2f() { cpl(); };
+  // JR NC, i8
+  void opcode_30() { jr(reg->f.n && reg->f.c); };
   // LD SP, u16
   void opcode_31() { reg->sp = mmu->read_word(reg->pc++); };
   // LD (HL-), A
   void opcode_32() { mmu->write_byte(reg->hl--, reg->a); };
-  void opcode_33();
+  // INC SP
+  void opcode_33() { reg->sp++; };
   // INC (HL)
   void opcode_34() { inc_16(reg->hl); };
   // DEC (HL)
   void opcode_35() { dec_16(reg->hl); };
   // LD (HL), u8
   void opcode_36() { mmu->write_byte(reg->hl, mmu->read_byte(reg->pc++)); };
-  void opcode_37();
-  void opcode_38();
-  void opcode_39();
-  void opcode_3a();
-  void opcode_3b();
+  // SCF
+  void opcode_37() { scf(); };
+  // JR C, i8
+  void opcode_38() { jr(reg->f.c); };
+  // ADD HL, SP
+  void opcode_39() { add_hl(reg->sp); };
+  // LD A, (HL-)
+  void opcode_3a() { reg->a = mmu->read_byte(reg->hl--); };
+  // DEC SP
+  void opcode_3b() { reg->sp--; };
   // INC A
   void opcode_3c() { inc(reg->a); };
   // DEC A
   void opcode_3d() { dec(reg->a); };
-  void opcode_3e();
-  void opcode_3f();
+  // LD A, u8
+  void opcode_3e() { reg->a = mmu->read_byte(reg->pc++); };
+  // CCF
+  void opcode_3f() { ccf(); };
   void opcode_40();
   void opcode_41();
   void opcode_42();
@@ -236,14 +359,22 @@ public:
   void opcode_7d();
   void opcode_7e();
   void opcode_7f();
-  void opcode_80();
-  void opcode_81();
-  void opcode_82();
-  void opcode_83();
-  void opcode_84();
-  void opcode_85();
-  void opcode_86();
-  void opcode_87();
+  // ADD A, B
+  void opcode_80() { add(reg->b); };
+  // ADD A, C
+  void opcode_81() { add(reg->c); };
+  // ADD A, D
+  void opcode_82() { add(reg->d); };
+  // ADD A, E
+  void opcode_83() { add(reg->e); };
+  // ADD A, H
+  void opcode_84() { add(reg->h); };
+  // ADD A, L
+  void opcode_85() { add(reg->l); };
+  // ADD A, (HL)
+  void opcode_86() { add(mmu->read_byte(reg->hl)); };
+  // ADD A, A
+  void opcode_87() { add(reg->a); };
   void opcode_88();
   void opcode_89();
   void opcode_8a();
