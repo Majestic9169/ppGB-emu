@@ -175,6 +175,10 @@ TEST_CASE("add tests", "[flags, add]") {
   reg.b = 0x67;
   op.opcode_80();
   REQUIRE(reg.af == 0xd020);
+  reg.af = 0x6990;
+  reg.h = 0x1f;
+  op.opcode_8c();
+  REQUIRE(reg.af == 0x8920);
 }
 
 TEST_CASE("misc tests", "[flags, daa, ccf, cpl, scf]") {

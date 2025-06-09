@@ -131,7 +131,7 @@ private:
     reg->f.c = reg->a & 0x01;
     reg->a = (reg->a >> 1) | (tmp << 7);
   }
-  // ADD INSTRUCTIONS -0HC
+  // ADD INSTRUCTIONS
   void add_hl(uint16_t r16) {
     reg->f.n = 0;
     // check overflow from bit 11
@@ -155,6 +155,95 @@ private:
     reg->f.n = 0;
     reg->a = reg->a + val;
     reg->set_z(reg->a);
+  }
+  // NOTE: half carry can be confusing because it feels like it depends on the
+  // order of addition
+  // https://gbdev.gg8.se/wiki/articles/ADC
+  void adc(uint8_t val) {
+    reg->f.h = ((reg->a & 0x0f) + (val & 0x0f) + (reg->f.c)) > 0x0F ? 1 : 0;
+    uint16_t res = reg->a + val + reg->f.c;
+    reg->f.c = res > 0xFF ? 1 : 0;
+    reg->a = res & 0x00FF;
+    reg->set_z(reg->a);
+    reg->f.n = 0;
+  }
+  // SUB INSTRUCTIONS
+  // TODO: add sub/sbc unit tests. don't feel like it rn
+  // all the rest of the ALU too
+  void sub(uint8_t val) {
+    // help my subs are unionizing
+    if ((val & 0x0f) > (reg->a & 0x0f)) {
+      reg->f.h = 1;
+    } else {
+      reg->f.h = 0;
+    }
+    if (val > reg->a) {
+      reg->f.c = 1;
+    } else {
+      reg->f.c = 0;
+    }
+    reg->a = reg->a - val;
+    reg->f.n = 1;
+    reg->set_z(reg->a);
+  };
+  void sbc(uint8_t val) {
+    // WARN: not sure about this half carry logic
+    if (reg->f.c + (val & 0x0f) > (reg->a & 0x0f)) {
+      reg->f.h = 1;
+    } else {
+      reg->f.h = 0;
+    }
+    uint8_t res = reg->a - val - reg->f.c;
+    if (val > reg->a) {
+      reg->f.c = 1;
+    } else {
+      reg->f.c = 0;
+    }
+    reg->a = res;
+    reg->f.n = 1;
+    reg->set_z(reg->a);
+  };
+  // AND INSTRUCTIONS
+  // NOTE: "and" is a keyword in c++ :sob:
+  void and_(uint8_t val) {
+    reg->a = reg->a & val;
+    reg->set_z(reg->a);
+    reg->f.n = 0;
+    reg->f.h = 1;
+    reg->f.c = 0;
+  }
+  // XOR INSTRUCTION
+  // NOTE: "xor" too :sob:
+  void xor_(uint8_t val) {
+    reg->a = reg->a ^ val;
+    reg->set_z(reg->a);
+    reg->f.n = 0;
+    reg->f.h = 0;
+    reg->f.c = 0;
+  }
+  // OR INSTRUCTION
+  void or_(uint8_t val) {
+    reg->a = reg->a | val;
+    reg->set_z(reg->a);
+    reg->f.n = 0;
+    reg->f.h = 0;
+    reg->f.c = 0;
+  }
+  // CP INSTRUCTIONS
+  void cp(uint8_t val) {
+    uint8_t res = reg->a - val;
+    if ((val & 0x0f) > (reg->a & 0x0f)) {
+      reg->f.h = 1;
+    } else {
+      reg->f.h = 0;
+    }
+    if (val > reg->a) {
+      reg->f.c = 1;
+    } else {
+      reg->f.c = 0;
+    }
+    reg->f.n = 1;
+    reg->set_z(res);
   }
   // JR INSTRUCTIONS
   void jr(bool condition) {
@@ -441,62 +530,118 @@ public:
   void opcode_86() { add(mmu->read_byte(reg->hl)); };
   // ADD A, A
   void opcode_87() { add(reg->a); };
-  void opcode_88();
-  void opcode_89();
-  void opcode_8a();
-  void opcode_8b();
-  void opcode_8c();
-  void opcode_8d();
-  void opcode_8e();
-  void opcode_8f();
-  void opcode_90();
-  void opcode_91();
-  void opcode_92();
-  void opcode_93();
-  void opcode_94();
-  void opcode_95();
-  void opcode_96();
-  void opcode_97();
-  void opcode_98();
-  void opcode_99();
-  void opcode_9a();
-  void opcode_9b();
-  void opcode_9c();
-  void opcode_9d();
-  void opcode_9e();
-  void opcode_9f();
-  void opcode_a0();
-  void opcode_a1();
-  void opcode_a2();
-  void opcode_a3();
-  void opcode_a4();
-  void opcode_a5();
-  void opcode_a6();
-  void opcode_a7();
-  void opcode_a8();
-  void opcode_a9();
-  void opcode_aa();
-  void opcode_ab();
-  void opcode_ac();
-  void opcode_ad();
-  void opcode_ae();
-  void opcode_af();
-  void opcode_b0();
-  void opcode_b1();
-  void opcode_b2();
-  void opcode_b3();
-  void opcode_b4();
-  void opcode_b5();
-  void opcode_b6();
-  void opcode_b7();
-  void opcode_b8();
-  void opcode_b9();
-  void opcode_ba();
-  void opcode_bb();
-  void opcode_bc();
-  void opcode_bd();
-  void opcode_be();
-  void opcode_bf();
+  // ADC A, B
+  void opcode_88() { adc(reg->b); };
+  // ADC A, c
+  void opcode_89() { adc(reg->c); };
+  // ADC A, D
+  void opcode_8a() { adc(reg->d); };
+  // ADC A, E
+  void opcode_8b() { adc(reg->e); };
+  // ADC A, H
+  void opcode_8c() { adc(reg->h); };
+  // ADC A, L
+  void opcode_8d() { adc(reg->l); };
+  // ADC A, (HL)
+  void opcode_8e() { adc(mmu->read_byte(reg->hl)); };
+  // ADC A, A
+  void opcode_8f() { adc(reg->a); };
+  // SUB A, B
+  void opcode_90() { sub(reg->b); };
+  // SUB A, C
+  void opcode_91() { sub(reg->c); };
+  // SUB A, D
+  void opcode_92() { sub(reg->d); };
+  // SUB A, E
+  void opcode_93() { sub(reg->e); };
+  // SUB A, H
+  void opcode_94() { sub(reg->h); };
+  // SUB A, L
+  void opcode_95() { sub(reg->l); };
+  // SUB A, (HL)
+  void opcode_96() { sub(mmu->read_byte(reg->hl)); };
+  // SUB A, A
+  void opcode_97() { sub(reg->a); };
+  // SBC A, B
+  void opcode_98() { sbc(reg->b); };
+  // SBC A, C
+  void opcode_99() { sbc(reg->c); };
+  // SBC A, D
+  void opcode_9a() { sbc(reg->d); };
+  // SBC A, E
+  void opcode_9b() { sbc(reg->e); };
+  // SBC A, H
+  void opcode_9c() { sbc(reg->h); };
+  // SBC A, L
+  void opcode_9d() { sbc(reg->l); };
+  // SBC A, (HL)
+  void opcode_9e() { sbc(mmu->read_byte(reg->hl)); };
+  // SBC A, A
+  void opcode_9f() { sbc(reg->a); };
+  // AND A, B
+  void opcode_a0() { and_(reg->b); };
+  // AND A, C
+  void opcode_a1() { and_(reg->c); };
+  // AND A, D
+  void opcode_a2() { and_(reg->d); };
+  // AND A, E
+  void opcode_a3() { and_(reg->e); };
+  // AND A, H
+  void opcode_a4() { and_(reg->h); };
+  // AND A, L
+  void opcode_a5() { and_(reg->l); };
+  // AND A, (HL)
+  void opcode_a6() { and_(mmu->read_byte(reg->hl)); };
+  // AND A, A
+  void opcode_a7() { and_(reg->a); };
+  // XOR A, B
+  void opcode_a8() { xor_(reg->b); };
+  // XOR A, C
+  void opcode_a9() { xor_(reg->c); };
+  // XOR A, D
+  void opcode_aa() { xor_(reg->d); };
+  // XOR A, E
+  void opcode_ab() { xor_(reg->e); };
+  // XOR A, H
+  void opcode_ac() { xor_(reg->h); };
+  // XOR A, L
+  void opcode_ad() { xor_(reg->l); };
+  // XOR A, (HL)
+  void opcode_ae() { xor_(mmu->read_byte(reg->hl)); };
+  // XOR A, A
+  void opcode_af() { xor_(reg->a); };
+  // OR A, B
+  void opcode_b0() { or_(reg->b); };
+  // OR A, C
+  void opcode_b1() { or_(reg->c); };
+  // OR A, D
+  void opcode_b2() { or_(reg->d); };
+  // OR A, E
+  void opcode_b3() { or_(reg->e); };
+  // OR A, H
+  void opcode_b4() { or_(reg->h); };
+  // OR A, L
+  void opcode_b5() { or_(reg->l); };
+  // OR A, (HL)
+  void opcode_b6() { or_(mmu->read_byte(reg->hl)); };
+  // OR A, A
+  void opcode_b7() { or_(reg->a); };
+  // CP A, B
+  void opcode_b8() { cp(reg->b); };
+  // CP A, C
+  void opcode_b9() { cp(reg->c); };
+  // CP A, D
+  void opcode_ba() { cp(reg->d); };
+  // CP A, E
+  void opcode_bb() { cp(reg->e); };
+  // CP A, H
+  void opcode_bc() { cp(reg->h); };
+  // CP A, L
+  void opcode_bd() { cp(reg->l); };
+  // CP A, (HL)
+  void opcode_be() { cp(mmu->read_byte(reg->hl)); };
+  // CP A, A
+  void opcode_bf() { cp(reg->a); };
   void opcode_c0();
   void opcode_c1();
   void opcode_c2();
