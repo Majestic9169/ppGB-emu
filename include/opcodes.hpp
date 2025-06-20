@@ -26,7 +26,7 @@ private:
     exit(3);
   }
   uint16_t read_word_from_pc() {
-    uint16_t val = read_word_from_pc();
+    uint16_t val = mmu->read_word(reg->pc++);
     reg->pc++;
     return val;
   }
@@ -180,7 +180,7 @@ private:
       reg->f.h = 0;
     }
     uint16_t res2 = reg->sp + val;
-    if ((res & 0xff00)) {
+    if ((res2 & 0xff00)) {
       reg->f.c = 1;
     } else {
       reg->f.c = 0;
@@ -310,6 +310,10 @@ private:
     if (condition == true) {
       pop(reg->pc);
     }
+  }
+  void reti() {
+    opcode_fb();
+    ret(true);
   }
   // CALL INSTRUCTIONS
   void call(bool condition) {
@@ -737,7 +741,9 @@ public:
   void opcode_c9() { ret(true); };
   // JP Z, u16
   void opcode_ca() { jp(reg->f.z, mmu->read_byte(reg->pc++)); };
-  void opcode_cb();
+  // PREFIX CB
+  // TODO: make cb opcode table, leaving unimplemented for now
+  void opcode_cb() { unimplemented(); };
   // CALL Z, u16
   void opcode_cc() { call(reg->f.z); };
   // CALL u16
@@ -763,7 +769,8 @@ public:
   void opcode_d7() { rst(0x10); };
   // RET C
   void opcode_d8() { ret(reg->f.c); };
-  void opcode_d9();
+  // RETI
+  void opcode_d9() { reti(); };
   // JP C, u16
   void opcode_da() { jp(reg->f.c, mmu->read_byte(reg->pc++)); };
   void opcode_db() { unimplemented(); };
@@ -823,6 +830,7 @@ public:
   // LD A, (u16)
   void opcode_fa() { reg->a = mmu->read_byte(read_word_from_pc()); };
   // EI
+  // TODO: implemente EI with the 1 instruction delay
   void opcode_fb() { reg->ime = true; };
   void opcode_fc() { unimplemented(); };
   void opcode_fd() { unimplemented(); };
