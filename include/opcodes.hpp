@@ -21,6 +21,15 @@ private:
   MMU *mmu;
   Registers *reg;
   // MISC INSTRUCTIONS
+  void unimplemented() {
+    std::cout << RED << "[!] unsupported opcode encountered\n" << COLOR_RESET;
+    exit(3);
+  }
+  uint16_t read_word_from_pc() {
+    uint16_t val = read_word_from_pc();
+    reg->pc++;
+    return val;
+  }
   void cpl() {
     reg->a = ~reg->a;
     reg->f.n = 1;
@@ -61,6 +70,13 @@ private:
     }
     reg->set_z(reg->a);
     reg->f.h = 0;
+  }
+  // LDH INSTRUCTIONS
+  void ldh_u8_a(uint8_t u8) { mmu->write_byte(0xff00 + u8, reg->a); }
+  void ldh_a_u8(uint8_t u8) { reg->a = mmu->read_byte(0xff00 + u8); }
+  void ld_hl_sp() {
+    opcode_e8();
+    reg->hl = reg->sp;
   }
   // INC INSTRUCTIONS Z0H-
   void inc(uint8_t &val) {
@@ -155,6 +171,23 @@ private:
     reg->f.n = 0;
     reg->a = reg->a + val;
     reg->set_z(reg->a);
+  }
+  void add_sp(signed char val) {
+    uint8_t res = (reg->sp & 0x0f) + (val & 0x0f);
+    if ((res & 0xf0)) {
+      reg->f.h = 1;
+    } else {
+      reg->f.h = 0;
+    }
+    uint16_t res2 = reg->sp + val;
+    if ((res & 0xff00)) {
+      reg->f.c = 1;
+    } else {
+      reg->f.c = 0;
+    }
+    reg->sp += val;
+    reg->f.z = 0;
+    reg->f.n = 0;
   }
   // NOTE: half carry can be confusing because it feels like it depends on the
   // order of addition
@@ -253,13 +286,53 @@ private:
       reg->pc = reg->pc + i8;
     }
   }
+  // JP INSTRUCTIONS
+  void jp(bool condition, uint16_t val) {
+    if (condition) {
+      reg->pc = val;
+    }
+  }
+  // POP INSTRUCTIONS
+  void pop(uint16_t &r16) {
+    // TODO: if r = af -> ensure lower nibble stays 0
+    r16 = mmu->read_word(reg->sp);
+    reg->sp += 2;
+  }
+  // PUSH INSTRUCTIONS
+  void push(uint16_t val) {
+    reg->sp = reg->sp - 2;
+    mmu->write_word(reg->sp, val);
+  }
+  // RET INSTRUCTIONS
+  // TODO: implement diff cycles for taken/untaken
+  // ret is diff from ret taken/not taken for some reason
+  void ret(bool condition) {
+    if (condition == true) {
+      pop(reg->pc);
+    }
+  }
+  // CALL INSTRUCTIONS
+  void call(bool condition) {
+    if (condition) {
+      uint16_t addr = mmu->read_word(reg->pc);
+      reg->pc += 2;
+      push(reg->pc);
+      reg->pc = addr;
+    }
+  }
+  // RST INSTRUCTIONS
+  void rst(uint16_t addr) {
+    reg->pc += 2;
+    push(reg->pc);
+    reg->pc = addr;
+  }
 
 public:
   Opcodes(MMU *_mmu, Registers *_reg) : mmu{_mmu}, reg{_reg} {}
   // NOP
   void opcode_00() { return; }
   // LD BC, u16
-  void opcode_01() { reg->bc = mmu->read_word(reg->pc++); }
+  void opcode_01() { reg->bc = read_word_from_pc(); }
   // LD (BC), A
   void opcode_02() { mmu->write_byte(reg->bc, reg->a); }
   // INC BC
@@ -291,7 +364,7 @@ public:
   // STOP
   void opcode_10() { reg->stopped = true; };
   // LD DE, u16
-  void opcode_11() { reg->de = mmu->read_word(reg->pc++); };
+  void opcode_11() { reg->de = read_word_from_pc(); };
   // LD (DE), A
   void opcode_12() { mmu->write_byte(reg->de, reg->a); };
   // INC DE
@@ -323,7 +396,7 @@ public:
   // JR NZ, i8
   void opcode_20() { jr(reg->f.n && reg->f.z); };
   // LD HL, u16
-  void opcode_21() { reg->hl = mmu->read_word(reg->pc++); };
+  void opcode_21() { reg->hl = read_word_from_pc(); };
   // LD (HL+), A
   void opcode_22() { mmu->write_byte(reg->hl++, reg->a); };
   // INC HL
@@ -355,7 +428,7 @@ public:
   // JR NC, i8
   void opcode_30() { jr(reg->f.n && reg->f.c); };
   // LD SP, u16
-  void opcode_31() { reg->sp = mmu->read_word(reg->pc++); };
+  void opcode_31() { reg->sp = read_word_from_pc(); };
   // LD (HL-), A
   void opcode_32() { mmu->write_byte(reg->hl--, reg->a); };
   // INC SP
@@ -642,70 +715,121 @@ public:
   void opcode_be() { cp(mmu->read_byte(reg->hl)); };
   // CP A, A
   void opcode_bf() { cp(reg->a); };
-  void opcode_c0();
-  void opcode_c1();
-  void opcode_c2();
-  void opcode_c3();
-  void opcode_c4();
-  void opcode_c5();
-  void opcode_c6();
-  void opcode_c7();
-  void opcode_c8();
-  void opcode_c9();
-  void opcode_ca();
+  // RET NZ
+  void opcode_c0() { ret(reg->f.n && reg->f.z); };
+  // POP BC
+  void opcode_c1() { pop(reg->bc); };
+  // JP NZ, u16
+  void opcode_c2() { jp(reg->f.n && reg->f.z, mmu->read_word(reg->pc)); };
+  // JP u16
+  void opcode_c3() { jp(true, mmu->read_word(reg->pc)); };
+  // CALL NZ, u16
+  void opcode_c4() { call(reg->f.n && reg->f.z); };
+  // PUSH BC
+  void opcode_c5() { push(reg->bc); };
+  // ADD A, u8
+  void opcode_c6() { add(mmu->read_byte(reg->pc++)); };
+  // RST 0x00
+  void opcode_c7() { rst(0x00); };
+  // RET Z
+  void opcode_c8() { ret(reg->f.z); };
+  // RET
+  void opcode_c9() { ret(true); };
+  // JP Z, u16
+  void opcode_ca() { jp(reg->f.z, mmu->read_byte(reg->pc++)); };
   void opcode_cb();
-  void opcode_cc();
-  void opcode_cd();
-  void opcode_ce();
-  void opcode_cf();
-  void opcode_d0();
-  void opcode_d1();
-  void opcode_d2();
-  void opcode_d3();
-  void opcode_d4();
-  void opcode_d5();
-  void opcode_d6();
-  void opcode_d7();
-  void opcode_d8();
+  // CALL Z, u16
+  void opcode_cc() { call(reg->f.z); };
+  // CALL u16
+  void opcode_cd() { call(true); };
+  // ADC A, u8
+  void opcode_ce() { adc(mmu->read_byte(reg->pc++)); };
+  // RST 0x08
+  void opcode_cf() { rst(0x08); };
+  // RET NC
+  void opcode_d0() { ret(reg->f.n && reg->f.c); };
+  // POP DE
+  void opcode_d1() { pop(reg->de); };
+  // JP NC, u16
+  void opcode_d2() { jp(reg->f.n && reg->f.c, mmu->read_word(reg->pc)); };
+  void opcode_d3() { unimplemented(); };
+  // CALL NC, u16
+  void opcode_d4() { call(reg->f.n && reg->f.c); };
+  // PUSH DE
+  void opcode_d5() { push(reg->de); };
+  // SUB A, u8
+  void opcode_d6() { sub(mmu->read_byte(reg->pc++)); };
+  // RST 0x10
+  void opcode_d7() { rst(0x10); };
+  // RET C
+  void opcode_d8() { ret(reg->f.c); };
   void opcode_d9();
-  void opcode_da();
-  void opcode_db();
-  void opcode_dc();
-  void opcode_dd();
-  void opcode_de();
-  void opcode_df();
-  void opcode_e0();
-  void opcode_e1();
-  void opcode_e2();
-  void opcode_e3();
-  void opcode_e4();
-  void opcode_e5();
-  void opcode_e6();
-  void opcode_e7();
-  void opcode_e8();
-  void opcode_e9();
-  void opcode_ea();
-  void opcode_eb();
-  void opcode_ec();
-  void opcode_ed();
-  void opcode_ee();
-  void opcode_ef();
-  void opcode_f0();
-  void opcode_f1();
-  void opcode_f2();
-  void opcode_f3();
-  void opcode_f4();
-  void opcode_f5();
-  void opcode_f6();
-  void opcode_f7();
-  void opcode_f8();
-  void opcode_f9();
-  void opcode_fa();
-  void opcode_fb();
-  void opcode_fc();
-  void opcode_fd();
-  void opcode_fe();
-  void opcode_ff();
+  // JP C, u16
+  void opcode_da() { jp(reg->f.c, mmu->read_byte(reg->pc++)); };
+  void opcode_db() { unimplemented(); };
+  // CALL C, u16
+  void opcode_dc() { call(reg->f.c); };
+  void opcode_dd() { unimplemented(); };
+  // SBC A, u8
+  void opcode_de() { sbc(mmu->read_byte(reg->pc++)); };
+  // RST 0x18
+  void opcode_df() { rst(0x18); };
+  // LD (FF00+u8), A
+  void opcode_e0() { ldh_u8_a(mmu->read_byte(reg->pc++)); };
+  // POP HL
+  void opcode_e1() { pop(reg->hl); };
+  // LD (FF00+C), A
+  void opcode_e2() { ldh_u8_a(reg->c); };
+  void opcode_e3() { unimplemented(); };
+  void opcode_e4() { unimplemented(); };
+  // PUSH HL
+  void opcode_e5() { push(reg->hl); };
+  // AND A, u8
+  void opcode_e6() { and_(mmu->read_byte(reg->pc++)); };
+  // RST 0x20
+  void opcode_e7() { rst(0x20); };
+  // ADD SP, i8
+  void opcode_e8() { add_sp(mmu->read_byte(reg->pc++)); };
+  // JP HL
+  void opcode_e9() { reg->pc = reg->hl; };
+  // LD (u16), A
+  void opcode_ea() { mmu->write_byte(read_word_from_pc(), reg->a); };
+  void opcode_eb() { unimplemented(); };
+  void opcode_ec() { unimplemented(); };
+  void opcode_ed() { unimplemented(); };
+  // XOR A, u8
+  void opcode_ee() { xor_(mmu->read_byte(reg->pc++)); };
+  // RST 0x28
+  void opcode_ef() { rst(0x28); };
+  // LD A, (FF00+u8)
+  void opcode_f0() { ldh_a_u8(mmu->read_byte(reg->pc++)); };
+  // POP AF
+  void opcode_f1() { pop(reg->af); };
+  // LD A, (FF00+C)
+  void opcode_f2() { ldh_a_u8(reg->c); };
+  // DI
+  void opcode_f3() { reg->ime = false; };
+  void opcode_f4() { unimplemented(); };
+  // PUSH AF
+  void opcode_f5() { push(reg->af); };
+  // OR A, u8
+  void opcode_f6() { or_(mmu->read_byte(reg->pc++)); };
+  // RST 0x30
+  void opcode_f7() { rst(0x30); };
+  // LD HL, SP+i8
+  void opcode_f8() { ld_hl_sp(); };
+  // LD SP, HL
+  void opcode_f9() { reg->sp = reg->hl; };
+  // LD A, (u16)
+  void opcode_fa() { reg->a = mmu->read_byte(read_word_from_pc()); };
+  // EI
+  void opcode_fb() { reg->ime = true; };
+  void opcode_fc() { unimplemented(); };
+  void opcode_fd() { unimplemented(); };
+  // CP A, u8
+  void opcode_fe() { cp(mmu->read_byte(reg->pc++)); };
+  // RST 0x38
+  void opcode_ff() { rst(0x38); };
 };
 
 #endif

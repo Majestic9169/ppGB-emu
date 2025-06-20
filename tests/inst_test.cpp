@@ -216,3 +216,47 @@ TEST_CASE("misc tests", "[flags, daa, ccf, cpl, scf]") {
   REQUIRE(reg.f.n == 0);
   REQUIRE(reg.f.h == 0);
 }
+
+TEST_CASE("push/pop tests", "[pop, push]") {
+  // PUSH
+  reg.hl = 0xcafe;
+  reg.sp = 0x1024;
+  mmu.write_word(0x1022, 0xbabe);
+  op.opcode_e5();
+  REQUIRE(mmu.read_word(reg.sp) == 0xcafe);
+  REQUIRE(reg.sp == 0x1022);
+  // POP 1
+  reg.hl = 0xdead;
+  op.opcode_e1();
+  REQUIRE(reg.hl == 0xcafe);
+  REQUIRE(reg.sp == 0x1024);
+  // POP 2
+  reg.sp = 0x1024;
+  reg.af = 0xfa00;
+  // TODO: consider testing after properly implementing POP AF
+  // failing test case below
+  // mmu.write_word(reg.sp, 0xbebe);
+  mmu.write_word(reg.sp, 0xbeb0);
+  op.opcode_f1();
+  REQUIRE(reg.af == 0xbeb0);
+  REQUIRE(reg.f.z == 1);
+  REQUIRE(reg.f.n == 0);
+  REQUIRE(reg.f.h == 1);
+  REQUIRE(reg.f.c == 1);
+}
+
+TEST_CASE("call/ret tests", "[call, return]") {
+  reg.af = 0xdea0;
+  reg.pc = 0x5959;
+  reg.sp = 0x8000;
+  mmu.write_word(0x5959, 0xbeef);
+  op.opcode_cc();
+  REQUIRE(reg.pc == 0xbeef);
+  REQUIRE(reg.sp == 0x7ffe);
+  op.opcode_c8();
+  REQUIRE(reg.pc == 0x595b);
+  REQUIRE(reg.sp == 0x8000);
+  op.opcode_dc();
+  REQUIRE(reg.pc == 0x595b);
+  REQUIRE(reg.sp == 0x8000);
+}
