@@ -1,5 +1,7 @@
 #!/usr/bin/bash
 
+ROM=./roms/tetris.gb
+
 echo "build: building"
 # g++ -ggdb -pedantic-errors -Wall -Weffc++ -Wextra -Wconversion -o ./build/ppGB main.cpp
 # too many conversion errors
@@ -11,11 +13,11 @@ while getopts 'rdct' OPTION; do
   case "$OPTION" in
     r)
       echo "build: running"
-      ./build/ppGB ../gb-test-roms/cpu_instrs/cpu_instrs.gb
+      ./build/ppGB $ROM
       ;;
     d)
       echo "build: running with debug"
-      ./build/ppGB -d ../gb-test-roms/cpu_instrs/cpu_instrs.gb
+      ./build/ppGB -d $ROM
       ;;
     c)
       echo "build: cleaning"

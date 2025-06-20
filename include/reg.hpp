@@ -62,7 +62,7 @@ public:
 #pragma GCC diagnostic pop
 
   uint16_t sp;
-  uint16_t pc = 0x100;
+  uint16_t pc;
   bool ime;
   bool stopped = false;
 

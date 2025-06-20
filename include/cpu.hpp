@@ -172,8 +172,11 @@ public:
       case 0xfe: op.opcode_fe(); break;  case 0xff: op.opcode_ff(); break;
       // clang-format on
     }
-    std::printf("%s[%04x] %sopcode 0x%x\n%s", YEL.c_str(), curr_pc, GRN.c_str(),
-                opcode, COLOR_RESET.c_str());
+    if (cli_opts->debug_enabled()) {
+      // TODO: write this to file instead of stdout
+      std::printf("%s[%04x] %sopcode 0x%02x\n%s", YEL.c_str(), curr_pc,
+                  GRN.c_str(), opcode, COLOR_RESET.c_str());
+    }
   }
 };
 
