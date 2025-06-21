@@ -10,14 +10,13 @@
 #ifndef CPU_H
 #define CPU_H
 
+#include "cb_opcodes.hpp"
 #include "cli_opts.hpp"
 #include "mmu.hpp"
 #include "opcodes.hpp"
 #include "reg.hpp"
 #include <cstdint>
 #include <cstdio>
-#include <ios>
-// #include <cstdint>
 
 class CPU {
   // NOTE: this is necessary because c++ class members are initialised in the
@@ -31,10 +30,11 @@ public:
 
 private:
   Opcodes op;
+  CB_Opcodes cb;
 
 public:
   CPU(Opts *cli, MMU *_mmu)
-      : cli_opts(cli), mmu(_mmu), reg{}, op{_mmu, &reg} {};
+      : cli_opts(cli), mmu(_mmu), reg{}, op{_mmu, &reg}, cb(_mmu, &reg) {};
 
   // fetch-decode-execute cycle
   void cpu_step() {
@@ -143,6 +143,7 @@ public:
       case 0xc4: op.opcode_c4(); break;  case 0xc5: op.opcode_c5(); break;
       case 0xc6: op.opcode_c6(); break;  case 0xc7: op.opcode_c7(); break;
       case 0xc8: op.opcode_c8(); break;  case 0xc9: op.opcode_c9(); break;
+                                         // TODO: call the cb fetch cycle here instead
       case 0xca: op.opcode_ca(); break;  case 0xcb: op.opcode_cb(); break;
       case 0xcc: op.opcode_cc(); break;  case 0xcd: op.opcode_cd(); break;
       case 0xce: op.opcode_ce(); break;  case 0xcf: op.opcode_cf(); break;
