@@ -22,4 +22,6 @@ jobs:
         sudo apt-get -y install libsdl2-dev
 
     - name: Build and Test
-      run: bash ./build.sh -t
+      run: |
+        mkdir ./build
+        bash ./build.sh -t
