@@ -5,8 +5,7 @@
 #include "../include/opcodes.hpp"
 
 int argc = 2;
-char *argv[2] = {strdup("./ppGB"),
-                 strdup("../../gb-test-roms/cpu_instrs/cpu_instrs.gb")};
+char *argv[2] = {strdup("./ppGB"), strdup("../roms/tetris.gb")};
 Opts cli_opts{argc, argv};
 MMU mmu{&cli_opts};
 Registers reg{};

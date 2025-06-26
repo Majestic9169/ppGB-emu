@@ -16,10 +16,16 @@ jobs:
     - name: Update System
       run: |
         sudo apt-get update
+        sudo apt-get install wget
 
     - name: Install SDL2
       run: |
         sudo apt-get -y install libsdl2-dev
+
+    - name: Install Tetris ROM
+      run: |
+        mkdir ./roms
+        cd roms && wget http://0x0.st/8lWu.gb && mv 8lWu.gb tetris.gb
 
     - name: Build and Test
       run: |

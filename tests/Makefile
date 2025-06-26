@@ -6,7 +6,7 @@ all: $(basename ${FILES})
 
 %: %.cpp
 	g++ ${CXX_FLAGS} -o ${DESTDIR}/$@ $<
-	-./${DESTDIR}/$@ --reporter compact --success
+	./${DESTDIR}/$@ --reporter compact --success
 
 clean: 
 	cd ${DESTDIR} && rm $(basename ${FILES})
