@@ -16,6 +16,10 @@ class CB_Opcodes {
 private:
   MMU *mmu;
   Registers *reg;
+  // delete copy and assignment constructors
+  CB_Opcodes(const CB_Opcodes &) = delete;
+  CB_Opcodes operator=(const CB_Opcodes &) = delete;
+
   // RL INSTRUCTIONS
   // rotate THROUGH carry
   void rl(uint8_t &r8) {

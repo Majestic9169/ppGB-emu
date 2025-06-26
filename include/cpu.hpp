@@ -24,6 +24,9 @@ class CPU {
 private:
   Opts *cli_opts;
   MMU *mmu;
+  // delete copy and assignment constructor
+  CPU(const CPU &) = delete;
+  CPU operator=(const CPU &) = delete;
 
 public:
   Registers reg;

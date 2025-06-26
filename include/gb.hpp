@@ -14,6 +14,9 @@ class Gameboy {
 private:
   MMU mmu;
   CPU cpu;
+  // delete copy and assignment constructor
+  Gameboy(const Gameboy &) = delete;
+  Gameboy operator=(const Gameboy &) = delete;
 
 public:
   Gameboy(Opts *opts_) : mmu(opts_), cpu{opts_, &mmu} {};

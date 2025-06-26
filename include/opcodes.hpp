@@ -20,6 +20,10 @@ class Opcodes {
 private:
   MMU *mmu;
   Registers *reg;
+  // delete copy and assignment constructor
+  Opcodes(const Opcodes &) = delete;
+  Opcodes operator=(const Opcodes &) = delete;
+
   // MISC INSTRUCTIONS
   void unimplemented() {
     std::cout << RED << "[!] unsupported opcode encountered\n" << COLOR_RESET;

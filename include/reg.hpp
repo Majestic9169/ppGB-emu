@@ -11,6 +11,11 @@
 #include <cstdint>
 
 class Registers {
+private:
+  // delete copy and assignment constructors
+  Registers(const Registers &) = delete;
+  Registers operator=(const Registers &) = delete;
+
 public:
 // ISO C++ doesn't allow anonymous structs which is so stupid
 #pragma GCC diagnostic push

@@ -24,6 +24,10 @@ private:
   std::string USAGE = "ppGB: ppGB [-t -d] ROM_FILE\n  " + TEST_FLAG +
                       "\ttesting mode\n  " + DEBUG_FLAG + "\tdebugging mode\n";
 
+  // delete copy and assignment constructor
+  Opts(const Opts &) = delete;
+  Opts operator=(const Opts &) = delete;
+
 public:
   // create vector of arguments
   Opts(int argc, char **argv) : args{}, ROM_FILE{} {
