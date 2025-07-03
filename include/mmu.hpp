@@ -10,6 +10,7 @@
 #define MMU_H
 
 #include "cli_opts.hpp"
+#include "tile.hpp"
 #include <cstdint>
 #include <fstream>
 #include <ios>
@@ -65,6 +66,12 @@ public:
   void write_word(uint16_t addr, uint16_t val) {
     write_byte(addr, static_cast<uint8_t>(val));
     write_byte(addr + 1, static_cast<uint8_t>(val >> 8));
+  }
+
+  // PPU Access
+  TILE GetTileFromIndex(uint16_t index) {
+    TILE tile{ROM.begin() + 0x8000 + index, ROM.begin() + 0x8000 + index + 16};
+    return tile;
   }
 };
 

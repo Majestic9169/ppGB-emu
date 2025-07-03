@@ -1,4 +1,4 @@
-CXX_FLAGS = -ggdb -pedantic-errors -Wall -Weffc++ -Wextra # -Wconversion
+CXX_FLAGS = -ggdb -pedantic-errors -Wall -Weffc++ -Wextra -lSDL2 # -Wconversion
 FILES = $(wildcard *.cpp)
 DESTDIR = ../build
 

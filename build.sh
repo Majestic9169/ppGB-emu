@@ -6,7 +6,7 @@ echo "build: building"
 # g++ -ggdb -pedantic-errors -Wall -Weffc++ -Wextra -Wconversion -o ./build/ppGB main.cpp
 # too many conversion errors
 # TODO: sort out conversion warnings
-g++ -ggdb -pedantic-errors -Wall -Weffc++ -Wextra -o ./build/ppGB main.cpp
+g++ -ggdb -pedantic-errors -Wall -Weffc++ -Wextra -lSDL2 -o ./build/ppGB main.cpp
 echo "build: built"
 
 while getopts 'rdct' OPTION; do
