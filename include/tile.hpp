@@ -8,6 +8,12 @@
 #include <cstdint>
 #include <vector>
 
+enum LAYERS {
+  BACKGROUND, // 32x32 tile map, scrollable
+  WINDOW,     // also tilemap, for status bars etc
+  OBJECT      // sprites and stuff, this will be separately covered
+};
+
 class TILE {
   // 16 bytes
 private:
@@ -22,6 +28,7 @@ public:
     }
     // 2 raw bytes are being interleaved together to get the final tile
     // check the ppu tests for a better idea
+    // TODO: something cool?
     // https://graphics.stanford.edu/~seander/bithacks.html
     spliced_data.reserve(8);
     for (int i = 0; i < 16; i += 2) {

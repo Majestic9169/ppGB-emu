@@ -42,5 +42,26 @@ TEST_CASE("get tile testing", "[mmu, tiles]") {
                                    0x42, 0x42, 0x7e, 0x5e, 0x7e, 0x0a,
                                    0x7c, 0x56, 0x38, 0x7c};
 
-  REQUIRE(mmu.GetTileFromIndex(0).GetRawTile() == raw_data);
+  REQUIRE(mmu.GetTileFromIndex(0, OBJECT).GetRawTile() == raw_data);
+}
+
+TEST_CASE("lcdc structure and update check", "[mmu, reg, lcdc]") {
+  mmu.write_byte(0xff40, 0xee);
+  REQUIRE(mmu.lcdc.isLCDenabled() == true);
+  REQUIRE(mmu.lcdc.WindowTileMap() == 0x9c00);
+  REQUIRE(mmu.lcdc.isWindowEnable() == true);
+  REQUIRE(mmu.lcdc.TileMap() == 0x8800);
+  REQUIRE(mmu.lcdc.BGTileMap() == 0x9c00);
+  REQUIRE(mmu.lcdc.ObjSize() == 2);
+  REQUIRE(mmu.lcdc.areObjEnabled() == true);
+  REQUIRE(mmu.lcdc.BGWindowEnable() == false);
+  mmu.write_byte(0xff40, 0x11);
+  REQUIRE(mmu.lcdc.isLCDenabled() == false);
+  REQUIRE(mmu.lcdc.WindowTileMap() == 0x9800);
+  REQUIRE(mmu.lcdc.isWindowEnable() == false);
+  REQUIRE(mmu.lcdc.TileMap() == 0x8000);
+  REQUIRE(mmu.lcdc.BGTileMap() == 0x9800);
+  REQUIRE(mmu.lcdc.ObjSize() == 1);
+  REQUIRE(mmu.lcdc.areObjEnabled() == false);
+  REQUIRE(mmu.lcdc.BGWindowEnable() == true);
 }

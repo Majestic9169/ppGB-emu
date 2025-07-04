@@ -21,6 +21,33 @@
 
 constexpr std::size_t ROM_SIZE{0x10000};
 
+// 0xFF40
+// 7 - lcd/ppu enable
+// 6 - window tile map (0x9800-0x9bff | 0x9c00-0x9fff)
+// 5 - window enable
+// 4 - bg and window tile map (0x8800-0x97ff | 0x8000-0x8fff)
+// 3 - bg tile map (0x9800-0x9bff | 0x9c00-0x9fff)
+// 2 - obj size (8x8 | 8x16)
+// 1 - obj enable
+// 0 - bg/window enable/priority
+class LCDC_REG {
+private:
+  uint8_t &ff40_ref;
+  bool getBit(int bit_no) const { return ff40_ref & (1 << bit_no); }
+
+public:
+  LCDC_REG(uint8_t &ff40) : ff40_ref{ff40} {}
+
+  bool isLCDenabled() const { return getBit(7); }
+  uint16_t WindowTileMap() const { return getBit(6) ? 0x9c00 : 0x9800; }
+  bool isWindowEnable() const { return getBit(5); }
+  uint16_t TileMap() const { return getBit(4) ? 0x8000 : 0x8800; }
+  uint16_t BGTileMap() const { return getBit(3) ? 0x9c00 : 0x9800; }
+  uint8_t ObjSize() const { return getBit(2) ? 2 : 1; } // 2 tiles or 1 tile
+  bool areObjEnabled() const { return getBit(1); }
+  bool BGWindowEnable() const { return getBit(0); }
+};
+
 class MMU {
 private:
   // i considered std::byte but that's really restrictive and i usually need to
@@ -29,7 +56,7 @@ private:
   Opts *cli_opts;
   // delete copy constructor and assignment operator, don't wanna mess with
   // pointers. look at this btw lol
-  // https://stackoverflow.com/questions/33776697/
+  // https://stackoverflow.com/questions/33776t697/
   MMU(const MMU &) = delete;
   MMU &operator=(const MMU &) = delete;
 
@@ -69,9 +96,28 @@ public:
   }
 
   // PPU Access
-  TILE GetTileFromIndex(uint16_t index) {
-    TILE tile{ROM.begin() + 0x8000 + index, ROM.begin() + 0x8000 + index + 16};
-    return tile;
+  LCDC_REG lcdc{ROM[0xFF40]};
+
+  TILE GetTileFromIndex(uint16_t index, LAYERS layer) {
+    if (layer == OBJECT) {
+      TILE tile{ROM.begin() + 0x8000 + index * 16,
+                ROM.begin() + 0x8000 + index * 16 + 16};
+      return tile;
+    } else if (lcdc.TileMap() == 0x8000) {
+      TILE tile{ROM.begin() + 0x8000 + index * 16,
+                ROM.begin() + 0x8000 + index * 16 + 16};
+      return tile;
+    } else {
+      if (index < 128) {
+        TILE tile{ROM.begin() + 0x9000 + index * 16,
+                  ROM.begin() + 0x9000 + index * 16 + 16};
+        return tile;
+      } else {
+        TILE tile{ROM.begin() + 0x8800 + (index - 128) * 16,
+                  ROM.begin() + 0x8800 + (index - 128) * 16 + 16};
+        return tile;
+      }
+    }
   }
 };
 

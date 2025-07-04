@@ -32,7 +32,7 @@ TEST_CASE("tile splicing check", "[ppu, tile]") {
   mmu.write_byte(0x800e, 0x38);
   mmu.write_byte(0x800f, 0x7c);
 
-  TILE tile = mmu.GetTileFromIndex(0);
+  TILE tile = mmu.GetTileFromIndex(0, OBJECT);
 
   std::vector<uint16_t> rendered_tile{0x2ff8, 0x300c, 0x300c, 0x300c,
                                       0x37fc, 0x15dc, 0x3778, 0x2fe0};
