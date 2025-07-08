@@ -24,8 +24,6 @@ private:
   PPU(const PPU &) = delete;
   PPU &operator=(const PPU &) = delete;
 
-  // VRAM data
-
 public:
   // TODO: add checks to make sure SDL is initted
   // TODO: add proper clang-format file

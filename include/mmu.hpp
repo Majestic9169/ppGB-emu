@@ -17,12 +17,61 @@
 #include <iostream>
 #include <ostream>
 #include <string>
+#include <sys/types.h>
 #include <vector>
 
 constexpr std::size_t ROM_SIZE{0x10000};
 
+class Palette {
+private:
+  enum Colors { WHITE, LIGHT_GRAY, DARK_GRAY, BLACK };
+  uint8_t &palette_ref;
+  Colors color_extractor(uint8_t color_index) const {
+    return static_cast<Colors>((palette_ref & (0x03 << (2 * color_index))) >>
+                               (2 * color_index));
+  }
+
+public:
+  Palette(uint8_t &ref) : palette_ref{ref} {}
+  Colors GetColor0() const { return color_extractor(0); }
+  Colors GetColor1() const { return color_extractor(1); }
+  Colors GetColor2() const { return color_extractor(2); }
+  Colors GetColor3() const { return color_extractor(3); }
+};
+
+// 0xFF41 - STAT: LCD status
+// 6 - lyc int select
+// 5 - mode 2 int select
+// 4 - mode 1 int select
+// 3 - mode 0 int select
+// 2 - lyc == ly
+// 1, 0 - ppu mode
+// TODO: add a pointer to PPU or framebuffer or whatever to update ly, lyc etc
+class STAT_REG {
+  uint8_t &ff41_ref;
+  bool getBit(int bit_no) const { return ff41_ref & (1 << bit_no); }
+
+public:
+  STAT_REG(uint8_t &ff41) : ff41_ref{ff41} {}
+
+  // Not a fan of these names, lemme know any better conventions
+  // Getters
+  bool GetLYCIntSelect() const { return getBit(6); }
+  bool GetMode2IntSelect() const { return getBit(5); }
+  bool GetMode1IntSelect() const { return getBit(4); }
+  bool GetMode0IntSelect() const { return getBit(3); }
+  bool GetLYEqualLYC() const { return getBit(2); }
+
+  // Setters
+  void SetLYCIntSelect() { ff41_ref |= 0x40; }
+  void SetMode2IntSelect() { ff41_ref |= 0x20; }
+  void SetMode1IntSelect() { ff41_ref |= 0x10; }
+  void SetMode0IntSelect() { ff41_ref |= 0x08; }
+};
+
 // objects are formed from the tiles maps, but they have extra data stored from
 // 0xfe00-0xfe9f
+// TODO: do something about the OAM DMA transfer
 class Object {
 private:
   // can't create structs because i need them to be references to the ROM
@@ -129,10 +178,32 @@ public:
 
   // PPU Access Shit
 
+  // OAM
+  std::vector<Object> OAM;
+
   // make lcdc usable
   LCDC_REG lcdc{ROM[0xFF40]};
 
-  std::vector<Object> OAM;
+  // stat reg
+  // TODO: add ly and lyc reg somewhere
+  STAT_REG stat{ROM[0xFF41]};
+
+  // background scroll
+  uint8_t &scy() { return ROM[0xff42]; }
+  uint8_t &scx() { return ROM[0xff43]; }
+
+  // ly and lyc
+  uint8_t &ly() { return ROM[0xff44]; }
+  uint8_t &lyc() { return ROM[0xff45]; }
+
+  // palettes
+  Palette BG_Palette{ROM[0xff47]};
+  Palette OBP0{ROM[0xff48]};
+  Palette OBP1{ROM[0xff49]};
+
+  // window position
+  uint8_t &wy() { return ROM[0xff4a]; }
+  uint8_t &wx() { return ROM[0xff4b]; }
 
   // get tiles from either of the 2 tile maps
   TILE GetTileFromIndex(uint16_t index, LAYERS layer) {
@@ -156,8 +227,6 @@ public:
       }
     }
   }
-
-  // OAM
 };
 
 #endif
