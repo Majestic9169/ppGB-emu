@@ -21,6 +21,33 @@
 
 constexpr std::size_t ROM_SIZE{0x10000};
 
+// objects are formed from the tiles maps, but they have extra data stored from
+// 0xfe00-0xfe9f
+class Object {
+private:
+  // can't create structs because i need them to be references to the ROM
+  // so i just store the bytes as references ig
+  uint8_t &y_pos;
+  uint8_t &x_pos;
+  uint8_t &tile_index;
+  uint8_t &attributes;
+  bool getBit(int bit_no) const { return attributes & (1 << bit_no); }
+
+public:
+  Object(std::vector<uint8_t>::iterator start)
+      : y_pos{*start}, x_pos{*(start + 1)}, tile_index{*(start + 2)},
+        attributes{*(start + 3)} {};
+
+  uint8_t GetYPostition() const { return y_pos; }
+  uint8_t GetXPostition() const { return x_pos; }
+  uint8_t GetTileIndex() const { return tile_index; }
+
+  bool GetPriority() const { return getBit(7); }
+  bool GetYFlip() const { return getBit(6); }
+  bool GetXFlip() const { return getBit(5); }
+  bool GetPallete() const { return getBit(4); }
+};
+
 // 0xFF40
 // 7 - lcd/ppu enable
 // 6 - window tile map (0x9800-0x9bff | 0x9c00-0x9fff)
@@ -74,7 +101,7 @@ private:
   }
 
 public:
-  MMU(Opts *opts_) : ROM(ROM_SIZE), cli_opts{opts_} {
+  MMU(Opts *opts_) : ROM(ROM_SIZE), cli_opts{opts_}, OAM{} {
     std::ifstream rom_file{cli_opts->rom_name(), std::ios::binary};
     if (!rom_file.good()) {
       std::cerr << RED << "[!] Error loading ROM_FILE\n" << COLOR_RESET;
@@ -84,6 +111,11 @@ public:
     if (cli_opts->debug_enabled()) {
       std::cout << GRN << "[+] ROM successfully loaded\n" << COLOR_RESET;
       header_information();
+    }
+    // init OAM
+    OAM.reserve(40);
+    for (size_t i = 0; i < 40; i++) {
+      OAM.emplace_back(ROM.begin() + 0xfe00 + (i * 4));
     }
   }
 
@@ -95,9 +127,14 @@ public:
     write_byte(addr + 1, static_cast<uint8_t>(val >> 8));
   }
 
-  // PPU Access
+  // PPU Access Shit
+
+  // make lcdc usable
   LCDC_REG lcdc{ROM[0xFF40]};
 
+  std::vector<Object> OAM;
+
+  // get tiles from either of the 2 tile maps
   TILE GetTileFromIndex(uint16_t index, LAYERS layer) {
     if (layer == OBJECT) {
       TILE tile{ROM.begin() + 0x8000 + index * 16,
@@ -119,6 +156,8 @@ public:
       }
     }
   }
+
+  // OAM
 };
 
 #endif
