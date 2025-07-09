@@ -841,7 +841,10 @@ public:
   // CP A, u8
   void opcode_fe() { cp(mmu->read_byte(reg->pc++)); };
   // RST 0x38
-  void opcode_ff() { rst(0x38); };
+  void opcode_ff() {
+    // rst(0x38);
+    opcode_00();
+  };
 };
 
 #endif

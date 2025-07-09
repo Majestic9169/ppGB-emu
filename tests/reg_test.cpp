@@ -5,6 +5,8 @@
 
 Registers reg{};
 
+TEST_CASE("pc init") { REQUIRE(reg.pc == 0); }
+
 TEST_CASE("register endianness check", "[reg]") {
   reg.b = 0xca;
   reg.c = 0xfe;

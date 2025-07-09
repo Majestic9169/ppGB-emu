@@ -12,6 +12,7 @@
 #include "cli_opts.hpp"
 #include "tile.hpp"
 #include <cstdint>
+#include <cstdio>
 #include <fstream>
 #include <ios>
 #include <iostream>
@@ -166,6 +167,30 @@ public:
     for (size_t i = 0; i < 40; i++) {
       OAM.emplace_back(ROM.begin() + 0xfe00 + (i * 4));
     }
+    // Hexdump
+    // for (size_t i = 0; i < ROM.size(); i += 16) {
+    //   // Print offset
+    //   printf("%08zx  ", i);
+    //
+    //   // Print hex bytes
+    //   for (size_t j = 0; j < 16; ++j) {
+    //     if (i + j < ROM.size())
+    //       printf("%02X ", ROM[i + j]);
+    //     else
+    //       printf("   ");
+    //   }
+    //
+    //   printf(" ");
+    //
+    //   // Print ASCII representation
+    //   for (size_t j = 0; j < 16; ++j) {
+    //     if (i + j < ROM.size()) {
+    //       char c = ROM[i + j];
+    //       printf("%c", (c >= 32 && c < 127) ? c : '.');
+    //     }
+    //   }
+    //   printf("\n");
+    // }
   }
 
   uint8_t &read_byte(uint16_t addr) { return ROM[addr]; }

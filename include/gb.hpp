@@ -11,6 +11,8 @@
 #include "cpu.hpp"
 #include "mmu.hpp"
 #include "ppu.hpp"
+#include <SDL2/SDL_events.h>
+#include <SDL2/SDL_timer.h>
 
 class Gameboy {
 private:
@@ -29,11 +31,20 @@ public:
   void run() {
     while (1) {
       // poll events
+      SDL_Event Event;
+      while (SDL_PollEvent(&Event)) {
+        if (Event.type == SDL_QUIT) {
+          SDL_Quit();
+          return;
+        }
+      }
 
       // render
       cpu.cpu_step();
+      ppu.ppu_step();
 
       // update
+      ppu.Update();
     }
   }
 };
