@@ -151,6 +151,32 @@ private:
   }
 
 public:
+  void hexdump() const { // Hexdump
+    for (size_t i = 0; i < ROM.size(); i += 16) {
+      // Print offset
+      printf("%08zx  ", i);
+
+      // Print hex bytes
+      for (size_t j = 0; j < 16; ++j) {
+        if (i + j < ROM.size())
+          printf("%02X ", ROM[i + j]);
+        else
+          printf("   ");
+      }
+
+      printf(" ");
+
+      // Print ASCII representation
+      for (size_t j = 0; j < 16; ++j) {
+        if (i + j < ROM.size()) {
+          char c = ROM[i + j];
+          printf("%c", (c >= 32 && c < 127) ? c : '.');
+        }
+      }
+      printf("\n");
+    }
+  }
+
   MMU(Opts *opts_) : ROM(ROM_SIZE), cli_opts{opts_}, OAM{} {
     std::ifstream rom_file{cli_opts->rom_name(), std::ios::binary};
     if (!rom_file.good()) {
@@ -160,37 +186,26 @@ public:
     rom_file.read(reinterpret_cast<char *>(ROM.data()), ROM_SIZE);
     if (cli_opts->debug_enabled()) {
       std::cout << GRN << "[+] ROM successfully loaded\n" << COLOR_RESET;
+    }
+    // boot rom
+    std::ifstream boot_rom_file{"./roms/sgb_bios.bin", std::ios::binary};
+    if (!boot_rom_file.good()) {
+      std::cerr << RED << "[!] Error loading BOOT_ROM_FILE\n" << COLOR_RESET;
+      exit(2);
+    }
+    boot_rom_file.read(reinterpret_cast<char *>(ROM.data()), ROM_SIZE);
+    if (cli_opts->debug_enabled()) {
+      std::cout << GRN << "[+] BOOT_ROM successfully loaded\n" << COLOR_RESET;
       header_information();
     }
+
     // init OAM
     OAM.reserve(40);
     for (size_t i = 0; i < 40; i++) {
       OAM.emplace_back(ROM.begin() + 0xfe00 + (i * 4));
     }
-    // Hexdump
-    // for (size_t i = 0; i < ROM.size(); i += 16) {
-    //   // Print offset
-    //   printf("%08zx  ", i);
-    //
-    //   // Print hex bytes
-    //   for (size_t j = 0; j < 16; ++j) {
-    //     if (i + j < ROM.size())
-    //       printf("%02X ", ROM[i + j]);
-    //     else
-    //       printf("   ");
-    //   }
-    //
-    //   printf(" ");
-    //
-    //   // Print ASCII representation
-    //   for (size_t j = 0; j < 16; ++j) {
-    //     if (i + j < ROM.size()) {
-    //       char c = ROM[i + j];
-    //       printf("%c", (c >= 32 && c < 127) ? c : '.');
-    //     }
-    //   }
-    //   printf("\n");
-    // }
+
+    hexdump();
   }
 
   uint8_t &read_byte(uint16_t addr) { return ROM[addr]; }

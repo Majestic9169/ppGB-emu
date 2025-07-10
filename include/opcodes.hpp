@@ -745,9 +745,6 @@ public:
   void opcode_c9() { ret(true); };
   // JP Z, u16
   void opcode_ca() { jp(reg->f.z, mmu->read_byte(reg->pc++)); };
-  // PREFIX CB
-  // TODO: make cb opcode table, leaving unimplemented for now
-  void opcode_cb() { unimplemented(); };
   // CALL Z, u16
   void opcode_cc() { call(reg->f.z); };
   // CALL u16
@@ -841,10 +838,7 @@ public:
   // CP A, u8
   void opcode_fe() { cp(mmu->read_byte(reg->pc++)); };
   // RST 0x38
-  void opcode_ff() {
-    // rst(0x38);
-    opcode_00();
-  };
+  void opcode_ff() { rst(0x38); };
 };
 
 #endif

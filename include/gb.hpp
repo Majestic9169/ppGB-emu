@@ -35,6 +35,7 @@ public:
       while (SDL_PollEvent(&Event)) {
         if (Event.type == SDL_QUIT) {
           SDL_Quit();
+          mmu.hexdump();
           return;
         }
       }
