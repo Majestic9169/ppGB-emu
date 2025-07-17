@@ -402,7 +402,7 @@ public:
   // RRA
   void opcode_1f() { rra(); };
   // JR NZ, i8
-  void opcode_20() { jr(reg->f.n && reg->f.z); };
+  void opcode_20() { jr(!reg->f.z); };
   // LD HL, u16
   void opcode_21() { reg->hl = read_word_from_pc(); };
   // LD (HL+), A
@@ -434,7 +434,7 @@ public:
   // CPL
   void opcode_2f() { cpl(); };
   // JR NC, i8
-  void opcode_30() { jr(reg->f.n && reg->f.c); };
+  void opcode_30() { jr(!reg->f.c); };
   // LD SP, u16
   void opcode_31() { reg->sp = read_word_from_pc(); };
   // LD (HL-), A
@@ -724,15 +724,15 @@ public:
   // CP A, A
   void opcode_bf() { cp(reg->a); };
   // RET NZ
-  void opcode_c0() { ret(reg->f.n && reg->f.z); };
+  void opcode_c0() { ret(!reg->f.z); };
   // POP BC
   void opcode_c1() { pop(reg->bc); };
   // JP NZ, u16
-  void opcode_c2() { jp(reg->f.n && reg->f.z, mmu->read_word(reg->pc)); };
+  void opcode_c2() { jp(!reg->f.z, mmu->read_word(reg->pc)); };
   // JP u16
   void opcode_c3() { jp(true, mmu->read_word(reg->pc)); };
   // CALL NZ, u16
-  void opcode_c4() { call(reg->f.n && reg->f.z); };
+  void opcode_c4() { call(!reg->f.z); };
   // PUSH BC
   void opcode_c5() { push(reg->bc); };
   // ADD A, u8
@@ -754,14 +754,14 @@ public:
   // RST 0x08
   void opcode_cf() { rst(0x08); };
   // RET NC
-  void opcode_d0() { ret(reg->f.n && reg->f.c); };
+  void opcode_d0() { ret(!reg->f.c); };
   // POP DE
   void opcode_d1() { pop(reg->de); };
   // JP NC, u16
-  void opcode_d2() { jp(reg->f.n && reg->f.c, mmu->read_word(reg->pc)); };
+  void opcode_d2() { jp(!reg->f.c, mmu->read_word(reg->pc)); };
   void opcode_d3() { unimplemented(); };
   // CALL NC, u16
-  void opcode_d4() { call(reg->f.n && reg->f.c); };
+  void opcode_d4() { call(!reg->f.c); };
   // PUSH DE
   void opcode_d5() { push(reg->de); };
   // SUB A, u8

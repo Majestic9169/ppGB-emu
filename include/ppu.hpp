@@ -44,6 +44,7 @@ private:
   int ticks{0};
   LAYERS layer{BACKGROUND};
   uint8_t tile_line{0};
+  uint8_t also_tile_line{0};
   uint8_t tile_index{0};
   uint8_t tile_data_low{0};
   uint8_t tile_data_high{0};
@@ -57,11 +58,12 @@ public:
 
   FIFO(MMU *_mmu) : mmu{_mmu}, fifo{} {}
 
-  void start_fifo(LAYERS _layer, uint8_t _tile_line) {
+  void start_fifo(LAYERS _layer, uint8_t _tile_line, uint8_t _also_tile_line) {
     while (!fifo.empty()) {
       fifo.pop();
     }
     tile_index = 0;
+    also_tile_line = _also_tile_line;
     layer = _layer;
     tile_line = _tile_line;
     fifo_state = READ_TILE_ID;
@@ -74,10 +76,20 @@ public:
     }
     ticks = 0;
 
+    if (mmu->lcdc.isWindowEnable() && mmu->ly() >= mmu->wy() &&
+        mmu->ly() < (mmu->wy() + 32)) {
+      layer = WINDOW;
+    } else {
+      layer = BACKGROUND;
+    }
+
     switch (fifo_state) {
     case READ_TILE_ID:
       if (layer == BACKGROUND) {
-        tile_id = mmu->read_byte(mmu->lcdc.BGTileMap() + tile_index);
+        printf("queueing tile index 0x%04x\n",
+               mmu->lcdc.BGTileMap() + tile_index);
+        tile_id = mmu->read_byte(mmu->lcdc.BGTileMap() + also_tile_line * 32 +
+                                 tile_index);
       } else if (layer == WINDOW) {
         tile_id = mmu->read_byte(mmu->lcdc.WindowTileMap() + tile_index);
       } else {
@@ -88,12 +100,12 @@ public:
       fifo_state = READ_TILE_DATA0;
       break;
     case READ_TILE_DATA0:
-      tile_data_low = mmu->GetTileFromIndex(tile_index, BACKGROUND)
+      tile_data_low = mmu->GetTileFromIndex(tile_id, BACKGROUND)
                           .GetRawTile()[tile_line * 2];
       fifo_state = READ_TILE_DATA1;
       break;
     case READ_TILE_DATA1:
-      tile_data_high = mmu->GetTileFromIndex(tile_index, BACKGROUND)
+      tile_data_high = mmu->GetTileFromIndex(tile_id, BACKGROUND)
                            .GetRawTile()[tile_line * 2 + 1];
       fifo_state = PUSH;
       break;
@@ -107,6 +119,7 @@ public:
         px.layer = layer;
         fifo.push(px);
       }
+      tile_index++;
       fifo_state = READ_TILE_ID;
       break;
     }
@@ -127,7 +140,7 @@ private:
   SDL_Window *SDLWindow;
   FIFO pixel_fifo;
 
-  uint8_t &ly{mmu->ly()};
+  uint8_t &ly;
   uint8_t lx{0};
   int ticks{0};
 
@@ -164,7 +177,7 @@ public:
       : cli{cli_}, mmu{mmu_},
         SDLWindow{SDL_CreateWindow("ppGB Window", SDL_WINDOWPOS_CENTERED,
                                    SDL_WINDOWPOS_CENTERED, WIDTH, HEIGHT, 0)},
-        pixel_fifo{mmu_} {};
+        pixel_fifo{mmu_}, ly{mmu->ly()} {};
 
   void ppu_step() {
     GetSurface();
@@ -175,18 +188,21 @@ public:
       // 2 ticks per object, 40 objects
       if (ticks == 80) {
         lx = 0;
-        pixel_fifo.start_fifo(BACKGROUND, ly % 8);
+        pixel_fifo.start_fifo(BACKGROUND, ly % 8, ly / 8);
         ppu_state = MODE3_PIXEL_TRANSFER;
       }
       break;
     case MODE3_PIXEL_TRANSFER:
       pixel_fifo.fifo_step();
+      // if (pixel_fifo.fifo.size() <= 8) {
+      //   pixel_fifo.fifo_step();
+      // }
       if (!pixel_fifo.fifo.empty()) {
         Pixel px = pixel_fifo.fifo.front();
         pixel_fifo.fifo.pop();
         SetPixel(MapColorToSDL(px.color, GetSurface()->format));
+        lx++;
       }
-      lx++;
       // HBLANK is entered after each row of pixels has been rendered
       if (lx == 160) {
         ppu_state = MODE0_HBLANK;
@@ -219,6 +235,21 @@ public:
   }
 
   void Update() { SDL_UpdateWindowSurface(SDLWindow); }
+
+  void print_debug() const {
+    printf("ly: %d, lx: %d\n", ly, lx);
+    printf("lcdc = %4x\n", mmu->read_byte(0xff40));
+    printf("stat = %4x\n", mmu->read_byte(0xff41));
+    if (ppu_state == MODE0_HBLANK) {
+      printf("state: hblank\n");
+    } else if (ppu_state == MODE1_VBLANK) {
+      printf("state: vblank\n");
+    } else if (ppu_state == MODE2_OAM_SCAN) {
+      printf("state: oam scan\n");
+    } else {
+      printf("state: pixel transfer\n");
+    }
+  }
 };
 
 #endif

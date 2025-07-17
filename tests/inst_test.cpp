@@ -148,8 +148,15 @@ TEST_CASE("jr tests", "[flags, jr]") {
   op.opcode_28();
   REQUIRE(reg.pc == 0x105);
   reg.pc = 0x104;
-  reg.f.n = 1;
-  reg.f.c = 1;
+  reg.f.z = 0;
+  op.opcode_20();
+  REQUIRE(reg.pc == 0x104);
+  reg.pc = 0x104;
+  reg.f.c = 0;
+  op.opcode_38();
+  REQUIRE(reg.pc == 0x105);
+  reg.pc = 0x104;
+  reg.f.c = 0;
   op.opcode_30();
   REQUIRE(reg.pc == 0x104);
 }

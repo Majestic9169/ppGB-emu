@@ -188,16 +188,16 @@ public:
       std::cout << GRN << "[+] ROM successfully loaded\n" << COLOR_RESET;
     }
     // boot rom
-    std::ifstream boot_rom_file{"./roms/sgb_bios.bin", std::ios::binary};
-    if (!boot_rom_file.good()) {
-      std::cerr << RED << "[!] Error loading BOOT_ROM_FILE\n" << COLOR_RESET;
-      exit(2);
-    }
-    boot_rom_file.read(reinterpret_cast<char *>(ROM.data()), ROM_SIZE);
-    if (cli_opts->debug_enabled()) {
-      std::cout << GRN << "[+] BOOT_ROM successfully loaded\n" << COLOR_RESET;
-      header_information();
-    }
+    // std::ifstream boot_rom_file{"./roms/sgb_bios.bin", std::ios::binary};
+    // if (!boot_rom_file.good()) {
+    //   std::cerr << RED << "[!] Error loading BOOT_ROM_FILE\n" << COLOR_RESET;
+    //   exit(2);
+    // }
+    // boot_rom_file.read(reinterpret_cast<char *>(ROM.data()), ROM_SIZE);
+    // if (cli_opts->debug_enabled()) {
+    //   std::cout << GRN << "[+] BOOT_ROM successfully loaded\n" <<
+    //   COLOR_RESET; header_information();
+    // }
 
     // init OAM
     OAM.reserve(40);
@@ -205,7 +205,7 @@ public:
       OAM.emplace_back(ROM.begin() + 0xfe00 + (i * 4));
     }
 
-    hexdump();
+    // hexdump();
   }
 
   uint8_t &read_byte(uint16_t addr) { return ROM[addr]; }

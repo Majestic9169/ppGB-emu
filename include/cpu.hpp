@@ -329,6 +329,14 @@ public:
       }
     }
   }
+
+  void print_reg() {
+    printf("af: %4x\n", reg.af);
+    printf("bc: %4x\n", reg.bc);
+    printf("de: %4x\n", reg.de);
+    printf("hl: %4x\n", reg.hl);
+    printf("sp: %4x\n", reg.sp);
+  }
 };
 
 #endif

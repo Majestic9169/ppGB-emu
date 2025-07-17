@@ -35,14 +35,16 @@ public:
       while (SDL_PollEvent(&Event)) {
         if (Event.type == SDL_QUIT) {
           SDL_Quit();
-          mmu.hexdump();
+          // mmu.hexdump();
           return;
         }
       }
 
       // render
       cpu.cpu_step();
+      cpu.print_reg();
       ppu.ppu_step();
+      ppu.print_debug();
 
       // update
       ppu.Update();
