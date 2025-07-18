@@ -13,6 +13,7 @@
 #include <cstdint>
 
 class CB_Opcodes {
+
 private:
   MMU *mmu;
   Registers *reg;
@@ -22,206 +23,87 @@ private:
 
   // RL INSTRUCTIONS
   // rotate THROUGH carry
-  void rl(uint8_t &r8) {
-    reg->f.n = 0;
-    reg->f.h = 0;
-    uint8_t tmp = 0 + reg->f.c;
-    reg->f.c = (r8 & 0x80) >> 7;
-    r8 = (r8 << 1) | tmp;
-    reg->set_z(r8);
-  }
+  void rl(uint8_t &r8);
   // rotate and set top bit to carry
-  void rlc(uint8_t &r8) {
-    reg->f.n = 0;
-    reg->f.h = 0;
-    reg->f.c = (r8 & 0x80) >> 7;
-    r8 = (r8 << 1) | reg->f.c;
-    reg->set_z(r8);
-  }
+  void rlc(uint8_t &r8);
   // RR INSTRUCTIONS
   // rotate and set top bit to carry
-  void rrc(uint8_t &r8) {
-    reg->f.n = 0;
-    reg->f.h = 0;
-    reg->f.c = r8 & 0x01;
-    r8 = (r8 >> 1) | (reg->f.c << 7);
-    reg->set_z(r8);
-  }
+  void rrc(uint8_t &r8);
   // rotate right through carry
-  void rr(uint8_t &r8) {
-    reg->f.n = 0;
-    reg->f.h = 0;
-    uint8_t tmp = 0 + reg->f.c;
-    reg->f.c = r8 & 0x01;
-    r8 = (r8 >> 1) | (tmp << 7);
-    reg->set_z(r8);
-  }
+  void rr(uint8_t &r8);
   // SHIFT INSTRUCTIONS
-  void sla(uint8_t &val) {
-    reg->f.c = (val & 0x80) >> 7;
-    val = val << 1;
-    reg->f.n = 0;
-    reg->f.h = 0;
-    reg->set_z(val);
-  }
-  void sra(uint8_t &val) {
-    reg->f.c = (val & 0x01);
-    // c++ didn't sign extend for me, fair because unsigned char
-    val = (val >> 1) | (val & 0x80);
-    reg->f.n = 0;
-    reg->f.h = 0;
-    reg->set_z(val);
-  }
-  void srl(uint8_t &val) {
-    reg->f.c = (val & 0x01);
-    val = (val >> 1);
-    reg->f.n = 0;
-    reg->f.h = 0;
-    reg->set_z(val);
-  }
+  void sla(uint8_t &val);
+  void sra(uint8_t &val);
+  void srl(uint8_t &val);
   // SWAP INSTRUCTIONS
-  void swap(uint8_t &val) {
-    uint8_t high = (val & 0xf0);
-    uint8_t low = (val & 0x0f);
-    val = (low << 4) | (high >> 4);
-    reg->set_z(val);
-    reg->f.n = 0;
-    reg->f.h = 0;
-    reg->f.c = 0;
-  }
+  void swap(uint8_t &val);
 
 public:
-  CB_Opcodes(MMU *_mmu, Registers *_reg) : mmu{_mmu}, reg{_reg} {}
-  // RLC B
-  void cb_opcode_00() { rlc(reg->b); };
-  // RLC C
-  void cb_opcode_01() { rlc(reg->c); };
-  // RLC D
-  void cb_opcode_02() { rlc(reg->d); };
-  // RLC E
-  void cb_opcode_03() { rlc(reg->e); };
-  // RLC H
-  void cb_opcode_04() { rlc(reg->h); };
-  // RLC L
-  void cb_opcode_05() { rlc(reg->l); };
-  // i made mmu->read_byte() return a reference for this to fit one line
-  // if anything breaks you know which opcode to blame
-  // RLC (HL)
-  void cb_opcode_06() { rlc(mmu->read_byte(reg->hl)); };
-  // RLC A
-  void cb_opcode_07() { rlc(reg->a); };
-  // RRC B
-  void cb_opcode_08() { rrc(reg->b); };
-  // RRC C
-  void cb_opcode_09() { rrc(reg->c); };
-  // RRC D
-  void cb_opcode_0a() { rrc(reg->d); };
-  // RRC E
-  void cb_opcode_0b() { rrc(reg->e); };
-  // RRC H
-  void cb_opcode_0c() { rrc(reg->h); };
-  // RRC L
-  void cb_opcode_0d() { rrc(reg->l); };
-  // RRC (HL)
-  void cb_opcode_0e() { rrc(mmu->read_byte(reg->hl)); };
-  // RRC A
-  void cb_opcode_0f() { rrc(reg->a); };
-  // RL B
-  void cb_opcode_10() { rl(reg->b); };
-  // RL C
-  void cb_opcode_11() { rl(reg->c); };
-  // RL D
-  void cb_opcode_12() { rl(reg->d); };
-  // RL E
-  void cb_opcode_13() { rl(reg->e); };
-  // RL H
-  void cb_opcode_14() { rl(reg->h); };
-  // RL L
-  void cb_opcode_15() { rl(reg->l); };
-  // RL (HL)
-  void cb_opcode_16() { rl(mmu->read_byte(reg->hl)); };
-  // RL A
-  void cb_opcode_17() { rl(reg->a); };
-  // RR B
-  void cb_opcode_18() { rr(reg->b); };
-  // RR C
-  void cb_opcode_19() { rr(reg->c); };
-  // RR D
-  void cb_opcode_1a() { rr(reg->d); };
-  // RR E
-  void cb_opcode_1b() { rr(reg->e); };
-  // RR H
-  void cb_opcode_1c() { rr(reg->h); };
-  // RR L
-  void cb_opcode_1d() { rr(reg->l); };
-  // RR (HL)
-  void cb_opcode_1e() { rr(mmu->read_byte(reg->hl)); };
-  // RR A
-  void cb_opcode_1f() { rr(reg->a); };
-  // SLA B
-  void cb_opcode_20() { sla(reg->b); };
-  // SLA C
-  void cb_opcode_21() { sla(reg->c); };
-  // SLA D
-  void cb_opcode_22() { sla(reg->d); };
-  // SLA E
-  void cb_opcode_23() { sla(reg->e); };
-  // SLA H
-  void cb_opcode_24() { sla(reg->h); };
-  // SLA L
-  void cb_opcode_25() { sla(reg->l); };
-  // SLA (HL)
-  void cb_opcode_26() { sla(mmu->read_byte(reg->hl)); };
-  // SLA A
-  void cb_opcode_27() { sla(reg->a); };
-  // SRA B
-  void cb_opcode_28() { sra(reg->b); };
-  // SRA C
-  void cb_opcode_29() { sra(reg->c); };
-  // SRA D
-  void cb_opcode_2a() { sra(reg->d); };
-  // SRA E
-  void cb_opcode_2b() { sra(reg->e); };
-  // SRA H
-  void cb_opcode_2c() { sra(reg->h); };
-  // SRA L
-  void cb_opcode_2d() { sra(reg->l); };
-  // SRA (HL)
-  void cb_opcode_2e() { sra(mmu->read_byte(reg->hl)); };
-  // SRA A
-  void cb_opcode_2f() { sra(reg->a); };
-  // SWAP B
-  void cb_opcode_30() { swap(reg->b); };
-  // SWAP C
-  void cb_opcode_31() { swap(reg->c); };
-  // SWAP D
-  void cb_opcode_32() { swap(reg->d); };
-  // SWAP E
-  void cb_opcode_33() { swap(reg->e); };
-  // SWAP H
-  void cb_opcode_34() { swap(reg->h); };
-  // SWAP L
-  void cb_opcode_35() { swap(reg->l); };
-  // SWAP (HL)
-  void cb_opcode_36() { swap(mmu->read_byte(reg->hl)); };
-  // SWAP A
-  void cb_opcode_37() { swap(reg->a); };
-  // SRL B
-  void cb_opcode_38() { srl(reg->b); };
-  // SRL C
-  void cb_opcode_39() { srl(reg->c); };
-  // SRL D
-  void cb_opcode_3a() { srl(reg->d); };
-  // SRL E
-  void cb_opcode_3b() { srl(reg->e); };
-  // SRL H
-  void cb_opcode_3c() { srl(reg->h); };
-  // SRL L
-  void cb_opcode_3d() { srl(reg->l); };
-  // SRL (HL)
-  void cb_opcode_3e() { srl(mmu->read_byte(reg->hl)); };
-  // SRL A
-  void cb_opcode_3f() { srl(reg->a); };
+  CB_Opcodes(MMU *_mmu, Registers *_reg);
+  void cb_opcode_00();
+  void cb_opcode_01();
+  void cb_opcode_02();
+  void cb_opcode_03();
+  void cb_opcode_04();
+  void cb_opcode_05();
+  void cb_opcode_06();
+  void cb_opcode_07();
+  void cb_opcode_08();
+  void cb_opcode_09();
+  void cb_opcode_0a();
+  void cb_opcode_0b();
+  void cb_opcode_0c();
+  void cb_opcode_0d();
+  void cb_opcode_0e();
+  void cb_opcode_0f();
+  void cb_opcode_10();
+  void cb_opcode_11();
+  void cb_opcode_12();
+  void cb_opcode_13();
+  void cb_opcode_14();
+  void cb_opcode_15();
+  void cb_opcode_16();
+  void cb_opcode_17();
+  void cb_opcode_18();
+  void cb_opcode_19();
+  void cb_opcode_1a();
+  void cb_opcode_1b();
+  void cb_opcode_1c();
+  void cb_opcode_1d();
+  void cb_opcode_1e();
+  void cb_opcode_1f();
+  void cb_opcode_20();
+  void cb_opcode_21();
+  void cb_opcode_22();
+  void cb_opcode_23();
+  void cb_opcode_24();
+  void cb_opcode_25();
+  void cb_opcode_26();
+  void cb_opcode_27();
+  void cb_opcode_28();
+  void cb_opcode_29();
+  void cb_opcode_2a();
+  void cb_opcode_2b();
+  void cb_opcode_2c();
+  void cb_opcode_2d();
+  void cb_opcode_2e();
+  void cb_opcode_2f();
+  void cb_opcode_30();
+  void cb_opcode_31();
+  void cb_opcode_32();
+  void cb_opcode_33();
+  void cb_opcode_34();
+  void cb_opcode_35();
+  void cb_opcode_36();
+  void cb_opcode_37();
+  void cb_opcode_38();
+  void cb_opcode_39();
+  void cb_opcode_3a();
+  void cb_opcode_3b();
+  void cb_opcode_3c();
+  void cb_opcode_3d();
+  void cb_opcode_3e();
+  void cb_opcode_3f();
   // void cb_opcode_40();
   // void cb_opcode_41();
   // void cb_opcode_42();

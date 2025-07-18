@@ -16,6 +16,7 @@
 
 class Gameboy {
 private:
+  Opts *cli_opts;
   MMU mmu;
   CPU cpu;
   PPU ppu;
@@ -25,31 +26,10 @@ private:
 
 public:
   // TODO: figure out how to move Opts to gb.hpp too
-  Gameboy(Opts *opts_) : mmu(opts_), cpu{opts_, &mmu}, ppu{opts_, &mmu} {};
+  Gameboy(Opts *opts_);
 
   // application loop
-  void run() {
-    while (1) {
-      // poll events
-      SDL_Event Event;
-      while (SDL_PollEvent(&Event)) {
-        if (Event.type == SDL_QUIT) {
-          SDL_Quit();
-          // mmu.hexdump();
-          return;
-        }
-      }
-
-      // render
-      cpu.cpu_step();
-      cpu.print_reg();
-      ppu.ppu_step();
-      ppu.print_debug();
-
-      // update
-      ppu.Update();
-    }
-  }
+  void run();
 };
 
 #endif

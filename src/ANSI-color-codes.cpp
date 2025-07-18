@@ -5,6 +5,7 @@
 
 #ifndef ANSI_COLOR_CODES
 #define ANSI_COLOR_CODES
+
 #include <string>
 
 /*

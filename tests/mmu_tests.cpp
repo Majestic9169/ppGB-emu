@@ -63,7 +63,7 @@ TEST_CASE("get tile testing", "[mmu, tiles]") {
                                    0x42, 0x42, 0x7e, 0x5e, 0x7e, 0x0a,
                                    0x7c, 0x56, 0x38, 0x7c};
 
-  REQUIRE(mmu.GetTileFromIndex(0, OBJECT).GetRawTile() == raw_data);
+  REQUIRE(mmu.GetTileFromIndex(0, TILE::OBJECT).GetRawTile() == raw_data);
 
   mmu.write_byte(0x8000, 0x00);
   mmu.write_byte(0x8001, 0x00);
@@ -101,7 +101,7 @@ TEST_CASE("get tile testing", "[mmu, tiles]") {
   mmu.write_byte(0x900e, 0x38);
   mmu.write_byte(0x900f, 0x7c);
 
-  REQUIRE(mmu.GetTileFromIndex(0, WINDOW).GetRawTile() == raw_data);
+  REQUIRE(mmu.GetTileFromIndex(0, TILE::WINDOW).GetRawTile() == raw_data);
 }
 
 TEST_CASE("oam and objects test", "[oam, objects, ppu]") {

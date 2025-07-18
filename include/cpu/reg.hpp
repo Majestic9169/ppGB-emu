@@ -71,41 +71,14 @@ public:
   bool ime;
   bool stopped = false;
 
-  void set_z(uint8_t val) {
-    if (val == 0) {
-      f.z = 1;
-    } else {
-      f.z = 0;
-    }
-  }
+  void set_z(uint8_t val);
 
   // WARN: ONLY FOR INCREMENT BY ONE
-  void set_h(uint8_t val) {
-    if ((val & 0x0f) == 0x0f) {
-      f.h = 1;
-    } else {
-      f.h = 0;
-    }
-  }
+  void set_h(uint8_t val);
 
   // overload for two number addition
-  void set_h(uint8_t a, uint8_t b) {
-    uint8_t res = (a & 0x0f) + (b & 0x0f);
-    if ((res & 0xf0)) {
-      f.h = 1;
-    } else {
-      f.h = 0;
-    }
-  }
-
-  void set_c(uint8_t a, uint8_t b) {
-    uint16_t res = a + b;
-    if ((res & 0xff00)) {
-      f.c = 1;
-    } else {
-      f.c = 0;
-    }
-  }
+  void set_h(uint8_t a, uint8_t b);
+  void set_c(uint8_t a, uint8_t b);
 };
 
 #endif
