@@ -10,9 +10,9 @@
 #ifndef CPU_H
 #define CPU_H
 
+#include "../cli_opts.hpp"
+#include "../mmu/mmu.hpp"
 #include "cb_opcodes.hpp"
-#include "cli_opts.hpp"
-#include "mmu.hpp"
 #include "opcodes.hpp"
 #include "reg.hpp"
 #include <cstdint>

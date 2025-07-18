@@ -12,7 +12,7 @@
 #ifndef OPCODE_H
 #define OPCODE_H
 
-#include "mmu.hpp"
+#include "../mmu/mmu.hpp"
 #include "reg.hpp"
 #include <cstdint>
 

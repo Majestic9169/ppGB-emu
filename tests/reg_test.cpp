@@ -1,7 +1,7 @@
 #define CATCH_CONFIG_MAIN
 
-#include "../include/catch.hpp"
-#include "../include/reg.hpp"
+#include "../include/cpu/reg.hpp"
+#include "../third_party/catch.hpp"
 
 Registers reg{};
 

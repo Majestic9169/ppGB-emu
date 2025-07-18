@@ -1,8 +1,8 @@
 #define CATCH_CONFIG_MAIN
 
-#include "../include/catch.hpp"
-#include "../include/cb_opcodes.hpp"
 #include "../include/cli_opts.hpp"
+#include "../include/cpu/cb_opcodes.hpp"
+#include "../third_party/catch.hpp"
 
 int argc = 2;
 char *argv[2] = {strdup("./ppGB"), strdup("../roms/tetris.gb")};

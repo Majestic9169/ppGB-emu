@@ -1,9 +1,9 @@
 #include <cstdint>
 #define CATCH_CONFIG_MAIN
 
-#include "../include/catch.hpp"
 #include "../include/cli_opts.hpp"
-#include "../include/opcodes.hpp"
+#include "../include/cpu/opcodes.hpp"
+#include "../third_party/catch.hpp"
 
 int argc = 2;
 char *argv[2] = {strdup("./ppGB"), strdup("../roms/tetris.gb")};

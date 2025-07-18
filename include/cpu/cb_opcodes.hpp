@@ -8,7 +8,7 @@
 #ifndef CB_OPCODES_H
 #define CB_OPCODES_H
 
-#include "mmu.hpp"
+#include "../mmu/mmu.hpp"
 #include "reg.hpp"
 #include <cstdint>
 

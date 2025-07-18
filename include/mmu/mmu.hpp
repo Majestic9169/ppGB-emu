@@ -9,7 +9,7 @@
 #ifndef MMU_H
 #define MMU_H
 
-#include "cli_opts.hpp"
+#include "../cli_opts.hpp"
 #include "tile.hpp"
 #include <cstdint>
 #include <cstdio>

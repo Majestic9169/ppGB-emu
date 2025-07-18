@@ -8,9 +8,9 @@
 #define GB_H
 
 #include "cli_opts.hpp"
-#include "cpu.hpp"
-#include "mmu.hpp"
-#include "ppu.hpp"
+#include "cpu/cpu.hpp"
+#include "mmu/mmu.hpp"
+#include "ppu/ppu.hpp"
 #include <SDL2/SDL_events.h>
 #include <SDL2/SDL_timer.h>
 
