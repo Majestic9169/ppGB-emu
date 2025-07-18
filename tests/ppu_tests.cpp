@@ -1,18 +1,6 @@
+#include "test_globals.hpp"
+#include <catch2/catch_test_macros.hpp>
 #include <cstdint>
-#define CATCH_CONFIG_MAIN
-
-#include "../include/cli_opts.hpp"
-#include "../include/cpu/reg.hpp"
-#include "../include/ppu/ppu.hpp"
-#include "../third_party/catch.hpp"
-
-int argc = 2;
-char *argv[2] = {strdup("./ppGB"), strdup("../roms/tetris.gb")};
-Opts cli_opts{argc, argv};
-MMU mmu{&cli_opts};
-Registers reg{};
-
-PPU ppu{&cli_opts, &mmu};
 
 TEST_CASE("tile splicing check", "[ppu, tile]") {
   mmu.write_byte(0x8000, 0x3c);
@@ -32,7 +20,7 @@ TEST_CASE("tile splicing check", "[ppu, tile]") {
   mmu.write_byte(0x800e, 0x38);
   mmu.write_byte(0x800f, 0x7c);
 
-  TILE tile = mmu.GetTileFromIndex(0, OBJECT);
+  TILE tile = mmu.GetTileFromIndex(0, TILE::OBJECT);
 
   std::vector<uint16_t> rendered_tile{0x2ff8, 0x300c, 0x300c, 0x300c,
                                       0x37fc, 0x15dc, 0x3778, 0x2fe0};

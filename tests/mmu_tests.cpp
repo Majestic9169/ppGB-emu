@@ -1,17 +1,6 @@
+#include "test_globals.hpp"
+#include <catch2/catch_test_macros.hpp>
 #include <cstdint>
-#define CATCH_CONFIG_MAIN
-
-#include "../include/cli_opts.hpp"
-#include "../include/cpu/opcodes.hpp"
-#include "../third_party/catch.hpp"
-
-int argc = 2;
-char *argv[2] = {strdup("./ppGB"), strdup("../roms/tetris.gb")};
-Opts cli_opts{argc, argv};
-MMU mmu{&cli_opts};
-Registers reg{};
-
-Opcodes op{&mmu, &reg};
 
 TEST_CASE("write_word functioning", "[mmu, 16]") {
   mmu.write_word(0x1010, 0xbeef);

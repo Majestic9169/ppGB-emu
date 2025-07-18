@@ -6,6 +6,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Find SDL2 - this requires SDL2 to be installed with CMake config files
 find_package(SDL2 REQUIRED)
+find_package(Catch2 3 REQUIRED)
 
 # Include directories for your headers and third-party
 include_directories(
@@ -24,7 +25,7 @@ target_link_libraries(ppGB-emu PRIVATE SDL2::SDL2)
 # Tests executable (with Catch2 and all source, for integration tests etc)
 add_executable(tests ${TEST_SOURCES} ${SRC_FILES})
 target_compile_definitions(tests PRIVATE CATCH_CONFIG_MAIN)
-target_link_libraries(tests PRIVATE SDL2::SDL2)
+target_link_libraries(tests PRIVATE Catch2::Catch2WithMain SDL2::SDL2)
 
 # Optionally, if SDL2::SDL2main is needed (Windows), add it:
 if(TARGET SDL2::SDL2main)

@@ -1,16 +1,5 @@
-#define CATCH_CONFIG_MAIN
-
-#include "../include/cli_opts.hpp"
-#include "../include/cpu/cb_opcodes.hpp"
-#include "../third_party/catch.hpp"
-
-int argc = 2;
-char *argv[2] = {strdup("./ppGB"), strdup("../roms/tetris.gb")};
-Opts cli_opts{argc, argv};
-MMU mmu{&cli_opts};
-Registers reg{};
-
-CB_Opcodes cb{&mmu, &reg};
+#include "test_globals.hpp"
+#include <catch2/catch_test_macros.hpp>
 
 TEST_CASE("RLC tests", "[flags, rlc]") {
   reg.af = 0xfff0;
