@@ -3,6 +3,7 @@ project(GameBoyEmulator LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_FLAGS "-ggdb -pedantic-errors -Wall -Weffc++ -Wextra")
 
 # Find SDL2 - this requires SDL2 to be installed with CMake config files
 find_package(SDL2 REQUIRED)

@@ -2,11 +2,13 @@
 
 ROM=./roms/tetris.gb
 
+mkdir -p ./build
+
 echo "build: building"
 # g++ -ggdb -pedantic-errors -Wall -Weffc++ -Wextra -Wconversion -o ./build/ppGB main.cpp
-# too many conversion errors
+# removed -Wconversion because too many conversion errors
 # TODO: sort out conversion warnings
-g++ -ggdb -pedantic-errors -Wall -Weffc++ -Wextra -lSDL2 -o ./build/ppGB main.cpp
+cd ./build/ && cmake .. && make && cd ../
 echo "build: built"
 
 while getopts 'rdct' OPTION; do
@@ -21,13 +23,11 @@ while getopts 'rdct' OPTION; do
       ;;
     c)
       echo "build: cleaning"
-      rm ./build/ppGB
-      cd ./tests/ && make clean
+      rm -r ./build/*
       ;;
     t)
       echo "build: testing"
-      cd ./tests/
-      make
+      ./build/tests --reporter compact
       ;;
     ?)
       echo "build: exiting"

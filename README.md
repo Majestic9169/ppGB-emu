@@ -1,4 +1,3 @@
-<!-- Improved compatibility of back to top link: See: https://github.com/Majestic9169/ppGB-emu/pull/73 -->
 <a id="readme-top"></a>
 <!--
 *** Thanks for checking out the Best-README-Template. If you have a suggestion
@@ -95,7 +94,7 @@ This project aims to implement a basic featured Gameboy Emulator that will allow
 
 ### Prerequisites
 
-This project uses ~~SDL3~~ SDL2 as a dependency.
+This project uses ~~SDL3~~ SDL2 and Catch2 v3 as dependencies
 
 You can install SDL2 on Arch Linux from the extra repository as 
 
@@ -109,8 +108,32 @@ On linux mint and similar systems
 sudo apt-get install libsdl2-2.0.0
 ```
 
-> [!NOTE]
-> SDL3 is newly released and not stable. Up until April 3rd I was trying to use SDL3 not realising that it simply was not functional yet
+You can build Catch2 v3 from source as 
+
+```bash
+git clone https://github.com/catchorg/Catch2.git
+cd Catch2
+cmake -Bbuild -H.
+sudo cmake --build build --target install
+```
+
+> [!CAUTION]
+> SDL3 is newly released and not stable. Up until April 3rd 2025 I was trying to use SDL3 not realising that it simply was not functional yet (or i was just messing up really bad)
+
+### Usage
+
+a `build.sh` convenience script is provided. You can set `$ROM` in the script then use as below
+
+```bash
+Usage
+  ./build.sh to build main executable and tests
+  ./build.sh -r to run $ROM
+  ./build.sh -d to run $ROM with debug information printed
+  ./build.sh -t to run tests on a default rom you can set in `./tests/test_globals.cpp`
+  ./build.sh -c to clean the build folder
+```
+
+this is currently for convenience in developing, i will make this easier to use later
 
 ---
 
