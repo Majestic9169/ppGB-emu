@@ -17,16 +17,14 @@
 // i hate it
 FIFO::FIFO(MMU *_mmu) : mmu{_mmu}, fifo{} {}
 
-void FIFO::start_fifo(TILE::LAYERS _layer, uint8_t _tile_line,
-                      uint8_t _also_tile_line) {
+void FIFO::start_fifo() {
   while (!fifo.empty()) {
     fifo.pop();
   }
-  tile_index = 0;
-  also_tile_line = _also_tile_line;
-  layer = _layer;
-  tile_line = _tile_line;
+  tile_line = (mmu->ly() + mmu->scy()) % 8;
   fifo_state = READ_TILE_ID;
+  tile_column_index = mmu->scx() / 8;
+  tile_row_index = (mmu->ly() + mmu->scy()) / 8;
 }
 
 void FIFO::fifo_step() {
@@ -46,14 +44,13 @@ void FIFO::fifo_step() {
   switch (fifo_state) {
   case READ_TILE_ID:
     if (layer == TILE::BACKGROUND) {
-      tile_id = mmu->read_byte(mmu->lcdc.BGTileMap() + also_tile_line * 32 +
-                               tile_index);
+      tile_id =
+          mmu->read_byte(mmu->lcdc.BGTileMap() + (tile_row_index % 32) * 32 +
+                         (tile_column_index % 32));
     } else if (layer == TILE::WINDOW) {
-      tile_id = mmu->read_byte(mmu->lcdc.WindowTileMap() + tile_index);
+      tile_id = mmu->read_byte(mmu->lcdc.WindowTileMap() + tile_column_index);
     } else {
-      // object tile map remains constant
-      // TODO: implement object priorities
-      tile_id = mmu->read_byte(0x8000 + tile_index);
+      tile_id = mmu->read_byte(0x8000 + tile_column_index);
     }
     fifo_state = READ_TILE_DATA0;
     break;
@@ -75,9 +72,13 @@ void FIFO::fifo_step() {
       Pixel px;
       px.color = static_cast<Palette::Colors>(color);
       px.layer = layer;
+      // dont push scx%8 if left edge
+      if (tile_column_index == mmu->scx() && (bit - (mmu->scx() % 8)) > 0) {
+        continue;
+      }
       fifo.push(px);
     }
-    tile_index++;
+    tile_column_index++;
     fifo_state = READ_TILE_ID;
     break;
   }

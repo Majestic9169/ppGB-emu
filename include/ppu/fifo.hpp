@@ -38,8 +38,8 @@ private:
   int ticks{0};
   TILE::LAYERS layer{TILE::BACKGROUND};
   uint8_t tile_line{0};
-  uint8_t also_tile_line{0};
-  uint8_t tile_index{0};
+  uint8_t tile_row_index{0};
+  uint8_t tile_column_index{0};
   uint8_t tile_data_low{0};
   uint8_t tile_data_high{0};
   uint8_t tile_id{0};
@@ -52,8 +52,7 @@ public:
 
   FIFO(MMU *_mmu);
 
-  void start_fifo(TILE::LAYERS _layer, uint8_t _tile_line,
-                  uint8_t _also_tile_line);
+  void start_fifo();
 
   void fifo_step();
 };

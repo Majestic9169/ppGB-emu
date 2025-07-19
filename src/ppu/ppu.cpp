@@ -51,15 +51,16 @@ void PPU::ppu_step() {
     // 2 ticks per object, 40 objects
     if (ticks == 80) {
       lx = 0;
-      pixel_fifo.start_fifo(TILE::BACKGROUND, ly % 8, ly / 8);
+      pixel_fifo.start_fifo();
       ppu_state = MODE3_PIXEL_TRANSFER;
     }
     break;
   case MODE3_PIXEL_TRANSFER:
     pixel_fifo.fifo_step();
-    // if (pixel_fifo.fifo.size() <= 8) {
-    //   pixel_fifo.fifo_step();
-    // }
+    // don't pop if fifo has less than 8 pixels
+    if (pixel_fifo.fifo.size() <= 8) {
+      break;
+    }
     if (!pixel_fifo.fifo.empty()) {
       Pixel px = pixel_fifo.fifo.front();
       pixel_fifo.fifo.pop();

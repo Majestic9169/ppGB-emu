@@ -11,6 +11,19 @@
 #include <fstream>
 #include <sys/types.h>
 
+void MMU::header_information() {
+  std::string title{std::string{ROM.begin() + 0x134, ROM.begin() + 0x143}};
+  bool gbc_support = ROM[0x143] == 0x80 || ROM[0x143] == 0xc0 ? true : false;
+  int rom_size = 0x8000 * (1 << ROM[0x148]);
+  int rom_banks = rom_size / 0x4000;
+  std::cout << YEL << "[~] ROM Header Information\n" << COLOR_RESET;
+  std::cout << "Title       " << title << std::endl;
+  std::cout << "GBC support " << std::boolalpha << gbc_support
+            << std::noboolalpha << std::endl;
+  std::cout << "ROM size    " << rom_size << std::endl;
+  std::cout << "No. Banks   " << rom_banks << std::endl;
+}
+
 MMU::MMU(Opts *opts_) : ROM(ROM_SIZE), cli_opts{opts_}, OAM{} {
   std::ifstream rom_file{cli_opts->rom_name(), std::ios::binary};
 
@@ -23,6 +36,18 @@ MMU::MMU(Opts *opts_) : ROM(ROM_SIZE), cli_opts{opts_}, OAM{} {
   if (cli_opts->debug_enabled()) {
     std::cout << GRN << "[+] ROM successfully loaded\n" << COLOR_RESET;
   }
+
+  /* boot rom*/
+  // std::ifstream boot_rom_file{"./roms/sgb_boot.bin", std::ios::binary};
+  // if (!boot_rom_file.good()) {
+  //   std::cerr << RED << "[!] Error loading BOOT_ROM_FILE\n" << COLOR_RESET;
+  //   exit(2);
+  // }
+  // boot_rom_file.read(reinterpret_cast<char *>(ROM.data()), ROM_SIZE);
+  // if (cli_opts->debug_enabled()) {
+  //   std::cout << GRN << "[+] BOOT_ROM successfully loaded\n" << COLOR_RESET;
+  //   header_information();
+  // }
 
   // init OAM
   OAM.reserve(40);

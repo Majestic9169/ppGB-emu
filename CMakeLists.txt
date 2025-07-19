@@ -24,7 +24,7 @@ add_executable(ppGB-emu ${SRC_FILES} main.cpp)
 target_link_libraries(ppGB-emu PRIVATE SDL2::SDL2)
 
 # Tests executable (with Catch2 and all source, for integration tests etc)
-add_executable(tests ${TEST_SOURCES} ${SRC_FILES})
+add_executable(tests EXCLUDE_FROM_ALL ${TEST_SOURCES} ${SRC_FILES})
 target_compile_definitions(tests PRIVATE CATCH_CONFIG_MAIN)
 target_link_libraries(tests PRIVATE Catch2::Catch2WithMain SDL2::SDL2)
 

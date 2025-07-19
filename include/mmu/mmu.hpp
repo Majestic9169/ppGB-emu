@@ -53,7 +53,6 @@ public:
   LCDC_REG lcdc{ROM[0xFF40]};
 
   // stat reg
-  // TODO: add ly and lyc reg somewhere
   STAT_REG stat{ROM[0xFF41]};
 
   // background scroll

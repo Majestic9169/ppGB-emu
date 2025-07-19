@@ -37,6 +37,7 @@ private:
 
   uint8_t &ly;
   uint8_t lx{0};
+  uint8_t scx{0}; // only read during oam scan
   int ticks{0};
 
   PPU(const PPU &) = delete;

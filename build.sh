@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 
-ROM=./roms/tetris.gb
+ROM=./roms/rom.gb
 
 mkdir -p ./build
 
@@ -15,11 +15,11 @@ while getopts 'rdct' OPTION; do
   case "$OPTION" in
     r)
       echo "build: running"
-      ./build/ppGB $ROM
+      ./build/ppGB-emu $ROM
       ;;
     d)
       echo "build: running with debug"
-      ./build/ppGB -d $ROM
+      ./build/ppGB-emu -d $ROM
       ;;
     c)
       echo "build: cleaning"
@@ -27,6 +27,7 @@ while getopts 'rdct' OPTION; do
       ;;
     t)
       echo "build: testing"
+      cd ./build/ && make tests && cd ../
       ./build/tests --reporter compact
       ;;
     ?)
