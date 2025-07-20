@@ -103,6 +103,8 @@ void PPU::Update() { SDL_UpdateWindowSurface(SDLWindow); }
 // TODO: add debug levels
 void PPU::print_debug() const {
   printf("ly: %d, lx: %d\n", ly, lx);
+  printf("scy: %d, scx: %d\n", mmu->scy(), mmu->scx());
+  printf("wy: %d, wx: %d\n", mmu->wy(), mmu->wx());
   printf("lcdc = %4x\n", mmu->read_byte(0xff40));
   printf("stat = %4x\n", mmu->read_byte(0xff41));
   if (ppu_state == MODE0_HBLANK) {

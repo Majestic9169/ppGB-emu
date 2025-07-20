@@ -17,14 +17,22 @@
 // i hate it
 FIFO::FIFO(MMU *_mmu) : mmu{_mmu}, fifo{} {}
 
+TILE::LAYERS FIFO::choose_layer() const {
+  if (mmu->lcdc.isWindowEnable() && mmu->wy() <= mmu->ly()) {
+    ;
+  };
+  return TILE::BACKGROUND;
+}
+
 void FIFO::start_fifo() {
   while (!fifo.empty()) {
     fifo.pop();
   }
   tile_line = (mmu->ly() + mmu->scy()) % 8;
-  fifo_state = READ_TILE_ID;
   tile_column_index = mmu->scx() / 8;
   tile_row_index = (mmu->ly() + mmu->scy()) / 8;
+  drop_pixels = mmu->scx() % 8;
+  fifo_state = READ_TILE_ID;
 }
 
 void FIFO::fifo_step() {
@@ -48,20 +56,22 @@ void FIFO::fifo_step() {
           mmu->read_byte(mmu->lcdc.BGTileMap() + (tile_row_index % 32) * 32 +
                          (tile_column_index % 32));
     } else if (layer == TILE::WINDOW) {
-      tile_id = mmu->read_byte(mmu->lcdc.WindowTileMap() + tile_column_index);
+      tile_id =
+          mmu->read_byte(mmu->lcdc.WindowTileMap() +
+                         (tile_row_index % 32) * 32 + (tile_column_index % 32));
     } else {
       tile_id = mmu->read_byte(0x8000 + tile_column_index);
     }
     fifo_state = READ_TILE_DATA0;
     break;
   case READ_TILE_DATA0:
-    tile_data_low = mmu->GetTileFromIndex(tile_id, TILE::BACKGROUND)
-                        .GetRawTile()[tile_line * 2];
+    tile_data_low =
+        mmu->GetTileFromIndex(tile_id, layer).GetRawTile()[tile_line * 2];
     fifo_state = READ_TILE_DATA1;
     break;
   case READ_TILE_DATA1:
-    tile_data_high = mmu->GetTileFromIndex(tile_id, TILE::BACKGROUND)
-                         .GetRawTile()[tile_line * 2 + 1];
+    tile_data_high =
+        mmu->GetTileFromIndex(tile_id, layer).GetRawTile()[tile_line * 2 + 1];
     fifo_state = PUSH;
     break;
   case PUSH:
@@ -73,7 +83,7 @@ void FIFO::fifo_step() {
       px.color = static_cast<Palette::Colors>(color);
       px.layer = layer;
       // dont push scx%8 if left edge
-      if (tile_column_index == mmu->scx() && (bit - (mmu->scx() % 8)) > 0) {
+      if (tile_column_index == mmu->scx() / 8 && (bit - (drop_pixels)) > 0) {
         continue;
       }
       fifo.push(px);
