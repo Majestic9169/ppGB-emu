@@ -23,8 +23,6 @@ public:
   struct {
     union {
       struct {
-        // TODO: convert f to std::bitset. This will be annoying and i'm not
-        // even sure if i should
         struct {
           uint8_t ignore : 4;
           uint8_t c : 1;

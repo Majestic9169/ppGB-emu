@@ -2,7 +2,6 @@
 #include <vector>
 
 // OAM stored from 0xfe00-0xfe9f
-// TODO: do something about the OAM DMA transfer
 class Object {
 private:
   // can't create structs because i need them to be references to the ROM
@@ -60,7 +59,6 @@ public:
 // 3 - mode 0 int select
 // 2 - lyc == ly
 // 1, 0 - ppu mode
-// TODO: add a pointer to PPU or framebuffer or whatever to update ly, lyc etc
 class STAT_REG {
   uint8_t &ff41_ref;
   bool getBit(int bit_no) const;

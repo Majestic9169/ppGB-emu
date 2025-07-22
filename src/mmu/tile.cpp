@@ -15,7 +15,6 @@ TILE::TILE(std::vector<uint8_t>::iterator start,
   }
   // 2 raw bytes are being interleaved together to get the final tile
   // check the ppu tests for a better idea
-  // TODO: something cool?
   // https://graphics.stanford.edu/~seander/bithacks.html
   spliced_data.reserve(8);
   for (int i = 0; i < 16; i += 2) {

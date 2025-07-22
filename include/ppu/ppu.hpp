@@ -58,7 +58,6 @@ public:
 
   void Update();
 
-  // TODO: add debug levels
   void print_debug() const;
 };
 
