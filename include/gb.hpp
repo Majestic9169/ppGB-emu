@@ -30,7 +30,7 @@ public:
   Gameboy(Opts *opts_);
 
   // gb step
-  void gb_step(FILE *fp);
+  void gb_step();
 
   // application loop
   void run();

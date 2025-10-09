@@ -13,38 +13,35 @@
 Gameboy::Gameboy(Opts *opts_)
     : cli_opts{opts_}, mmu(opts_), cpu{opts_, &mmu}, ppu{opts_, &mmu},
       is_paused(opts_->debug_enabled() ? true : false) {
-  // HACK: for gameboy-doctor
-  // initialise registers to value after bootrom
-  cpu.reg.af = 0x01b0;
-  cpu.reg.bc = 0x0013;
-  cpu.reg.de = 0x00d8;
-  cpu.reg.hl = 0x014d;
-  cpu.reg.sp = 0xfffe;
-  cpu.reg.pc = 0x0100;
-};
+        // initialise registers to value after bootrom
+        // cpu.reg.af = 0x01b0;
+        // cpu.reg.bc = 0x0013;
+        // cpu.reg.de = 0x00d8;
+        // cpu.reg.hl = 0x014d;
+        // cpu.reg.sp = 0xfffe;
+        // cpu.reg.pc = 0x0100;
+      };
 
 // step
-void Gameboy::gb_step(FILE *fp) {
-  cpu.print_reg(fp);
+void Gameboy::gb_step() {
+  // print debug
+  cpu.print_reg();
   // render
   cpu.cpu_step();
-  // ppu.ppu_step();
-  // print debug
-  if (cli_opts->debug_enabled()) {
-    ppu.print_debug();
-  }
+  ppu.ppu_step();
+  // if (cli_opts->debug_enabled()) {
+  ppu.print_debug();
+  // }
 }
 
 // application loop
 void Gameboy::run() {
-  FILE *fp = fopen("rom.log", "w");
   while (1) {
     // poll events
     SDL_Event Event;
     while (SDL_PollEvent(&Event)) {
       if (Event.type == SDL_QUIT) {
         SDL_Quit();
-        fclose(fp);
         // mmu.hexdump();
         return;
       }
@@ -56,7 +53,7 @@ void Gameboy::run() {
         } break;
         case SDLK_n: {
           std::cout << "Stepping\n";
-          gb_step(fp);
+          gb_step();
         } break;
         default: {
         }
@@ -64,9 +61,9 @@ void Gameboy::run() {
       }
     }
     if (!is_paused) {
-      gb_step(fp);
+      gb_step();
     }
     // update
-    // ppu.Update();
+    ppu.Update();
   }
 }

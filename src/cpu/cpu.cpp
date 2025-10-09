@@ -9,25 +9,17 @@
 
 #include "../../include/cpu/cpu.hpp"
 #include <cstdio>
-#include <fstream>
 
 CPU::CPU(Opts *cli, MMU *_mmu)
     : cli_opts(cli), mmu(_mmu), reg{}, op{_mmu, &reg}, cb(_mmu, &reg),
       curr_pc{}, opcode{} {};
 
-void CPU::print_reg(FILE *fp) {
+void CPU::print_reg() {
   printf("af: %4x\n", reg.af);
   printf("bc: %4x\n", reg.bc);
   printf("de: %4x\n", reg.de);
   printf("hl: %4x\n", reg.hl);
   printf("sp: %4x\n", reg.sp);
-  // HACK: for gameboy doctor
-  std::fprintf(fp,
-               "A:%02X F:%02X B:%02X C:%02X D:%02X E:%02X H:%02X L:%02X "
-               "SP:%04X PC:%04X PCMEM:%02X,%02X,%02X,%02X\n",
-               reg.a, reg.f, reg.b, reg.c, reg.d, reg.e, reg.h, reg.l, reg.sp,
-               reg.pc, mmu->read_byte(reg.pc), mmu->read_byte(reg.pc + 1),
-               mmu->read_byte(reg.pc + 2), mmu->read_byte(reg.pc + 3));
 }
 
 // TODO: add cpu cycle clocks array and handle when opcodes clocks have 2-3
