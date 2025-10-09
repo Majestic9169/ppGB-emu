@@ -81,7 +81,13 @@ void MMU::hexdump() const {
   }
 }
 
-uint8_t &MMU::read_byte(uint16_t addr) { return ROM[addr]; }
+uint8_t &MMU::read_byte(uint16_t addr) {
+  if (addr == 0xff44) {
+    static uint8_t ly = 0x90;
+    return ly;
+  }
+  return ROM[addr];
+}
 uint16_t MMU::read_word(uint16_t addr) {
   return ROM[addr] | ROM[addr + 1] << 8;
 }

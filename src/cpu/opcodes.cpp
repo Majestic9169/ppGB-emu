@@ -312,9 +312,9 @@ void Opcodes::reti() {
 }
 // CALL INSTRUCTIONS
 void Opcodes::call(bool condition) {
+  uint16_t addr = mmu->read_word(reg->pc);
+  reg->pc += 2;
   if (condition) {
-    uint16_t addr = mmu->read_word(reg->pc);
-    reg->pc += 2;
     push(reg->pc);
     reg->pc = addr;
   }

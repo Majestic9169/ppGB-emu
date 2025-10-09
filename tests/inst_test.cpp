@@ -256,6 +256,6 @@ TEST_CASE("call/ret tests", "[call, return]") {
   REQUIRE(reg.pc == 0x595b);
   REQUIRE(reg.sp == 0x8000);
   op.opcode_dc();
-  REQUIRE(reg.pc == 0x595b);
+  REQUIRE(reg.pc == 0x595d);
   REQUIRE(reg.sp == 0x8000);
 }

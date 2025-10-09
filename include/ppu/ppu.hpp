@@ -35,7 +35,7 @@ private:
   SDL_Window *SDLWindow;
   FIFO pixel_fifo;
 
-  uint8_t &ly;
+  uint8_t ly{0x90};
   uint8_t lx{0};
   uint8_t scx{0}; // only read during oam scan
   int ticks{0};
