@@ -161,6 +161,10 @@ TEST_CASE("add tests", "[flags, add]") {
   reg.de = 0x202c;
   op.opcode_19();
   REQUIRE(reg.hl == 0x2125);
+  REQUIRE(reg.af == 0xff80);
+  reg.hl = 0x4c00;
+  op.opcode_29();
+  REQUIRE(reg.hl == 0x9800);
   REQUIRE(reg.af == 0xffa0);
   reg.hl = 0x8fff;
   op.opcode_29();

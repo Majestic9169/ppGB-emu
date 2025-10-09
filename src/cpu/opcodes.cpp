@@ -144,7 +144,7 @@ void Opcodes::rra() {
 void Opcodes::add_hl(uint16_t r16) {
   reg->f.n = 0;
   // check overflow from bit 11
-  if (((reg->hl & 0x00ff) + (r16 & 0x00ff)) & 0xff00) {
+  if (((reg->hl & 0x0fff) + (r16 & 0x0fff)) & 0xf000) {
     reg->f.h = 1;
   } else {
     reg->f.h = 0;
