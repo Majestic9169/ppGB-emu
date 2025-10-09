@@ -8,7 +8,7 @@
 #include "../../include/cpu/reg.hpp"
 #include <cstdint>
 
-Registers::Registers() : sp(), ime(false) {
+Registers::Registers() : sp() {
   // initialise registers to value after bootrom
   af = 0x01b0;
   bc = 0x0013;

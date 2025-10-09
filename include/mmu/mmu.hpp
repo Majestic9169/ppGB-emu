@@ -44,9 +44,14 @@ public:
   void write_byte(uint16_t addr, uint8_t val);
   void write_word(uint16_t addr, uint16_t val);
 
-  // PPU Access Shit
+  // ========= Interrupts ===========
+
+  // IE
+
+  // ========= PPU Access Shit ======
 
   // OAM
+  // TODO: not sure this works
   std::vector<Object> OAM;
 
   // make lcdc usable

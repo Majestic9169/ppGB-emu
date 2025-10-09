@@ -66,17 +66,68 @@ class STAT_REG {
 public:
   STAT_REG(uint8_t &ff41);
 
-  // Not a fan of these names, lemme know any better conventions
-  // Getters
-  bool GetLYCIntSelect() const;
-  bool GetMode2IntSelect() const;
-  bool GetMode1IntSelect() const;
-  bool GetMode0IntSelect() const;
-  bool GetLYEqualLYC() const;
+  // Resetters
+  void ResetLYCIntSelect();
+  void ResetMode2IntSelect();
+  void ResetMode1IntSelect();
+  void ResetMode0IntSelect();
+  void ResetLYEqualLYC();
 
   // Setters
   void SetLYCIntSelect();
   void SetMode2IntSelect();
   void SetMode1IntSelect();
   void SetMode0IntSelect();
+  void SetLYEqualLYC();
+  void SetPPUMode(uint8_t mode);
+};
+
+// 0xFF0F - IF: Interrupt Flag
+// 4 - is joypad being requested
+// 3 - is serial being requested
+// 2 - is timer being requested
+// 1 - is lcd being requested
+// 0 - is vblank being requested
+class IF_REG {
+  uint8_t &ff0f_ref;
+  bool getBit(int bit_no) const;
+
+public:
+  IF_REG(uint8_t &ff0f);
+
+  bool ReqJoypad() const;
+  bool ReqJoypad(bool set_val);
+  bool ReqLCD() const;
+  bool ReqLCD(bool set_val);
+  bool ReqSerial() const;
+  bool ReqSerial(bool set_val);
+  bool ReqTimer() const;
+  bool ReqTimer(bool set_val);
+  bool ReqVBLANK() const;
+  bool ReqVBLANK(bool set_val);
+};
+
+// 0xFFFF - IE: Interrupt Enable
+// 4 - is joypad enabled
+// 3 - is serial enabled
+// 2 - is timer enabled
+// 1 - is lcd enabled
+// 0 - is vblank enabled
+class IE_REG {
+  uint8_t &ffff_ref;
+  bool getBit(int bit_no) const;
+
+public:
+  IE_REG(uint8_t &ffff);
+
+  bool ReqJoypad() const;
+  bool ReqJoypad(bool set_val);
+  bool ReqLCD() const;
+  bool ReqLCD(bool set_val);
+  bool ReqSerial() const;
+  bool ReqSerial(bool set_val);
+  bool ReqTimer() const;
+  bool ReqTimer(bool set_val);
+  bool ReqVBLANK() const;
+  bool ReqVBLANK(bool set_val);
 };

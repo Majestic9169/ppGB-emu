@@ -47,6 +47,7 @@ void PPU::ppu_step() {
   ticks++;
   switch (ppu_state) {
   case MODE2_OAM_SCAN: {
+    mmu->stat.SetPPUMode(2);
     // TODO: OAM SCAN
     // int spriteHeight = mmu->lcdc.ObjSize() == 1 ? 8 : 0;
     // if (pixel_fifo.sprite_store.size() <= 10) {
@@ -66,6 +67,7 @@ void PPU::ppu_step() {
     }
   } break;
   case MODE3_PIXEL_TRANSFER:
+    mmu->stat.SetPPUMode(3);
     pixel_fifo.fifo_step();
     // don't pop if fifo has less than 8 pixels
     if (pixel_fifo.fifo.size() <= 8) {
@@ -83,9 +85,13 @@ void PPU::ppu_step() {
     }
     break;
   case MODE0_HBLANK:
+    mmu->stat.SetPPUMode(0);
     if (ticks == 456) {
       ticks = 0;
       ly++;
+      if (ly == mmu->lyc()) {
+        mmu->stat.SetLYEqualLYC();
+      }
       // VBLANK is entered after an entire frame has been rendered
       if (ly == 144) {
         ppu_state = MODE1_VBLANK;
@@ -95,6 +101,7 @@ void PPU::ppu_step() {
     }
     break;
   case MODE1_VBLANK:
+    mmu->stat.SetPPUMode(1);
     if (ticks == 456) {
       ticks = 0;
       ly++;
@@ -102,6 +109,9 @@ void PPU::ppu_step() {
       if (ly == 153) {
         ly = 0;
         ppu_state = MODE2_OAM_SCAN;
+      }
+      if (ly == mmu->lyc()) {
+        mmu->stat.SetLYEqualLYC();
       }
     }
     break;
@@ -112,7 +122,7 @@ void PPU::Update() { SDL_UpdateWindowSurface(SDLWindow); }
 
 // TODO: add debug levels
 void PPU::print_debug() const {
-  printf("ly: %d, lx: %d\n", ly, lx);
+  printf("lyc: %d, ly: %d, lx: %d\n", mmu->lyc(), ly, lx);
   printf("scy: %d, scx: %d\n", mmu->scy(), mmu->scx());
   printf("wy: %d, wx: %d\n", mmu->wy(), mmu->wx());
   printf("lcdc = %4x\n", mmu->read_byte(0xff40));

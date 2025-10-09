@@ -68,7 +68,7 @@ public:
 
   uint16_t sp;
   uint16_t pc{0};
-  bool ime;
+  bool ime{true};
   bool stopped = false;
 
   void set_z(uint8_t val);
