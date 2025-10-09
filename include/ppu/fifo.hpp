@@ -38,7 +38,10 @@ private:
     uint8_t x : 5;
     uint8_t y : 5;
     uint8_t map : 1;
-    uint8_t pre : 5 {0b10011};
+    uint8_t pre : 5;
+
+    TileAddr(uint8_t x_, uint8_t y_, uint8_t map_)
+        : x{x_}, y{y_}, map{map_}, pre{0b10011} {};
 
     operator uint16_t() const {
       return (pre << 11) | (map << 10) | (y << 5) | x;

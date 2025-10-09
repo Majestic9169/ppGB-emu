@@ -41,6 +41,8 @@ void FIFO::start_fifo() {
   drop_pixels = mmu->scx() % 8;
   fifo_state = READ_TILE_ID;
   layer = choose_layer();
+  printf("fifo_start: tile row index = %d = (%d + %d)/8\n", tile_row_index,
+         mmu->ly(), mmu->scy());
 }
 
 void FIFO::fifo_step() {
@@ -52,13 +54,9 @@ void FIFO::fifo_step() {
 
   switch (fifo_state) {
   case READ_TILE_ID: {
-    uint8_t tile_row = (tile_row_index % 32) * 32;
+    uint8_t tile_row = (tile_row_index % 32);
     uint8_t tile_column = (tile_column_index % 32);
-    TileAddr tile_addr{TileAddr{
-        .x = tile_row,
-        .y = tile_column,
-        .map = mmu->lcdc.BGTileMap(),
-    }};
+    TileAddr tile_addr{TileAddr(tile_column, tile_row, mmu->lcdc.BGTileMap())};
     if (layer == TILE::BACKGROUND) {
       tile_addr.map = mmu->lcdc.BGTileMap();
       tile_id = mmu->read_byte(tile_addr);
