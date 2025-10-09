@@ -283,6 +283,8 @@ void Opcodes::jr(bool condition) {
 void Opcodes::jp(bool condition, uint16_t val) {
   if (condition) {
     reg->pc = val;
+  } else {
+    reg->pc += 2;
   }
 }
 // POP INSTRUCTIONS
