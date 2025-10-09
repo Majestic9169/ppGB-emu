@@ -20,6 +20,7 @@ private:
   MMU mmu;
   CPU cpu;
   PPU ppu;
+  bool is_paused;
   // delete copy and assignment constructor
   Gameboy(const Gameboy &) = delete;
   Gameboy &operator=(const Gameboy &) = delete;
@@ -27,6 +28,9 @@ private:
 public:
   // TODO: figure out how to move Opts to gb.hpp too
   Gameboy(Opts *opts_);
+
+  // gb step
+  void gb_step(FILE *fp);
 
   // application loop
   void run();

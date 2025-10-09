@@ -7,6 +7,7 @@
  */
 
 #include "../../include/mmu/mmu.hpp"
+#include <cstdint>
 #include <cstdio>
 #include <fstream>
 #include <sys/types.h>
@@ -104,7 +105,12 @@ uint8_t &MMU::scy() { return ROM[0xff42]; }
 uint8_t &MMU::scx() { return ROM[0xff43]; }
 
 // ly and lyc
-uint8_t &MMU::ly() { return ROM[0xff44]; }
+// uint8_t &MMU::ly() { return ROM[0xff44]; }
+// HACK: for gameboy doct
+uint8_t &MMU::ly() {
+  static uint8_t ly{0x90};
+  return ly;
+}
 uint8_t &MMU::lyc() { return ROM[0xff45]; }
 
 // window position

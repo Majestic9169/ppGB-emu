@@ -8,17 +8,26 @@
  */
 
 #include "../../include/cpu/cpu.hpp"
+#include <cstdio>
+#include <fstream>
 
 CPU::CPU(Opts *cli, MMU *_mmu)
     : cli_opts(cli), mmu(_mmu), reg{}, op{_mmu, &reg}, cb(_mmu, &reg),
       curr_pc{}, opcode{} {};
 
-void CPU::print_reg() {
+void CPU::print_reg(FILE *fp) {
   printf("af: %4x\n", reg.af);
   printf("bc: %4x\n", reg.bc);
   printf("de: %4x\n", reg.de);
   printf("hl: %4x\n", reg.hl);
   printf("sp: %4x\n", reg.sp);
+  // HACK: for gameboy doctor
+  std::fprintf(fp,
+               "A:%02X F:%02X B:%02X C:%02X D:%02X E:%02X H:%02X L:%02X "
+               "SP:%04X PC:%04X PCMEM:%02X,%02X,%02X,%02X\n",
+               reg.a, reg.f, reg.b, reg.c, reg.d, reg.e, reg.h, reg.l, reg.sp,
+               reg.pc, mmu->read_byte(reg.pc), mmu->read_byte(reg.pc + 1),
+               mmu->read_byte(reg.pc + 2), mmu->read_byte(reg.pc + 3));
 }
 
 // TODO: add cpu cycle clocks array and handle when opcodes clocks have 2-3
@@ -158,14 +167,15 @@ void CPU::cpu_step() {
       case 0xfe: op.opcode_fe(); break;  case 0xff: op.opcode_ff(); break;
     // clang-format on
   }
-  if (cli_opts->debug_enabled()) {
+  // if (cli_opts->debug_enabled()) {
+  if (1) {
     // TODO: write this to file instead of stdout
     std::printf("%s[%04x] %sopcode 0x%02x\n%s", YEL.c_str(), curr_pc,
                 GRN.c_str(), opcode, COLOR_RESET.c_str());
     // tetris debugging
-    if (opcode == 0xff) {
-      exit(2);
-    }
+    // if (opcode == 0xff) {
+    //   exit(2);
+    // }
   }
 }
 

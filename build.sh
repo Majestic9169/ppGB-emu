@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 
-ROM=./roms/rom.gb
+ROM=./roms/tetris.gb
 
 mkdir -p ./build
 

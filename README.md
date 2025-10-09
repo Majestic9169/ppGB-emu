@@ -146,6 +146,12 @@ this is currently for convenience in developing, i will make this easier to use 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+## Important Breakpoints
+
+`0x026b`: `.loop_3` flush wram bank 1
+`0x279b`: `.loop_9` fill bg map 1 with `0x2f`
+`0x69a9`
+
 <!-- APPENDIX -->
 ## Acknowledgements
 

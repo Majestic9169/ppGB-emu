@@ -44,7 +44,7 @@ public:
   // fetch-decode-execute cycle
   void cpu_step();
 
-  void print_reg();
+  void print_reg(FILE *fp);
 };
 
 #endif
