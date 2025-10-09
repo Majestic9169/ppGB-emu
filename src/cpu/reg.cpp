@@ -8,6 +8,16 @@
 #include "../../include/cpu/reg.hpp"
 #include <cstdint>
 
+Registers::Registers() : sp(), ime(false) {
+  // initialise registers to value after bootrom
+  af = 0x01b0;
+  bc = 0x0013;
+  de = 0x00d8;
+  hl = 0x014d;
+  sp = 0xfffe;
+  pc = 0x0100;
+}
+
 void Registers::set_z(uint8_t val) {
   if (val == 0) {
     f.z = 1;

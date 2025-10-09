@@ -12,15 +12,7 @@
 // TODO: figure out how to move Opts to gb.hpp too
 Gameboy::Gameboy(Opts *opts_)
     : cli_opts{opts_}, mmu(opts_), cpu{opts_, &mmu}, ppu{opts_, &mmu},
-      is_paused(opts_->debug_enabled() ? true : false) {
-        // initialise registers to value after bootrom
-        // cpu.reg.af = 0x01b0;
-        // cpu.reg.bc = 0x0013;
-        // cpu.reg.de = 0x00d8;
-        // cpu.reg.hl = 0x014d;
-        // cpu.reg.sp = 0xfffe;
-        // cpu.reg.pc = 0x0100;
-      };
+      is_paused(opts_->debug_enabled() ? true : false) {};
 
 // step
 void Gameboy::gb_step() {
@@ -42,7 +34,7 @@ void Gameboy::run() {
     while (SDL_PollEvent(&Event)) {
       if (Event.type == SDL_QUIT) {
         SDL_Quit();
-        // mmu.hexdump();
+        mmu.hexdump();
         return;
       }
       if (Event.type == SDL_KEYDOWN) {

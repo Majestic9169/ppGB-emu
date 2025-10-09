@@ -17,6 +17,8 @@ private:
   Registers operator=(const Registers &) = delete;
 
 public:
+  Registers();
+
 // ISO C++ doesn't allow anonymous structs which is so stupid
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wpedantic"

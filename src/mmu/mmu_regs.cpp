@@ -24,10 +24,10 @@ LCDC_REG::LCDC_REG(uint8_t &ff40) : ff40_ref{ff40} {}
 bool LCDC_REG::getBit(int bit_no) const { return ff40_ref & (1 << bit_no); }
 
 bool LCDC_REG::isLCDenabled() const { return getBit(7); }
-uint16_t LCDC_REG::WindowTileMap() const { return getBit(6) ? 0x9c00 : 0x9800; }
+bool LCDC_REG::WindowTileMap() const { return getBit(6); }
 bool LCDC_REG::isWindowEnable() const { return getBit(5); }
 uint16_t LCDC_REG::TileMap() const { return getBit(4) ? 0x8000 : 0x8800; }
-uint16_t LCDC_REG::BGTileMap() const { return getBit(3) ? 0x9c00 : 0x9800; }
+bool LCDC_REG::BGTileMap() const { return getBit(3); }
 uint8_t LCDC_REG::ObjSize() const { return getBit(2) ? 2 : 1; }
 bool LCDC_REG::areObjEnabled() const { return getBit(1); }
 bool LCDC_REG::BGWindowEnable() const { return getBit(0); }

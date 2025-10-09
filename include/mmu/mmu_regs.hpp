@@ -43,10 +43,10 @@ public:
   LCDC_REG(uint8_t &ff40);
 
   bool isLCDenabled() const;
-  uint16_t WindowTileMap() const;
+  bool WindowTileMap() const;
   bool isWindowEnable() const;
   uint16_t TileMap() const;
-  uint16_t BGTileMap() const;
+  bool BGTileMap() const;
   uint8_t ObjSize() const;
   bool areObjEnabled() const;
   bool BGWindowEnable() const;

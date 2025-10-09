@@ -34,9 +34,21 @@ private:
     PUSH
   } fifo_state{READ_TILE_ID};
 
+  struct TileAddr {
+    uint8_t x : 5;
+    uint8_t y : 5;
+    uint8_t map : 1;
+    uint8_t pre : 5 {0b10011};
+
+    operator uint16_t() const {
+      return (pre << 11) | (map << 10) | (y << 5) | x;
+    }
+  };
+
   MMU *mmu;
   int ticks{0};
   TILE::LAYERS layer{TILE::BACKGROUND};
+
   uint8_t tile_line{0};
   uint8_t tile_row_index{0};
   uint8_t tile_column_index{0};
@@ -52,6 +64,8 @@ private:
 
 public:
   std::queue<Pixel> fifo;
+
+  std::vector<Object> sprite_store{};
 
   FIFO(MMU *_mmu);
 

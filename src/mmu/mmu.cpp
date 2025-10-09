@@ -38,48 +38,36 @@ MMU::MMU(Opts *opts_) : ROM(ROM_SIZE), cli_opts{opts_}, OAM{} {
     std::cout << GRN << "[+] ROM successfully loaded\n" << COLOR_RESET;
   }
 
-  /* boot rom*/
-  // std::ifstream boot_rom_file{"./roms/sgb_boot.bin", std::ios::binary};
-  // if (!boot_rom_file.good()) {
-  //   std::cerr << RED << "[!] Error loading BOOT_ROM_FILE\n" << COLOR_RESET;
-  //   exit(2);
-  // }
-  // boot_rom_file.read(reinterpret_cast<char *>(ROM.data()), ROM_SIZE);
-  // if (cli_opts->debug_enabled()) {
-  //   std::cout << GRN << "[+] BOOT_ROM successfully loaded\n" << COLOR_RESET;
-  //   header_information();
-  // }
-
   // init OAM
   OAM.reserve(40);
   for (size_t i = 0; i < 40; i++) {
     OAM.emplace_back(ROM.begin() + 0xfe00 + (i * 4));
   }
-
-  // hexdump();
 }
 
 void MMU::hexdump() const {
-  for (size_t i = 0; i < ROM.size(); i += 16) {
+  FILE *vram = fopen("vram.dump", "w");
+  for (size_t i = 0x8000; i < 0xA000; i += 16) {
     // offset
-    printf("%08zx  ", i);
+    fprintf(vram, "%08zx  ", i);
     // hex bytes
     for (size_t j = 0; j < 16; ++j) {
       if (i + j < ROM.size())
-        printf("%02X ", ROM[i + j]);
+        fprintf(vram, "%02X ", ROM[i + j]);
       else
-        printf("   ");
+        fprintf(vram, "   ");
     }
-    printf(" ");
+    fprintf(vram, " ");
     // ASCII representation
     for (size_t j = 0; j < 16; ++j) {
       if (i + j < ROM.size()) {
         char c = ROM[i + j];
-        printf("%c", (c >= 32 && c < 127) ? c : '.');
+        fprintf(vram, "%c", (c >= 32 && c < 127) ? c : '.');
       }
     }
-    printf("\n");
+    fprintf(vram, "\n");
   }
+  fclose(vram);
 }
 
 uint8_t &MMU::read_byte(uint16_t addr) { return ROM[addr]; }

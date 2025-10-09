@@ -46,15 +46,25 @@ void PPU::ppu_step() {
   GetSurface();
   ticks++;
   switch (ppu_state) {
-  case MODE2_OAM_SCAN:
-    lx = 0;
+  case MODE2_OAM_SCAN: {
+    // TODO: OAM SCAN
+    // int spriteHeight = mmu->lcdc.ObjSize() == 1 ? 8 : 0;
+    // if (pixel_fifo.sprite_store.size() <= 10) {
+    //   for (auto sprite : mmu->OAM) {
+    //     // YPos is given by required ly + 16
+    //     if (ly >= sprite.GetYPostition() - 16 &&
+    //         ly < sprite.GetYPostition() - spriteHeight) {
+    //       pixel_fifo.sprite_store.push_back(sprite);
+    //     }
+    //   }
+    // }
     // 2 ticks per object, 40 objects
     if (ticks == 80) {
       lx = 0;
       pixel_fifo.start_fifo();
       ppu_state = MODE3_PIXEL_TRANSFER;
     }
-    break;
+  } break;
   case MODE3_PIXEL_TRANSFER:
     pixel_fifo.fifo_step();
     // don't pop if fifo has less than 8 pixels

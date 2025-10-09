@@ -11,6 +11,7 @@
 #include <SDL2/SDL_stdinc.h>
 #include <SDL2/SDL_surface.h>
 #include <SDL2/SDL_video.h>
+#include <cstdint>
 #include <sys/types.h>
 
 // this is so fucking weird
@@ -18,10 +19,16 @@
 FIFO::FIFO(MMU *_mmu) : mmu{_mmu}, fifo{} {}
 
 TILE::LAYERS FIFO::choose_layer() const {
-  if (mmu->lcdc.isWindowEnable() && mmu->wy() <= mmu->ly()) {
-    ;
-  };
+  // NOTE: not sure if this insideWindow logic is right
+  // I want the source of this
+  // bool insideWindow = (mmu->ly() >= mmu->wy()) && (mmu->ly() < mmu->wy() +
+  // 32); if (!sprite_store.empty()) {
+  //   return TILE::OBJECT;
+  // } else if (mmu->lcdc.isWindowEnable() && insideWindow) {
+  //   return TILE::WINDOW;
+  // } else {
   return TILE::BACKGROUND;
+  // }
 }
 
 void FIFO::start_fifo() {
@@ -33,6 +40,7 @@ void FIFO::start_fifo() {
   tile_row_index = (mmu->ly() + mmu->scy()) / 8;
   drop_pixels = mmu->scx() % 8;
   fifo_state = READ_TILE_ID;
+  layer = choose_layer();
 }
 
 void FIFO::fifo_step() {
@@ -42,28 +50,29 @@ void FIFO::fifo_step() {
   }
   ticks = 0;
 
-  if (mmu->lcdc.isWindowEnable() && mmu->ly() >= mmu->wy() &&
-      mmu->ly() < (mmu->wy() + 32)) {
-    layer = TILE::WINDOW;
-  } else {
-    layer = TILE::BACKGROUND;
-  }
-
   switch (fifo_state) {
-  case READ_TILE_ID:
+  case READ_TILE_ID: {
+    uint8_t tile_row = (tile_row_index % 32) * 32;
+    uint8_t tile_column = (tile_column_index % 32);
+    TileAddr tile_addr{TileAddr{
+        .x = tile_row,
+        .y = tile_column,
+        .map = mmu->lcdc.BGTileMap(),
+    }};
     if (layer == TILE::BACKGROUND) {
-      tile_id =
-          mmu->read_byte(mmu->lcdc.BGTileMap() + (tile_row_index % 32) * 32 +
-                         (tile_column_index % 32));
+      tile_addr.map = mmu->lcdc.BGTileMap();
+      tile_id = mmu->read_byte(tile_addr);
     } else if (layer == TILE::WINDOW) {
-      tile_id =
-          mmu->read_byte(mmu->lcdc.WindowTileMap() +
-                         (tile_row_index % 32) * 32 + (tile_column_index % 32));
-    } else {
-      tile_id = mmu->read_byte(0x8000 + tile_column_index);
+      tile_addr.map = mmu->lcdc.WindowTileMap();
+      tile_id = mmu->read_byte(tile_addr);
+    } else if (layer == TILE::OBJECT) {
+      tile_id = mmu->read_byte(0x8000 + sprite_store[0].GetTileIndex());
     }
+    // HACK: debug msg
+    printf("fifo: fetched tile id 0x%04x\n", uint16_t(tile_addr));
+    printf("fifo: tile data = %08X\n", tile_data_high << 8 | tile_data_low);
     fifo_state = READ_TILE_DATA0;
-    break;
+  } break;
   case READ_TILE_DATA0:
     tile_data_low =
         mmu->GetTileFromIndex(tile_id, layer).GetRawTile()[tile_line * 2];
