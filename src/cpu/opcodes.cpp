@@ -287,8 +287,8 @@ void Opcodes::jp(bool condition, uint16_t val) {
 }
 // POP INSTRUCTIONS
 void Opcodes::pop(uint16_t &r16) {
-  // TODO: if r = af -> ensure lower nibble stays 0
   r16 = mmu->read_word(reg->sp);
+  reg->af = reg->af & 0xfff0;
   reg->sp += 2;
 }
 // PUSH INSTRUCTIONS
