@@ -345,6 +345,7 @@ void Opcodes::opcode_07() { rlca(); };
 // LD (u16), SP
 void Opcodes::opcode_08() {
   mmu->write_word(mmu->read_byte(reg->pc++), reg->sp);
+  reg->pc++;
 };
 // ADD HL, BC
 void Opcodes::opcode_09() { add_hl(reg->bc); };
