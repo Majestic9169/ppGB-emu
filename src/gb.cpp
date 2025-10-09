@@ -16,11 +16,11 @@ Gameboy::Gameboy(Opts *opts_)
 
 // step
 void Gameboy::gb_step() {
-  // print debug
-  cpu.print_reg();
   // render
   cpu.cpu_step();
   ppu.ppu_step();
+  // print debug
+  cpu.print_reg();
   // if (cli_opts->debug_enabled()) {
   ppu.print_debug();
   // }

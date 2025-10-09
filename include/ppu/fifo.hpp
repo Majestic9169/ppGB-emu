@@ -50,11 +50,55 @@ private:
 
   MMU *mmu;
   int ticks{0};
-  TILE::LAYERS layer{TILE::BACKGROUND};
+  uint8_t lx{0};
 
-  uint8_t tile_line{0};
-  uint8_t tile_row_index{0};
-  uint8_t tile_column_index{0};
+  bool renderingWindow() const {
+    bool in_window = mmu->ly() >= mmu->wy();
+    in_window = in_window && (mmu->wx() < lx);
+    in_window = in_window && mmu->lcdc.isWindowEnable();
+    return in_window;
+  }
+
+  // returns the row inside a tile to render
+  uint8_t tile_row_index() const {
+    if (renderingWindow()) {
+      return (mmu->ly() - mmu->wy()) % 8;
+    } else {
+      return (mmu->ly() + mmu->scy()) % 8;
+    }
+  }
+
+  // return column inside a tile to render
+  uint8_t tile_column_index() const {
+    if (renderingWindow()) {
+      return (lx - mmu->wx() + 7) % 8;
+    } else {
+      return (lx + mmu->scx()) % 8;
+    }
+  }
+
+  // return row index of tile to select in map
+  uint8_t map_row_index() const {
+    if (renderingWindow()) {
+      return (mmu->ly() - mmu->wy()) / 8;
+    } else {
+      return ((mmu->ly() + mmu->scy()) / 8) % 32;
+    }
+  }
+
+  // return col index of tile to select in map
+  uint8_t map_col_index() const {
+    if (renderingWindow()) {
+      return (lx - mmu->wx() + 7) / 8;
+    } else {
+      return ((lx + mmu->scx()) / 8) % 32;
+    }
+  }
+
+  TILE::LAYERS layer() const {
+    return renderingWindow() ? TILE::WINDOW : TILE::BACKGROUND;
+  }
+
   uint8_t tile_data_low{0};
   uint8_t tile_data_high{0};
   uint8_t tile_id{0};
