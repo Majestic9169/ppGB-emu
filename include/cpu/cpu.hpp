@@ -44,7 +44,7 @@ private:
 public:
   CPU(Opts *cli, MMU *_mmu);
 
-  void check_interrupts();
+  void check_interrupts(uint8_t old_if);
 
   // fetch-decode-execute cycle
   void cpu_step();

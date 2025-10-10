@@ -7,6 +7,7 @@
 #include "../include/gb.hpp"
 #include <SDL2/SDL_events.h>
 #include <SDL2/SDL_timer.h>
+#include <cstdint>
 
 // TODO: figure out how to move Opts to gb.hpp too
 Gameboy::Gameboy(Opts *opts_)
@@ -15,9 +16,12 @@ Gameboy::Gameboy(Opts *opts_)
 
 // step
 void Gameboy::gb_step() {
+  uint8_t old_if = mmu.read_byte(0xff0f);
+
   cpu.cpu_step();
   ppu.ppu_step();
-  cpu.check_interrupts();
+
+  cpu.check_interrupts(old_if);
 
   cpu.print_reg();
   ppu.print_debug();

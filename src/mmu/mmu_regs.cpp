@@ -36,6 +36,7 @@ bool LCDC_REG::BGWindowEnable() const { return getBit(0); }
 STAT_REG::STAT_REG(uint8_t &ff41) : ff41_ref{ff41} {}
 
 bool STAT_REG::getBit(int bit_no) const { return ff41_ref & (1 << bit_no); }
+bool STAT_REG::getStatline() const { return getBit(0) | getBit(1) | getBit(2); }
 void STAT_REG::ResetLYEqualLYC() { ff41_ref &= 0xfb; }
 void STAT_REG::SetLYEqualLYC() { ff41_ref |= 0x04; }
 void STAT_REG::SetPPUMode(uint8_t mode) {

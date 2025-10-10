@@ -8,6 +8,7 @@
  */
 
 #include "../../include/cpu/cpu.hpp"
+#include <cstdint>
 #include <cstdio>
 
 // NOTE: timer arrays stolen from the lovely Cinoop emulator by CTurt
@@ -61,15 +62,19 @@ void CPU::print_reg() {
   printf("ime: %d\n", reg.ime);
 }
 
-void CPU::check_interrupts() {
-  if (reg.ime) {
-    if (mmu->interrupt_enable.ReqLCD() & mmu->interrupt_flag.CheckLCD()) {
+void CPU::check_interrupts(uint8_t of) {
+  IF_REG old_if{of};
+  if (reg.ime && mmu->read_byte(0xff0f) && mmu->read_byte(0xffff)) {
+    printf("lcd: old_if: %d && if: %d\n", old_if.CheckLCD(),
+           mmu->interrupt_flag.CheckLCD());
+    if (old_if.CheckLCD() == 0 && mmu->interrupt_enable.ReqLCD() &&
+        mmu->interrupt_flag.CheckLCD()) {
       printf("interrupts: LCD INTERRUPT THROWN\n");
       op.call_interrupt(0x48);
       ticks += 3;
       mmu->interrupt_flag.ResetLCD();
       reg.ime = false;
-    } else if (mmu->interrupt_flag.CheckVBLANK() &
+    } else if (old_if.CheckVBLANK() == 0 && mmu->interrupt_flag.CheckVBLANK() &&
                mmu->interrupt_enable.ReqVBLANK()) {
       printf("interrupts: VBLANK INTERRUPT THROWN\n");
       op.call_interrupt(0x40);

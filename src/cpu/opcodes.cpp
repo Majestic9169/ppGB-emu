@@ -743,7 +743,7 @@ void Opcodes::opcode_c8() { ret(reg->f.z); };
 // RET
 void Opcodes::opcode_c9() { ret(true); };
 // JP Z, u16
-void Opcodes::opcode_ca() { jp(reg->f.z, mmu->read_byte(reg->pc++)); };
+void Opcodes::opcode_ca() { jp(reg->f.z, mmu->read_word(reg->pc++)); };
 // CALL Z, u16
 void Opcodes::opcode_cc() { call(reg->f.z); };
 // CALL u16

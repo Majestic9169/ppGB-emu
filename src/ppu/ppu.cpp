@@ -43,6 +43,7 @@ PPU::PPU(Opts *cli_, MMU *mmu_)
       pixel_fifo{mmu_}, ly{mmu->ly()} {};
 
 void PPU::ppu_step() {
+  // HACK: for wayland to show window
   GetSurface();
 
   if (!mmu->lcdc.isLCDenabled()) {
@@ -53,7 +54,6 @@ void PPU::ppu_step() {
 
   switch (ppu_state) {
   case MODE2_OAM_SCAN: {
-    mmu->interrupt_flag.ResetLCD();
     // TODO: OAM SCAN
     int spriteHeight = mmu->lcdc.ObjSize() == 1 ? 8 : 0;
     if (pixel_fifo.sprite_store.size() <= 10) {
@@ -71,11 +71,9 @@ void PPU::ppu_step() {
       pixel_fifo.start_fifo();
       ppu_state = MODE3_PIXEL_TRANSFER;
       mmu->stat.SetPPUMode(3);
-      // mmu->interrupt_flag.ReqLCD();
     }
   } break;
   case MODE3_PIXEL_TRANSFER:
-    mmu->interrupt_flag.ResetLCD();
     pixel_fifo.fifo_step();
     // don't pop if fifo has less than 8 pixels
     if (pixel_fifo.fifo.size() <= 8) {
@@ -91,11 +89,9 @@ void PPU::ppu_step() {
     if (lx == 160) {
       ppu_state = MODE0_HBLANK;
       mmu->stat.SetPPUMode(0);
-      // mmu->interrupt_flag.ReqLCD();
     }
     break;
   case MODE0_HBLANK:
-    mmu->interrupt_flag.ResetLCD();
     if (ticks == 456) {
       ticks = 0;
       ly++;
@@ -107,12 +103,10 @@ void PPU::ppu_step() {
       } else {
         ppu_state = MODE2_OAM_SCAN;
         mmu->stat.SetPPUMode(2);
-        // mmu->interrupt_flag.ReqLCD();
       }
     }
     break;
   case MODE1_VBLANK:
-    mmu->interrupt_flag.ResetLCD();
     mmu->interrupt_flag.ResetVBLANK();
     if (ticks == 456) {
       ticks = 0;
@@ -122,17 +116,23 @@ void PPU::ppu_step() {
         ly = 0;
         ppu_state = MODE2_OAM_SCAN;
         mmu->stat.SetPPUMode(2);
-        // mmu->interrupt_flag.ReqLCD();
       }
     }
     break;
   }
+
   // set ly==lyc
   if (ly == mmu->lyc()) {
     mmu->stat.SetLYEqualLYC();
-    mmu->interrupt_flag.ReqLCD();
   } else {
     mmu->stat.ResetLYEqualLYC();
+  }
+
+  // req stat if needed
+  if (mmu->stat.getStatline()) {
+    mmu->interrupt_flag.ReqLCD();
+  } else {
+    mmu->interrupt_flag.ResetLCD();
   }
 }
 
@@ -141,6 +141,7 @@ void PPU::Update() { SDL_UpdateWindowSurface(SDLWindow); }
 // TODO: add debug levels
 void PPU::print_debug() const {
   printf("ie: %4x, if: %4x\n", mmu->read_byte(0xffff), mmu->read_byte(0xff0f));
+
   printf("pallete: %02b %02b %02b %02b\n", mmu->BG_Palette.GetColor3(),
          mmu->BG_Palette.GetColor2(), mmu->BG_Palette.GetColor1(),
          mmu->BG_Palette.GetColor0());

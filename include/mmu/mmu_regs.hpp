@@ -66,6 +66,7 @@ class STAT_REG {
 public:
   STAT_REG(uint8_t &ff41);
 
+  bool getStatline() const;
   void ResetLYEqualLYC();
   void SetLYEqualLYC();
   void SetPPUMode(uint8_t mode);
