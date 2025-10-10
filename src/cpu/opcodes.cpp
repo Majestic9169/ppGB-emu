@@ -280,11 +280,10 @@ void Opcodes::jr(bool condition) {
   }
 }
 // JP INSTRUCTIONS
-void Opcodes::jp(bool condition, uint16_t val) {
+void Opcodes::jp(bool condition) {
+  uint16_t val = read_word_from_pc();
   if (condition) {
     reg->pc = val;
-  } else {
-    reg->pc += 2;
   }
 }
 // POP INSTRUCTIONS
@@ -727,9 +726,9 @@ void Opcodes::opcode_c0() { ret(!reg->f.z); };
 // POP BC
 void Opcodes::opcode_c1() { pop(reg->bc); };
 // JP NZ, u16
-void Opcodes::opcode_c2() { jp(!reg->f.z, mmu->read_word(reg->pc)); };
+void Opcodes::opcode_c2() { jp(!reg->f.z); };
 // JP u16
-void Opcodes::opcode_c3() { jp(true, mmu->read_word(reg->pc)); };
+void Opcodes::opcode_c3() { jp(true); };
 // CALL NZ, u16
 void Opcodes::opcode_c4() { call(!reg->f.z); };
 // PUSH BC
@@ -743,7 +742,7 @@ void Opcodes::opcode_c8() { ret(reg->f.z); };
 // RET
 void Opcodes::opcode_c9() { ret(true); };
 // JP Z, u16
-void Opcodes::opcode_ca() { jp(reg->f.z, mmu->read_word(reg->pc++)); };
+void Opcodes::opcode_ca() { jp(reg->f.z); };
 // CALL Z, u16
 void Opcodes::opcode_cc() { call(reg->f.z); };
 // CALL u16
@@ -757,7 +756,7 @@ void Opcodes::opcode_d0() { ret(!reg->f.c); };
 // POP DE
 void Opcodes::opcode_d1() { pop(reg->de); };
 // JP NC, u16
-void Opcodes::opcode_d2() { jp(!reg->f.c, mmu->read_word(reg->pc)); };
+void Opcodes::opcode_d2() { jp(!reg->f.c); };
 void Opcodes::opcode_d3() { unimplemented(); };
 // CALL NC, u16
 void Opcodes::opcode_d4() { call(!reg->f.c); };
@@ -772,7 +771,7 @@ void Opcodes::opcode_d8() { ret(reg->f.c); };
 // RETI
 void Opcodes::opcode_d9() { reti(); };
 // JP C, u16
-void Opcodes::opcode_da() { jp(reg->f.c, mmu->read_byte(reg->pc++)); };
+void Opcodes::opcode_da() { jp(reg->f.c); };
 void Opcodes::opcode_db() { unimplemented(); };
 // CALL C, u16
 void Opcodes::opcode_dc() { call(reg->f.c); };

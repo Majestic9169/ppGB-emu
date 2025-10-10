@@ -85,7 +85,7 @@ private:
   void jr(bool condition);
 
   // JP INSTRUCTIONS
-  void jp(bool condition, uint16_t val);
+  void jp(bool condition);
 
   // POP INSTRUCTIONS
   void pop(uint16_t &r16);
