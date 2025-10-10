@@ -68,21 +68,22 @@ private:
     }
   }
 
+  // NOTE: never actually used anywhere
   // return column inside a tile to render
-  uint8_t tile_column_index() const {
-    if (renderingWindow()) {
-      return (lx - mmu->wx() + 7) % 8;
-    } else {
-      return (lx + mmu->scx()) % 8;
-    }
-  }
+  // uint8_t tile_column_index() const {
+  //   if (renderingWindow()) {
+  //     return (lx - mmu->wx() + 7) % 8;
+  //   } else {
+  //     return (lx + mmu->scx()) % 8;
+  //   }
+  // }
 
   // return row index of tile to select in map
   uint8_t map_row_index() const {
     if (renderingWindow()) {
       return (mmu->ly() - mmu->wy()) / 8;
     } else {
-      return ((mmu->ly() + mmu->scy()) / 8) % 32;
+      return (uint8_t(mmu->ly() + mmu->scy()) / 8);
     }
   }
 
@@ -91,7 +92,7 @@ private:
     if (renderingWindow()) {
       return (lx - mmu->wx() + 7) / 8;
     } else {
-      return ((lx + mmu->scx()) / 8) % 32;
+      return ((lx + mmu->scx()) / 8);
     }
   }
 

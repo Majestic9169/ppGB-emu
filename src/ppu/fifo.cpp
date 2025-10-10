@@ -29,9 +29,11 @@ void FIFO::start_fifo() {
 
 void FIFO::fifo_step() {
   ticks++;
+
   if (ticks < 2) {
     return;
   }
+
   ticks = 0;
 
   switch (fifo_state) {
@@ -40,6 +42,7 @@ void FIFO::fifo_step() {
         TileAddr(map_col_index(), map_row_index(), mmu->lcdc.BGTileMap())};
     if (renderingWindow()) {
       tile_addr.map = mmu->lcdc.WindowTileMap();
+      printf("fetching tile at index: %02X\n", uint16_t(tile_addr));
       tile_id = mmu->read_byte(tile_addr);
     } else {
       tile_id = mmu->read_byte(tile_addr);
@@ -62,11 +65,14 @@ void FIFO::fifo_step() {
       uint8_t color = ((tile_data_high >> bit) & 0x01) << 1 |
                       ((tile_data_low >> bit) & 0x01);
       Pixel px;
-      px.color = static_cast<Palette::Colors>(color);
+      px.color = mmu->BG_Palette.GetColor(color);
       px.layer = layer();
       // dont push scx%8 if left edge
-      if (map_col_index() == mmu->scx() / 8 && (bit - (drop_pixels)) > 0) {
-        continue;
+      if (!renderingWindow()) {
+        if (map_col_index() == mmu->scx() / 8 && drop_pixels > 0) {
+          drop_pixels--;
+          continue;
+        }
       }
       fifo.push(px);
     }

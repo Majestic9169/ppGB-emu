@@ -11,7 +11,6 @@
 #include <SDL2/SDL_stdinc.h>
 #include <SDL2/SDL_surface.h>
 #include <SDL2/SDL_video.h>
-#include <cstdint>
 #include <sys/types.h>
 
 SDL_Surface *PPU::GetSurface() const { return SDL_GetWindowSurface(SDLWindow); }
@@ -45,6 +44,11 @@ PPU::PPU(Opts *cli_, MMU *mmu_)
 
 void PPU::ppu_step() {
   GetSurface();
+
+  if (!mmu->lcdc.isLCDenabled()) {
+    return;
+  }
+
   ticks++;
 
   switch (ppu_state) {
@@ -67,7 +71,7 @@ void PPU::ppu_step() {
       pixel_fifo.start_fifo();
       ppu_state = MODE3_PIXEL_TRANSFER;
       mmu->stat.SetPPUMode(3);
-      mmu->interrupt_flag.ReqLCD();
+      // mmu->interrupt_flag.ReqLCD();
     }
   } break;
   case MODE3_PIXEL_TRANSFER:
@@ -87,7 +91,7 @@ void PPU::ppu_step() {
     if (lx == 160) {
       ppu_state = MODE0_HBLANK;
       mmu->stat.SetPPUMode(0);
-      mmu->interrupt_flag.ReqLCD();
+      // mmu->interrupt_flag.ReqLCD();
     }
     break;
   case MODE0_HBLANK:
@@ -103,7 +107,7 @@ void PPU::ppu_step() {
       } else {
         ppu_state = MODE2_OAM_SCAN;
         mmu->stat.SetPPUMode(2);
-        mmu->interrupt_flag.ReqLCD();
+        // mmu->interrupt_flag.ReqLCD();
       }
     }
     break;
@@ -118,7 +122,7 @@ void PPU::ppu_step() {
         ly = 0;
         ppu_state = MODE2_OAM_SCAN;
         mmu->stat.SetPPUMode(2);
-        mmu->interrupt_flag.ReqLCD();
+        // mmu->interrupt_flag.ReqLCD();
       }
     }
     break;
@@ -136,10 +140,13 @@ void PPU::Update() { SDL_UpdateWindowSurface(SDLWindow); }
 
 // TODO: add debug levels
 void PPU::print_debug() const {
+  printf("ie: %4x, if: %4x\n", mmu->read_byte(0xffff), mmu->read_byte(0xff0f));
+  printf("pallete: %02b %02b %02b %02b\n", mmu->BG_Palette.GetColor3(),
+         mmu->BG_Palette.GetColor2(), mmu->BG_Palette.GetColor1(),
+         mmu->BG_Palette.GetColor0());
   printf("lyc: %d, ly: %d, lx: %d\n", mmu->lyc(), ly, lx);
   printf("scy: %d, scx: %d\n", mmu->scy(), mmu->scx());
   printf("wy: %d, wx: %d\n", mmu->wy(), mmu->wx());
-  printf("ie: %4x, if: %4x\n", mmu->read_byte(0xffff), mmu->read_byte(0xff0f));
   printf("lcdc = %4x\n", mmu->read_byte(0xff40));
   printf("stat = %4x\n", mmu->read_byte(0xff41));
   if (ppu_state == MODE0_HBLANK) {

@@ -35,6 +35,9 @@ private:
   CB_Opcodes cb;
   uint16_t curr_pc;
   uint16_t opcode;
+  uint8_t ticks{0}; // counter for ticks
+  std::vector<uint8_t> op_ticks;
+  std::vector<uint8_t> cb_ticks;
 
   void cb_cycle();
 

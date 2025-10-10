@@ -43,6 +43,12 @@ MMU::MMU(Opts *opts_) : ROM(ROM_SIZE), cli_opts{opts_}, OAM{} {
   for (size_t i = 0; i < 40; i++) {
     OAM.emplace_back(ROM.begin() + 0xfe00 + (i * 4));
   }
+
+  // init hardware registers
+  ROM[0xFF0F] = 0xe1;
+  ROM[0xFF40] = 0x91;
+  ROM[0xFF41] = 0x85;
+  ROM[0xFF47] = 0xfc;
 }
 
 void MMU::hexdump() const {

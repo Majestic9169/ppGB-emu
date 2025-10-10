@@ -19,6 +19,25 @@ public:
   Colors GetColor2() const;
   Colors GetColor3() const;
 
+  Colors GetColor(uint8_t index) {
+    switch (index) {
+    case 0:
+      return GetColor0();
+      break;
+    case 1:
+      return GetColor1();
+      break;
+    case 2:
+      return GetColor2();
+      break;
+    case 3:
+      return GetColor3();
+      break;
+    default:
+      return GetColor0();
+    }
+  }
+
 private:
   uint8_t &palette_ref;
   Colors color_extractor(uint8_t color_index) const;
