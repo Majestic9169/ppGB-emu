@@ -11,6 +11,7 @@
 #include <SDL2/SDL_stdinc.h>
 #include <SDL2/SDL_surface.h>
 #include <SDL2/SDL_video.h>
+#include <cstdint>
 #include <sys/types.h>
 
 SDL_Surface *PPU::GetSurface() const { return SDL_GetWindowSurface(SDLWindow); }
@@ -45,29 +46,32 @@ PPU::PPU(Opts *cli_, MMU *mmu_)
 void PPU::ppu_step() {
   GetSurface();
   ticks++;
+
   switch (ppu_state) {
   case MODE2_OAM_SCAN: {
-    mmu->stat.SetPPUMode(2);
+    mmu->interrupt_flag.ResetLCD();
     // TODO: OAM SCAN
-    // int spriteHeight = mmu->lcdc.ObjSize() == 1 ? 8 : 0;
-    // if (pixel_fifo.sprite_store.size() <= 10) {
-    //   for (auto sprite : mmu->OAM) {
-    //     // YPos is given by required ly + 16
-    //     if (ly >= sprite.GetYPostition() - 16 &&
-    //         ly < sprite.GetYPostition() - spriteHeight) {
-    //       pixel_fifo.sprite_store.push_back(sprite);
-    //     }
-    //   }
-    // }
+    int spriteHeight = mmu->lcdc.ObjSize() == 1 ? 8 : 0;
+    if (pixel_fifo.sprite_store.size() <= 10) {
+      for (auto sprite : mmu->OAM) {
+        // YPos is given by required ly + 16
+        if (ly >= sprite.GetYPostition() - 16 &&
+            ly < sprite.GetYPostition() - spriteHeight) {
+          pixel_fifo.sprite_store.push_back(sprite);
+        }
+      }
+    }
     // 2 ticks per object, 40 objects
     if (ticks == 80) {
       lx = 0;
       pixel_fifo.start_fifo();
       ppu_state = MODE3_PIXEL_TRANSFER;
+      mmu->stat.SetPPUMode(3);
+      mmu->interrupt_flag.ReqLCD();
     }
   } break;
   case MODE3_PIXEL_TRANSFER:
-    mmu->stat.SetPPUMode(3);
+    mmu->interrupt_flag.ResetLCD();
     pixel_fifo.fifo_step();
     // don't pop if fifo has less than 8 pixels
     if (pixel_fifo.fifo.size() <= 8) {
@@ -82,26 +86,30 @@ void PPU::ppu_step() {
     // HBLANK is entered after each row of pixels has been rendered
     if (lx == 160) {
       ppu_state = MODE0_HBLANK;
+      mmu->stat.SetPPUMode(0);
+      mmu->interrupt_flag.ReqLCD();
     }
     break;
   case MODE0_HBLANK:
-    mmu->stat.SetPPUMode(0);
+    mmu->interrupt_flag.ResetLCD();
     if (ticks == 456) {
       ticks = 0;
       ly++;
-      if (ly == mmu->lyc()) {
-        mmu->stat.SetLYEqualLYC();
-      }
       // VBLANK is entered after an entire frame has been rendered
       if (ly == 144) {
         ppu_state = MODE1_VBLANK;
+        mmu->stat.SetPPUMode(1);
+        mmu->interrupt_flag.ReqVBLANK();
       } else {
         ppu_state = MODE2_OAM_SCAN;
+        mmu->stat.SetPPUMode(2);
+        mmu->interrupt_flag.ReqLCD();
       }
     }
     break;
   case MODE1_VBLANK:
-    mmu->stat.SetPPUMode(1);
+    mmu->interrupt_flag.ResetLCD();
+    mmu->interrupt_flag.ResetVBLANK();
     if (ticks == 456) {
       ticks = 0;
       ly++;
@@ -109,12 +117,18 @@ void PPU::ppu_step() {
       if (ly == 153) {
         ly = 0;
         ppu_state = MODE2_OAM_SCAN;
-      }
-      if (ly == mmu->lyc()) {
-        mmu->stat.SetLYEqualLYC();
+        mmu->stat.SetPPUMode(2);
+        mmu->interrupt_flag.ReqLCD();
       }
     }
     break;
+  }
+  // set ly==lyc
+  if (ly == mmu->lyc()) {
+    mmu->stat.SetLYEqualLYC();
+    mmu->interrupt_flag.ReqLCD();
+  } else {
+    mmu->stat.ResetLYEqualLYC();
   }
 }
 
@@ -125,6 +139,7 @@ void PPU::print_debug() const {
   printf("lyc: %d, ly: %d, lx: %d\n", mmu->lyc(), ly, lx);
   printf("scy: %d, scx: %d\n", mmu->scy(), mmu->scx());
   printf("wy: %d, wx: %d\n", mmu->wy(), mmu->wx());
+  printf("ie: %4x, if: %4x\n", mmu->read_byte(0xffff), mmu->read_byte(0xff0f));
   printf("lcdc = %4x\n", mmu->read_byte(0xff40));
   printf("stat = %4x\n", mmu->read_byte(0xff41));
   if (ppu_state == MODE0_HBLANK) {

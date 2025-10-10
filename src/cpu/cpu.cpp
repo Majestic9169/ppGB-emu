@@ -20,6 +20,27 @@ void CPU::print_reg() {
   printf("de: %4x\n", reg.de);
   printf("hl: %4x\n", reg.hl);
   printf("sp: %4x\n", reg.sp);
+  printf("ime: %d\n", reg.ime);
+}
+
+void CPU::check_interrupts() {
+  if (reg.ime) {
+    // TODO: enable stat interrupt on stat interrupt line?
+    printf("ime %d ie_lcd %d if_lcd %d\n", reg.ime,
+           mmu->interrupt_enable.ReqLCD(), mmu->interrupt_flag.CheckLCD());
+    if (mmu->interrupt_enable.ReqLCD() & mmu->interrupt_flag.CheckLCD()) {
+      printf("interrupts: LCD INTERRUPT THROWN\n");
+      op.call_interrupt(0x48);
+      mmu->interrupt_flag.ResetLCD();
+      reg.ime = false;
+    } else if (mmu->interrupt_flag.CheckVBLANK() &
+               mmu->interrupt_enable.ReqVBLANK()) {
+      printf("interrupts: VBLANK INTERRUPT THROWN\n");
+      op.call_interrupt(0x40);
+      mmu->interrupt_flag.ResetVBLANK();
+      reg.ime = false;
+    }
+  }
 }
 
 // TODO: add cpu cycle clocks array and handle when opcodes clocks have 2-3

@@ -326,6 +326,11 @@ void Opcodes::rst(uint16_t addr) {
   reg->pc = addr;
 }
 
+void Opcodes::call_interrupt(uint8_t addr) {
+  push(reg->pc);
+  reg->pc = addr;
+}
+
 // NOP
 void Opcodes::opcode_00() { return; }
 // LD BC, u16

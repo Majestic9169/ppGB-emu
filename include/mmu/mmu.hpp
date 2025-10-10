@@ -46,7 +46,9 @@ public:
 
   // ========= Interrupts ===========
 
-  // IE
+  // IF
+  IF_REG interrupt_flag{ROM[0xFF0F]};
+  IE_REG interrupt_enable{ROM[0xFFFF]};
 
   // ========= PPU Access Shit ======
 

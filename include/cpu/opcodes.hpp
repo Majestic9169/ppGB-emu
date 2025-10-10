@@ -107,6 +107,9 @@ private:
 
 public:
   Opcodes(MMU *_mmu, Registers *_reg);
+
+  void call_interrupt(uint8_t addr);
+
   void opcode_00();
   void opcode_01();
   void opcode_02();

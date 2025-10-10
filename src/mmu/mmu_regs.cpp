@@ -36,20 +36,7 @@ bool LCDC_REG::BGWindowEnable() const { return getBit(0); }
 STAT_REG::STAT_REG(uint8_t &ff41) : ff41_ref{ff41} {}
 
 bool STAT_REG::getBit(int bit_no) const { return ff41_ref & (1 << bit_no); }
-
-// Not a fan of these names, lemme know any better conventions
-// Getters
-void STAT_REG::ResetLYCIntSelect() { ff41_ref &= 0xbf; }
-void STAT_REG::ResetMode2IntSelect() { ff41_ref &= 0xdf; }
-void STAT_REG::ResetMode1IntSelect() { ff41_ref &= 0xef; }
-void STAT_REG::ResetMode0IntSelect() { ff41_ref &= 0xf7; }
 void STAT_REG::ResetLYEqualLYC() { ff41_ref &= 0xfb; }
-
-// Setters
-void STAT_REG::SetLYCIntSelect() { ff41_ref |= 0x40; }
-void STAT_REG::SetMode2IntSelect() { ff41_ref |= 0x20; }
-void STAT_REG::SetMode1IntSelect() { ff41_ref |= 0x10; }
-void STAT_REG::SetMode0IntSelect() { ff41_ref |= 0x08; }
 void STAT_REG::SetLYEqualLYC() { ff41_ref |= 0x04; }
 void STAT_REG::SetPPUMode(uint8_t mode) {
   switch (mode) {
@@ -69,3 +56,42 @@ void STAT_REG::SetPPUMode(uint8_t mode) {
     break;
   }
 }
+
+// IF
+IF_REG::IF_REG(uint8_t &ff0f) : ff0f_ref{ff0f} {}
+
+void IF_REG::setBit(int bit_no) { ff0f_ref |= (1 << bit_no); }
+bool IF_REG::getBit(int bit_no) const { return ff0f_ref & (1 << bit_no); }
+void IF_REG::resetBit(int bit_no) {
+  uint8_t mask = ~(1 << bit_no);
+  ff0f_ref = ff0f_ref & mask;
+}
+
+bool IF_REG::CheckJoypad() const { return getBit(4); }
+bool IF_REG::CheckSerial() const { return getBit(3); }
+bool IF_REG::CheckTimer() const { return getBit(2); }
+bool IF_REG::CheckLCD() const { return getBit(1); }
+bool IF_REG::CheckVBLANK() const { return getBit(0); }
+
+void IF_REG::ReqJoypad() { setBit(4); }
+void IF_REG::ReqSerial() { setBit(3); }
+void IF_REG::ReqTimer() { setBit(2); }
+void IF_REG::ReqLCD() { setBit(1); }
+void IF_REG::ReqVBLANK() { setBit(0); }
+
+void IF_REG::ResetJoypad() { resetBit(4); }
+void IF_REG::ResetSerial() { resetBit(3); }
+void IF_REG::ResetTimer() { resetBit(2); }
+void IF_REG::ResetLCD() { resetBit(1); }
+void IF_REG::ResetVBLANK() { resetBit(0); }
+
+// IE
+IE_REG::IE_REG(uint8_t &ffff) : ffff_ref{ffff} {}
+
+bool IE_REG::getBit(int bit_no) const { return ffff_ref & (1 << bit_no); }
+
+bool IE_REG::ReqJoypad() const { return getBit(4); }
+bool IE_REG::ReqSerial() const { return getBit(3); }
+bool IE_REG::ReqTimer() const { return getBit(2); }
+bool IE_REG::ReqLCD() const { return getBit(1); }
+bool IE_REG::ReqVBLANK() const { return getBit(0); }

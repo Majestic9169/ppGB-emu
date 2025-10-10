@@ -8,7 +8,7 @@
 #include "../../include/cpu/reg.hpp"
 #include <cstdint>
 
-Registers::Registers() : sp() {
+Registers::Registers() {
   // initialise registers to value after bootrom
   af = 0x01b0;
   bc = 0x0013;
@@ -27,6 +27,7 @@ void Registers::set_z(uint8_t val) {
 }
 
 // WARN: ONLY FOR INCREMENT BY ONE
+// don't overuse this
 void Registers::set_h(uint8_t val) {
   if ((val & 0x0f) == 0x0f) {
     f.h = 1;

@@ -66,18 +66,7 @@ class STAT_REG {
 public:
   STAT_REG(uint8_t &ff41);
 
-  // Resetters
-  void ResetLYCIntSelect();
-  void ResetMode2IntSelect();
-  void ResetMode1IntSelect();
-  void ResetMode0IntSelect();
   void ResetLYEqualLYC();
-
-  // Setters
-  void SetLYCIntSelect();
-  void SetMode2IntSelect();
-  void SetMode1IntSelect();
-  void SetMode0IntSelect();
   void SetLYEqualLYC();
   void SetPPUMode(uint8_t mode);
 };
@@ -91,20 +80,27 @@ public:
 class IF_REG {
   uint8_t &ff0f_ref;
   bool getBit(int bit_no) const;
+  void setBit(int bit_no);
+  void resetBit(int bit_no);
 
 public:
   IF_REG(uint8_t &ff0f);
 
-  bool ReqJoypad() const;
-  bool ReqJoypad(bool set_val);
-  bool ReqLCD() const;
-  bool ReqLCD(bool set_val);
-  bool ReqSerial() const;
-  bool ReqSerial(bool set_val);
-  bool ReqTimer() const;
-  bool ReqTimer(bool set_val);
-  bool ReqVBLANK() const;
-  bool ReqVBLANK(bool set_val);
+  bool CheckJoypad() const;
+  bool CheckLCD() const;
+  bool CheckSerial() const;
+  bool CheckTimer() const;
+  bool CheckVBLANK() const;
+  void ReqJoypad();
+  void ReqLCD();
+  void ReqSerial();
+  void ReqTimer();
+  void ReqVBLANK();
+  void ResetJoypad();
+  void ResetLCD();
+  void ResetSerial();
+  void ResetTimer();
+  void ResetVBLANK();
 };
 
 // 0xFFFF - IE: Interrupt Enable
@@ -121,13 +117,8 @@ public:
   IE_REG(uint8_t &ffff);
 
   bool ReqJoypad() const;
-  bool ReqJoypad(bool set_val);
   bool ReqLCD() const;
-  bool ReqLCD(bool set_val);
   bool ReqSerial() const;
-  bool ReqSerial(bool set_val);
   bool ReqTimer() const;
-  bool ReqTimer(bool set_val);
   bool ReqVBLANK() const;
-  bool ReqVBLANK(bool set_val);
 };
