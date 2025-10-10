@@ -65,8 +65,6 @@ void CPU::print_reg() {
 void CPU::check_interrupts(uint8_t of) {
   IF_REG old_if{of};
   if (reg.ime && mmu->read_byte(0xff0f) && mmu->read_byte(0xffff)) {
-    printf("lcd: old_if: %d && if: %d\n", old_if.CheckLCD(),
-           mmu->interrupt_flag.CheckLCD());
     if (old_if.CheckLCD() == 0 && mmu->interrupt_enable.ReqLCD() &&
         mmu->interrupt_flag.CheckLCD()) {
       printf("interrupts: LCD INTERRUPT THROWN\n");
