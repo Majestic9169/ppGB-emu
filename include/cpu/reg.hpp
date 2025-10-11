@@ -71,6 +71,10 @@ public:
   bool ime{false};
   bool stopped = false;
 
+  // HACK: for setting and getting f directly
+  void set_f(uint8_t);
+  uint8_t get_f() const;
+
   void set_z(uint8_t val);
 
   // WARN: ONLY FOR INCREMENT BY ONE

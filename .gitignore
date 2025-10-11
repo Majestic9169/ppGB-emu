@@ -2,5 +2,6 @@
 /roms
 /gcov
 /gameboy-doctor
+/sm83
 rom.log
 vram.dump

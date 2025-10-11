@@ -18,6 +18,16 @@ Registers::Registers() {
   pc = 0x0100;
 }
 
+void Registers::set_f(uint8_t flag) {
+  f.ignore = flag & 0x0f;
+  f.z = (flag & 0x80) >> 7;
+  f.n = (flag & 0x40) >> 6;
+  f.h = (flag & 0x20) >> 5;
+  f.c = (flag & 0x10) >> 4;
+}
+
+uint8_t Registers::get_f() const { return af & 0x00FF; }
+
 void Registers::set_z(uint8_t val) {
   if (val == 0) {
     f.z = 1;

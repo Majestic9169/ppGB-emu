@@ -38,7 +38,7 @@ while getopts 'rdctp' OPTION; do
       cmake ..
       make tests 
       cd ..
-      ./build/tests --reporter compact --success
+      ./build/tests # --reporter compact # --success
       ;;
     p) 
       echo "build: testing"
