@@ -186,7 +186,7 @@ void Opcodes::add_sp(signed char val) {
   } else {
     reg->f.h = 0;
   }
-  uint16_t res2 = reg->sp + val;
+  uint16_t res2 = (reg->sp & 0x00ff) + uint8_t(val);
   if ((res2 & 0xff00)) {
     reg->f.c = 1;
   } else {
