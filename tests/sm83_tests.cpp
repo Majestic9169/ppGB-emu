@@ -2,6 +2,7 @@
 #include <catch2/catch_message.hpp>
 #include <catch2/catch_test_macros.hpp>
 #include <fstream>
+#include <ios>
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
 
@@ -18,7 +19,7 @@ TEST_CASE("sm83 test suite", "[sm83, cpu]") {
     if (!f.is_open())
       continue;
 
-    DYNAMIC_SECTION("Test " << i) {
+    DYNAMIC_SECTION("Test " << std::hex << i << std::dec) {
       json data = json::parse(f);
       for (auto test : data) {
         // load registers
