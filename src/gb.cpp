@@ -22,8 +22,10 @@ void Gameboy::gb_step() {
   ppu.ppu_step();
   cpu.check_interrupts(old_if);
 
-  cpu.print_reg();
-  ppu.print_debug();
+  if (cli_opts->debug_enabled()) {
+    cpu.print_reg();
+    ppu.print_debug();
+  }
 }
 
 // application loop

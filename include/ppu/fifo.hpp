@@ -54,7 +54,7 @@ private:
 
   bool renderingWindow() const {
     bool in_window = mmu->ly() >= mmu->wy();
-    in_window = in_window && (mmu->wx() < lx);
+    in_window = in_window && (mmu->wx() - 8 < lx);
     in_window = in_window && mmu->lcdc.isWindowEnable();
     return in_window;
   }

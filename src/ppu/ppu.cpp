@@ -13,6 +13,8 @@
 #include <SDL2/SDL_video.h>
 #include <sys/types.h>
 
+constexpr int div_factor{1};
+
 SDL_Surface *PPU::GetSurface() const { return SDL_GetWindowSurface(SDLWindow); }
 
 Uint32 PPU::MapColorToSDL(Palette::Colors color, SDL_PixelFormat *format) {
@@ -54,19 +56,21 @@ void PPU::ppu_step() {
 
   switch (ppu_state) {
   case MODE2_OAM_SCAN: {
+
     // TODO: OAM SCAN
-    int spriteHeight = mmu->lcdc.ObjSize() == 1 ? 8 : 0;
-    if (pixel_fifo.sprite_store.size() <= 10) {
-      for (auto sprite : mmu->OAM) {
-        // YPos is given by required ly + 16
-        if (ly >= sprite.GetYPostition() - 16 &&
-            ly < sprite.GetYPostition() - spriteHeight) {
-          pixel_fifo.sprite_store.push_back(sprite);
-        }
-      }
-    }
+    // int spriteHeight = mmu->lcdc.ObjSize() == 1 ? 8 : 0;
+    // if (pixel_fifo.sprite_store.size() <= 10) {
+    //   for (auto sprite : mmu->OAM) {
+    //     // YPos is given by required ly + 16
+    //     if (ly >= sprite.GetYPostition() - 16 &&
+    //         ly < sprite.GetYPostition() - spriteHeight) {
+    //       pixel_fifo.sprite_store.push_back(sprite);
+    //     }
+    //   }
+    // }
+
     // 2 ticks per object, 40 objects
-    if (ticks == 80) {
+    if (ticks == (80 / div_factor)) {
       lx = 0;
       pixel_fifo.start_fifo();
       ppu_state = MODE3_PIXEL_TRANSFER;
@@ -92,7 +96,7 @@ void PPU::ppu_step() {
     }
     break;
   case MODE0_HBLANK:
-    if (ticks == 456) {
+    if (ticks >= (456 / div_factor)) {
       ticks = 0;
       ly++;
       // VBLANK is entered after an entire frame has been rendered
@@ -108,7 +112,7 @@ void PPU::ppu_step() {
     break;
   case MODE1_VBLANK:
     mmu->interrupt_flag.ResetVBLANK();
-    if (ticks == 456) {
+    if (ticks >= (456 / div_factor)) {
       ticks = 0;
       ly++;
       // wait 10 more rows before moving to next frame

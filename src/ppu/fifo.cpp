@@ -42,7 +42,6 @@ void FIFO::fifo_step() {
         TileAddr(map_col_index(), map_row_index(), mmu->lcdc.BGTileMap())};
     if (renderingWindow()) {
       tile_addr.map = mmu->lcdc.WindowTileMap();
-      printf("fetching tile at index: %02X\n", uint16_t(tile_addr));
       tile_id = mmu->read_byte(tile_addr);
     } else {
       tile_id = mmu->read_byte(tile_addr);

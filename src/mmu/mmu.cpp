@@ -34,9 +34,10 @@ MMU::MMU(Opts *opts_) : ROM(ROM_SIZE), cli_opts{opts_}, OAM{} {
   }
 
   rom_file.read(reinterpret_cast<char *>(ROM.data()), ROM_SIZE);
-  if (cli_opts->debug_enabled()) {
-    std::cout << GRN << "[+] ROM successfully loaded\n" << COLOR_RESET;
-  }
+  // if (cli_opts->debug_enabled()) {
+  std::cout << GRN << "[+] ROM successfully loaded\n" << COLOR_RESET;
+  header_information();
+  // }
 
   // std::ifstream boot_rom_file{"./roms/dmg_boot.bin", std::ios::binary};
   // if (!boot_rom_file.good()) {

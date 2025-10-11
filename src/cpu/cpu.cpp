@@ -67,14 +67,12 @@ void CPU::check_interrupts(uint8_t of) {
   if (reg.ime && mmu->read_byte(0xff0f) && mmu->read_byte(0xffff)) {
     if (old_if.CheckLCD() == 0 && mmu->interrupt_enable.ReqLCD() &&
         mmu->interrupt_flag.CheckLCD()) {
-      printf("interrupts: LCD INTERRUPT THROWN\n");
       op.call_interrupt(0x48);
       ticks += 3;
       mmu->interrupt_flag.ResetLCD();
       reg.ime = false;
     } else if (old_if.CheckVBLANK() == 0 && mmu->interrupt_flag.CheckVBLANK() &&
                mmu->interrupt_enable.ReqVBLANK()) {
-      printf("interrupts: VBLANK INTERRUPT THROWN\n");
       op.call_interrupt(0x40);
       ticks += 3;
       mmu->interrupt_flag.ResetVBLANK();
@@ -234,15 +232,10 @@ void CPU::cpu_step() {
       case 0xfe: op.opcode_fe(); break;  case 0xff: op.opcode_ff(); break;
     // clang-format on
   }
-  // if (cli_opts->debug_enabled()) {
-  if (1) {
+  if (cli_opts->debug_enabled()) {
     // TODO: write this to file instead of stdout
     std::printf("%s[%04x] %sopcode 0x%02x\n%s", YEL.c_str(), curr_pc,
                 GRN.c_str(), opcode, COLOR_RESET.c_str());
-    // tetris debugging
-    // if (opcode == 0xff) {
-    //   exit(2);
-    // }
   }
 }
 
