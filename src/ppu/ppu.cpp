@@ -70,7 +70,7 @@ void PPU::ppu_step() {
       lx = 0;
       pixel_fifo.start_fifo();
       ppu_state = MODE3_PIXEL_TRANSFER;
-      // mmu->stat.SetPPUMode(3);
+      mmu->stat.SetPPUMode(3);
     }
   } break;
   case MODE3_PIXEL_TRANSFER:
@@ -98,11 +98,11 @@ void PPU::ppu_step() {
       // VBLANK is entered after an entire frame has been rendered
       if (ly == 144) {
         ppu_state = MODE1_VBLANK;
-        // mmu->stat.SetPPUMode(1);
+        mmu->stat.SetPPUMode(1);
         mmu->interrupt_flag.ReqVBLANK();
       } else {
         ppu_state = MODE2_OAM_SCAN;
-        // mmu->stat.SetPPUMode(2);
+        mmu->stat.SetPPUMode(2);
       }
     }
     break;
@@ -115,7 +115,7 @@ void PPU::ppu_step() {
       if (ly == 153) {
         ly = 0;
         ppu_state = MODE2_OAM_SCAN;
-        // mmu->stat.SetPPUMode(2);
+        mmu->stat.SetPPUMode(2);
       }
     }
     break;

@@ -70,6 +70,7 @@ public:
   void ResetLYEqualLYC();
   void SetLYEqualLYC();
   void SetPPUMode(uint8_t mode);
+  uint8_t GetPPUMode() const;
 };
 
 // 0xFF0F - IF: Interrupt Flag

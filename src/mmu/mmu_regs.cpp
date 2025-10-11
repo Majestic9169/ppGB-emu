@@ -36,7 +36,13 @@ bool LCDC_REG::BGWindowEnable() const { return getBit(0); }
 STAT_REG::STAT_REG(uint8_t &ff41) : ff41_ref{ff41} {}
 
 bool STAT_REG::getBit(int bit_no) const { return ff41_ref & (1 << bit_no); }
-bool STAT_REG::getStatline() const { return getBit(0) | getBit(1) | getBit(2); }
+bool STAT_REG::getStatline() const {
+  bool statline = getBit(6) && getBit(2);
+  statline |= getBit(5) && (GetPPUMode() == 2);
+  statline |= getBit(4) && (GetPPUMode() == 1);
+  statline |= getBit(3) && (GetPPUMode() == 0);
+  return statline;
+}
 void STAT_REG::ResetLYEqualLYC() { ff41_ref &= 0xfb; }
 void STAT_REG::SetLYEqualLYC() { ff41_ref |= 0x04; }
 void STAT_REG::SetPPUMode(uint8_t mode) {
@@ -57,6 +63,7 @@ void STAT_REG::SetPPUMode(uint8_t mode) {
     break;
   }
 }
+uint8_t STAT_REG::GetPPUMode() const { return (getBit(1) << 1) | getBit(0); }
 
 // IF
 IF_REG::IF_REG(uint8_t &ff0f) : ff0f_ref{ff0f} {}
