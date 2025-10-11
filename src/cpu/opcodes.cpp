@@ -210,6 +210,8 @@ void Opcodes::adc(uint8_t val) {
 // SUB INSTRUCTIONS
 // TODO: add sub/sbc unit tests. don't feel like it rn
 // all the rest of the ALU too
+// NOTE: turns out my SBC was wrong for like 5 months
+// always test your code children
 void Opcodes::sub(uint8_t val) {
   // help my subs are unionizing
   if ((val & 0x0f) > (reg->a & 0x0f)) {
@@ -227,14 +229,13 @@ void Opcodes::sub(uint8_t val) {
   reg->set_z(reg->a);
 };
 void Opcodes::sbc(uint8_t val) {
-  // WARN: not sure about this half carry logic
   if (reg->f.c + (val & 0x0f) > (reg->a & 0x0f)) {
     reg->f.h = 1;
   } else {
     reg->f.h = 0;
   }
   uint8_t res = reg->a - val - reg->f.c;
-  if (val > reg->a) {
+  if (uint16_t(val) + reg->f.c > reg->a) {
     reg->f.c = 1;
   } else {
     reg->f.c = 0;
