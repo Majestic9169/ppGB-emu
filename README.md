@@ -61,7 +61,6 @@
       <a href="#getting-started">Getting Started</a>
       <ul>
         <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
         <li><a href="#usage">Usage</a></li>
         <li><a href="#tests">Tests</a></li>
       </ul>
@@ -94,7 +93,7 @@ This project aims to implement a basic featured Gameboy Emulator that will allow
 
 ### Prerequisites
 
-This project uses ~~SDL3~~ SDL2 and Catch2 v3 as dependencies
+This project uses ~~SDL3~~ SDL2 as a dependency
 
 You can install SDL2 on Arch Linux from the extra repository as 
 
@@ -106,15 +105,6 @@ On linux mint and similar systems
 
 ```bash
 sudo apt-get install libsdl2-2.0.0
-```
-
-You can build Catch2 v3 from source as 
-
-```bash
-git clone https://github.com/catchorg/Catch2.git
-cd Catch2
-cmake -Bbuild -H.
-sudo cmake --build build --target install
 ```
 
 > [!CAUTION]
@@ -130,10 +120,53 @@ Usage
   ./build.sh -r to run $ROM
   ./build.sh -d to run $ROM with debug information printed
   ./build.sh -t to run tests on a default rom you can set in `./tests/test_globals.cpp`
+  ./build.sh -p to run code coverage on the tests
   ./build.sh -c to clean the build folder
 ```
 
 this is currently for convenience in developing, i will make this easier to use later
+
+### Tests
+
+To build and run tests you need the [Catch2 v3](https://github.com/catchorg/Catch2) and [nlohmann/json](https://github.com/nlohmann/json?tab=readme-ov-file) dependencies
+
+You can build Catch2 v3 from source as 
+
+```bash
+git clone https://github.com/catchorg/Catch2.git
+cd Catch2
+cmake -Bbuild -H.
+sudo cmake --build build --target install
+```
+
+on Arch you can install `nlohmann/json` as 
+
+```bash
+sudo pacman -S nlohmann-json
+```
+
+alternatively you could add the [`json.hpp`](https://raw.githubusercontent.com/nlohmann/json/refs/heads/develop/single_include/nlohmann/json.hpp) to [`include/`](./include/) and change the line in [`./tests/sm83_tests.cpp`](./tests/sm83_tests.cpp) to 
+
+```cpp
+#include "../include/json.hpp"
+```
+
+- The purpose of `nlohmann/json` is to incorporate the [Single Step sm83 Tests](https://github.com/singlesteptests/sm83), a massive suite of cpu tests.
+- [gameboy-doctor](https://github.com/robert/gameboy-doctor?tab=readme-ov-file) helped a little with debugging the cpu too
+
+```bash
+❯ ./build.sh -t
+===============================================================================
+All tests passed (2830171 assertions in 30 test cases)
+```
+
+The tests need a ROM to be loaded which you can edit in the [`./tests/test_globals.cpp`](./tests/test_globals.cpp) file
+
+```cpp
+char *argv[2] = {strdup("./tests"), strdup("./roms/sgb_bios.bin")};
+```
+
+The choice of ROM is irrelevant for the tests to function
 
 ---
 
@@ -146,16 +179,17 @@ this is currently for convenience in developing, i will make this easier to use 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-## Important Breakpoints
-
-`0x026b`: `.loop_3` flush wram bank 1
-`0x279b`: `.loop_9` fill bg map 1 with `0x2f`
-`0x69a9`
-
 <!-- APPENDIX -->
 ## Acknowledgements
 
 - [GameBoy GIF](https://codepen.io/heero/pen/DpBZzz)
+- [GBdev.io](https://gbdev.io/)
+- [Pan Docs](https://gbdev.io/pandocs/About.html)
+- [GameBoy Instruction Set](https://gbdev.io/gb-opcodes/optables/)
+- [Imran Nazar: GameBoy Emulation in Javascript](https://imrannazar.com/gameboy-Emulation-in-JavaScript)
+- [Cinoop](https://cturt.github.io/cinoop.html): stole CPU timings and eventually will make disassembler
+- [MagenBoy](https://github.com/alloncm/MagenBoy): Helped me with the FIFO a little
+- [Lazy Stripes](https://blog.tigris.fr/category/emulator/): Palette Stuff. Very detailed in general
 
 ---
 
