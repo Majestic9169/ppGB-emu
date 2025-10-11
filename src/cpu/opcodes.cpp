@@ -68,8 +68,22 @@ void Opcodes::daa() {
 void Opcodes::ldh_u8_a(uint8_t u8) { mmu->write_byte(0xff00 + u8, reg->a); }
 void Opcodes::ldh_a_u8(uint8_t u8) { reg->a = mmu->read_byte(0xff00 + u8); }
 void Opcodes::ld_hl_sp() {
-  opcode_e8();
-  reg->hl = reg->sp;
+  signed char e8 = mmu->read_byte(reg->pc++);
+  uint8_t res1 = (reg->sp & 0x000F) + (e8 & 0x0F);
+  if (res1 >= 0x10) {
+    reg->f.h = 1;
+  } else {
+    reg->f.h = 0;
+  }
+  uint16_t res2 = (reg->sp & 0xFF) + (e8 & 0xFF);
+  if (res2 >= 0x100) {
+    reg->f.c = 1;
+  } else {
+    reg->f.c = 0;
+  }
+  reg->hl = reg->sp + e8;
+  reg->f.z = 0;
+  reg->f.n = 0;
 }
 // INC INSTRUCTIONS Z0H-
 void Opcodes::inc(uint8_t &val) {
@@ -837,9 +851,8 @@ void Opcodes::opcode_fe() { cp(mmu->read_byte(reg->pc++)); };
 void Opcodes::opcode_ff() { rst(0x38); };
 
 // HACK: for the sm83 tests
-void Opcodes::test(uint8_t op) {
-  reg->pc++;
-  switch (op) {
+void Opcodes::test() {
+  switch (mmu->read_byte(reg->pc++)) {
     // clang-format off
       case 0x00: opcode_00(); break;  case 0x01: opcode_01(); break;
       case 0x02: opcode_02(); break;  case 0x03: opcode_03(); break;

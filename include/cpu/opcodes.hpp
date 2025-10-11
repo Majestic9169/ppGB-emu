@@ -366,7 +366,7 @@ public:
   void opcode_fe();
   void opcode_ff();
 
-  void test(uint8_t op);
+  void test();
 };
 
 #endif

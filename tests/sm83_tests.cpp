@@ -40,7 +40,7 @@ TEST_CASE("sm83 test suite", "[sm83, cpu]") {
         }
 
         // execute opcode
-        op.test(i);
+        op.test();
 
         // assert against final
         INFO(test["name"]);
