@@ -31,7 +31,7 @@
     <img src="./assets/GameBoy.GIF" alt="Logo" width="100" height="150">
   </a>
 
-  <h3 align="center">ppGameBoy Emulator</h3>
+  <h3 align="center">plusplusGameBoy Emulator</h3>
 
   <p align="center">
     A GameBoy emulator written in C++
@@ -77,6 +77,9 @@
 ppGB (plus plus GameBoy emulator) is a GameBoy Emulator written in C++. 
 
 This project aims to implement a basic featured Gameboy Emulator that will allow the user to play simple games like Tetris at their convenience, while exhibiting good software engineering practices like version control, build systems, documentation, etc.
+
+![This might be illegal](./assets/nintendo.png)
+![hello!!!](./assets/hello_world.png)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
