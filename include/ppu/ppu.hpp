@@ -36,7 +36,6 @@ private:
   FIFO pixel_fifo;
 
   uint8_t &ly;
-  uint8_t lx{0};
   uint8_t scx{0}; // only read during oam scan
   int ticks{0};
 
@@ -52,6 +51,7 @@ private:
 public:
   // TODO: add checks to make sure SDL is initted
   // TODO: add proper clang-format file
+  uint8_t lx{0};
   PPU(Opts *cli_, MMU *mmu_);
 
   void ppu_step();

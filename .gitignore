@@ -3,5 +3,6 @@
 /gcov
 /gameboy-doctor
 /sm83
+**/callgrind.out*
 rom.log
 vram.dump

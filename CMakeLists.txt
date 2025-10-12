@@ -21,7 +21,6 @@ find_package(Catch2 3 REQUIRED)
 # Include directories for your headers and third-party
 include_directories(
     ${PROJECT_SOURCE_DIR}/include
-    ${PROJECT_SOURCE_DIR}/third_party
 )
 
 # Source files

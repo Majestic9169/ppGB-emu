@@ -60,6 +60,8 @@ void Gameboy::run() {
     }
 
     // update
-    ppu.Update();
+    if (ppu.lx == 1) {
+      ppu.Update();
+    }
   }
 }

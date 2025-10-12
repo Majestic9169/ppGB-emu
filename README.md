@@ -152,6 +152,7 @@ alternatively you could add the [`json.hpp`](https://raw.githubusercontent.com/n
 ```
 
 - The purpose of `nlohmann/json` is to incorporate the [Single Step sm83 Tests](https://github.com/singlesteptests/sm83), a massive suite of cpu tests.
+  - make sure you have cloned the repo in the root of this project. its added to the `.gitignore` you don't need to worry about other stuff
 - [gameboy-doctor](https://github.com/robert/gameboy-doctor?tab=readme-ov-file) helped a little with debugging the cpu too
 
 ```bash
