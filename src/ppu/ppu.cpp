@@ -146,9 +146,6 @@ void PPU::Update() { SDL_UpdateWindowSurface(SDLWindow); }
 void PPU::print_debug() const {
   printf("ie: %4x, if: %4x\n", mmu->read_byte(0xffff), mmu->read_byte(0xff0f));
 
-  printf("pallete: %02b %02b %02b %02b\n", mmu->BG_Palette.GetColor3(),
-         mmu->BG_Palette.GetColor2(), mmu->BG_Palette.GetColor1(),
-         mmu->BG_Palette.GetColor0());
   printf("lyc: %d, ly: %d, lx: %d\n", mmu->lyc(), ly, lx);
   printf("scy: %d, scx: %d\n", mmu->scy(), mmu->scx());
   printf("wy: %d, wx: %d\n", mmu->wy(), mmu->wx());
