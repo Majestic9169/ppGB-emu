@@ -16,7 +16,7 @@ TEST_CASE("lcdc structure and update check", "[mmu, reg, lcdc]") {
   REQUIRE(mmu.lcdc.isWindowEnable() == true);
   REQUIRE(mmu.lcdc.TileMap() == 0x8800);
   REQUIRE(mmu.lcdc.BGTileMap() == 1);
-  REQUIRE(mmu.lcdc.ObjSize() == 2);
+  REQUIRE(mmu.lcdc.ObjSize() == 16);
   REQUIRE(mmu.lcdc.areObjEnabled() == true);
   REQUIRE(mmu.lcdc.BGWindowEnable() == false);
   mmu.write_byte(0xff40, 0x11);
@@ -25,7 +25,7 @@ TEST_CASE("lcdc structure and update check", "[mmu, reg, lcdc]") {
   REQUIRE(mmu.lcdc.isWindowEnable() == false);
   REQUIRE(mmu.lcdc.TileMap() == 0x8000);
   REQUIRE(mmu.lcdc.BGTileMap() == 0);
-  REQUIRE(mmu.lcdc.ObjSize() == 1);
+  REQUIRE(mmu.lcdc.ObjSize() == 8);
   REQUIRE(mmu.lcdc.areObjEnabled() == false);
   REQUIRE(mmu.lcdc.BGWindowEnable() == true);
 }

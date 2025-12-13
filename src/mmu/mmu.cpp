@@ -7,6 +7,7 @@
  */
 
 #include "../../include/mmu/mmu.hpp"
+#include <cstddef>
 #include <cstdint>
 #include <cstdio>
 #include <fstream>
@@ -34,10 +35,10 @@ MMU::MMU(Opts *opts_) : ROM(ROM_SIZE), cli_opts{opts_}, OAM{} {
   }
 
   rom_file.read(reinterpret_cast<char *>(ROM.data()), ROM_SIZE);
-  // if (cli_opts->debug_enabled()) {
-  std::cout << GRN << "[+] ROM successfully loaded\n" << COLOR_RESET;
-  header_information();
-  // }
+  if (cli_opts->debug_enabled()) {
+    std::cout << GRN << "[+] ROM successfully loaded\n" << COLOR_RESET;
+    header_information();
+  }
 
   // std::ifstream boot_rom_file{"./roms/dmg_boot.bin", std::ios::binary};
   // if (!boot_rom_file.good()) {
@@ -80,6 +81,48 @@ void MMU::hexdump() const {
     for (size_t j = 0; j < 16; ++j) {
       if (i + j < ROM.size()) {
         char c = ROM[i + j];
+        fprintf(vram, "%c", (c >= 32 && c < 127) ? c : '.');
+      }
+    }
+    fprintf(vram, "\n");
+  }
+  fprintf(vram, "=========== OAM - RAM =============\n");
+  for (size_t i = 0xfe00; i < 0xfea0; i += 16) {
+    // offset
+    fprintf(vram, "%08zx  ", i);
+    // hex bytes
+    for (size_t j = 0; j < 16; ++j) {
+      if (i + j < ROM.size())
+        fprintf(vram, "%02X ", ROM[i + j]);
+      else
+        fprintf(vram, "   ");
+    }
+    fprintf(vram, " ");
+    // ASCII representation
+    for (size_t j = 0; j < 16; ++j) {
+      if (i + j < ROM.size()) {
+        char c = ROM[i + j];
+        fprintf(vram, "%c", (c >= 32 && c < 127) ? c : '.');
+      }
+    }
+    fprintf(vram, "\n");
+  }
+  fprintf(vram, "=========== OAM - OAM =============\n");
+  for (size_t i = 0; i < OAM.size(); i += 16) {
+    // offset
+    fprintf(vram, "%08zx  ", i);
+    // hex bytes
+    for (size_t j = 0; j < 16; ++j) {
+      if (i + j < OAM.size())
+        fprintf(vram, "%02X ", OAM[i + j].GetTileIndex());
+      else
+        fprintf(vram, "   ");
+    }
+    fprintf(vram, " ");
+    // ASCII representation
+    for (size_t j = 0; j < 16; ++j) {
+      if (i + j < OAM.size()) {
+        char c = OAM[i + j].GetTileIndex();
         fprintf(vram, "%c", (c >= 32 && c < 127) ? c : '.');
       }
     }

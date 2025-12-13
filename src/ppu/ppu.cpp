@@ -58,16 +58,17 @@ void PPU::ppu_step() {
   case MODE2_OAM_SCAN: {
 
     // TODO: OAM SCAN
-    // int spriteHeight = mmu->lcdc.ObjSize() == 1 ? 8 : 0;
-    // if (pixel_fifo.sprite_store.size() <= 10) {
-    //   for (auto sprite : mmu->OAM) {
-    //     // YPos is given by required ly + 16
-    //     if (ly >= sprite.GetYPostition() - 16 &&
-    //         ly < sprite.GetYPostition() - spriteHeight) {
-    //       pixel_fifo.sprite_store.push_back(sprite);
-    //     }
-    //   }
-    // }
+    int spriteHeight = mmu->lcdc.ObjSize() == 1 ? 8 : 0;
+    if (pixel_fifo.sprite_store.size() <= 10) {
+      for (auto sprite : mmu->OAM) {
+        // YPos is given by required ly + 16
+        if ((sprite.GetXPostition() > 0) &&
+            (sprite.GetYPostition() <= ly + 16) &&
+            (sprite.GetYPostition() + mmu->lcdc.ObjSize() < ly + 16)) {
+          pixel_fifo.sprite_store.push_back(sprite);
+        }
+      }
+    }
 
     // 2 ticks per object, 40 objects
     if (ticks == (80 / div_factor)) {

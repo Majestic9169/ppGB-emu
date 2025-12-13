@@ -28,7 +28,7 @@ bool LCDC_REG::WindowTileMap() const { return getBit(6); }
 bool LCDC_REG::isWindowEnable() const { return getBit(5); }
 uint16_t LCDC_REG::TileMap() const { return getBit(4) ? 0x8000 : 0x8800; }
 bool LCDC_REG::BGTileMap() const { return getBit(3); }
-uint8_t LCDC_REG::ObjSize() const { return getBit(2) ? 2 : 1; }
+uint8_t LCDC_REG::ObjSize() const { return getBit(2) ? 16 : 8; }
 bool LCDC_REG::areObjEnabled() const { return getBit(1); }
 bool LCDC_REG::BGWindowEnable() const { return getBit(0); }
 
