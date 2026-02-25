@@ -13,7 +13,7 @@
 #include <SDL2/SDL_video.h>
 #include <sys/types.h>
 
-constexpr int div_factor{1};
+constexpr int DIV_FACTOR{1};
 
 SDL_Surface *PPU::GetSurface() const { return SDL_GetWindowSurface(SDLWindow); }
 
@@ -72,7 +72,7 @@ void PPU::ppu_step() {
     }
 
     // 2 ticks per object, 40 objects
-    if (ticks == (80 / div_factor)) {
+    if (ticks == (80 / DIV_FACTOR)) {
       lx = 0;
       pixel_fifo.start_fifo();
       ppu_state = MODE3_PIXEL_TRANSFER;
@@ -98,7 +98,7 @@ void PPU::ppu_step() {
     }
     break;
   case MODE0_HBLANK:
-    if (ticks >= (456 / div_factor)) {
+    if (ticks >= (456 / DIV_FACTOR)) {
       ticks = 0;
       ly++;
       // VBLANK is entered after an entire frame has been rendered
@@ -114,7 +114,7 @@ void PPU::ppu_step() {
     break;
   case MODE1_VBLANK:
     mmu->interrupt_flag.ResetVBLANK();
-    if (ticks >= (456 / div_factor)) {
+    if (ticks >= (456 / DIV_FACTOR)) {
       ticks = 0;
       ly++;
       // wait 10 more rows before moving to next frame
