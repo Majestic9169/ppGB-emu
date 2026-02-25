@@ -16,7 +16,7 @@
 
 // this is so fucking weird
 // i hate it
-FIFO::FIFO(MMU *_mmu) : mmu{_mmu}, fifo{} {}
+FIFO::FIFO(MMU *_mmu, uint8_t &lx) : mmu{_mmu}, curr_lx{lx}, fifo{} {}
 
 void FIFO::start_fifo() {
   while (!fifo.empty()) {
@@ -36,26 +36,46 @@ void FIFO::fifo_step() {
 
   ticks = 0;
 
+  // check for sprites on current scanline (sprite store populated by PPU)
+  if (mmu->lcdc.areObjEnabled()) {
+    for (const auto &s : sprite_store) {
+      if (s.GetXPostition() == curr_lx + 8) {
+        // HACK: replace instead of merging
+        while (!fifo.empty())
+          fifo.pop();
+
+        sprite = s;
+        uint8_t lo = mmu->GetTileFromIndex(sprite.tileIndex, layer())
+                         .GetRawTile()[tile_row_index() * 2];
+        uint8_t hi = mmu->GetTileFromIndex(sprite.tileIndex, layer())
+                         .GetRawTile()[tile_row_index() * 2 + 1];
+
+        for (int bit = 7; bit >= 0; bit--) {
+          int id = sprite.xFlip ? 7 - bit : bit;
+          uint8_t color = ((hi >> id) & 0x01) << 1 | ((lo >> id) & 0x01);
+          Pixel px;
+          px.layer = layer();
+          // px.color = sprite.palette ? mmu->OBP1.GetColor(color)
+          //                           : mmu->OBP0.GetColor(color);
+          // HACK: object palettes work but not for the waves :(
+          px.color = mmu->BG_Palette.GetColor(color);
+          fifo.push(px);
+        }
+        sprite.is_rendering = false;
+        break;
+      }
+    }
+  }
+
   switch (fifo_state) {
   case READ_TILE_ID: {
-    meta.is_rendering = false;
+    sprite.is_rendering = false;
     TileAddr tile_addr{
         TileAddr(map_col_index(), map_row_index(), mmu->lcdc.BGTileMap())};
     if (renderingWindow()) {
       tile_addr.map = mmu->lcdc.WindowTileMap();
     }
     tile_id = mmu->read_byte(tile_addr);
-
-    // check for sprites on current scanline (sprite store populated by PPU)
-    if (mmu->lcdc.areObjEnabled()) {
-      for (const auto &sprite : sprite_store) {
-        if (sprite.GetXPostition() == lx + 8) {
-          tile_id = sprite.GetTileIndex();
-          meta = sprite;
-          break;
-        }
-      }
-    }
     fifo_state = READ_TILE_DATA0;
   } break;
   case READ_TILE_DATA0:
@@ -71,10 +91,9 @@ void FIFO::fifo_step() {
     break;
   case PUSH:
     for (int bit = 7; bit >= 0; bit--) {
-      int id = meta.is_rendering && meta.xFlip ? 7 - bit : bit;
       // interleave 2 bytes
-      uint8_t color =
-          ((tile_data_high >> id) & 0x01) << 1 | ((tile_data_low >> id) & 0x01);
+      uint8_t color = ((tile_data_high >> bit) & 0x01) << 1 |
+                      ((tile_data_low >> bit) & 0x01);
       Pixel px;
       px.color = mmu->BG_Palette.GetColor(color);
       px.layer = layer();

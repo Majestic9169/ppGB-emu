@@ -42,7 +42,7 @@ PPU::PPU(Opts *cli_, MMU *mmu_)
     : cli{cli_}, mmu{mmu_},
       SDLWindow{SDL_CreateWindow("ppGB Window", SDL_WINDOWPOS_CENTERED,
                                  SDL_WINDOWPOS_CENTERED, WIDTH, HEIGHT, 0)},
-      pixel_fifo{mmu_}, ly{mmu->ly()} {};
+      pixel_fifo{mmu_, lx}, ly{mmu->ly()} {};
 
 void PPU::ppu_step() {
   // HACK: for wayland to show window

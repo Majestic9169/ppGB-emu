@@ -49,6 +49,7 @@ private:
   };
 
   MMU *mmu;
+  uint8_t &curr_lx;
   int ticks{0};
   uint8_t lx{0};
 
@@ -68,7 +69,7 @@ private:
           yPos{sprite.GetYPostition()}, xFlip(sprite.GetXFlip()),
           yFlip(sprite.GetYFlip()), palette(sprite.GetPallete()),
           tileIndex(sprite.GetTileIndex()), priority(sprite.GetPriority()) {}
-  } meta{};
+  } sprite{};
 
   bool renderingWindow() const {
     bool in_window = mmu->ly() >= mmu->wy();
@@ -79,10 +80,10 @@ private:
 
   // returns the row inside a tile to render
   uint8_t tile_row_index() const {
-    if (meta.is_rendering) {
+    if (sprite.is_rendering) {
       // TODO: check that this is correct
-      int row = (mmu->ly() + 16) - meta.yPos;
-      return meta.yFlip ? (mmu->lcdc.ObjSize() - 1) - row : row;
+      int row = (mmu->ly() + 16) - sprite.yPos;
+      return sprite.yFlip ? (mmu->lcdc.ObjSize() - 1) - row : row;
     } else if (renderingWindow()) {
       return (mmu->ly() - mmu->wy()) % 8;
     } else {
@@ -109,7 +110,7 @@ private:
   }
 
   TILE::LAYERS layer() {
-    if (meta.is_rendering) {
+    if (sprite.is_rendering) {
       return TILE::OBJECT;
     } else {
       return renderingWindow() ? TILE::WINDOW : TILE::BACKGROUND;
@@ -131,7 +132,7 @@ public:
 
   std::vector<Object> sprite_store{};
 
-  FIFO(MMU *_mmu);
+  FIFO(MMU *_mmu, uint8_t &lx);
 
   void start_fifo();
 
