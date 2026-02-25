@@ -56,16 +56,17 @@ void PPU::ppu_step() {
 
   switch (ppu_state) {
   case MODE2_OAM_SCAN: {
+    pixel_fifo.sprite_store.clear();
 
-    // TODO: OAM SCAN
-    int spriteHeight = mmu->lcdc.ObjSize() == 1 ? 8 : 0;
-    if (pixel_fifo.sprite_store.size() <= 10) {
-      for (auto sprite : mmu->OAM) {
-        // YPos is given by required ly + 16
-        if ((sprite.GetXPostition() > 0) &&
-            (sprite.GetYPostition() <= ly + 16) &&
-            (sprite.GetYPostition() + mmu->lcdc.ObjSize() < ly + 16)) {
-          pixel_fifo.sprite_store.push_back(sprite);
+    if (mmu->lcdc.areObjEnabled()) {
+      if (pixel_fifo.sprite_store.size() <= 10) {
+        for (auto sprite : mmu->OAM) {
+          // YPos is given by required ly + 16
+          if ((sprite.GetXPostition() > 0) &&
+              (sprite.GetYPostition() <= ly + 16) &&
+              (sprite.GetYPostition() + mmu->lcdc.ObjSize() > ly + 16)) {
+            pixel_fifo.sprite_store.push_back(sprite);
+          }
         }
       }
     }

@@ -38,23 +38,35 @@ void FIFO::fifo_step() {
 
   switch (fifo_state) {
   case READ_TILE_ID: {
+    layer = TILE::BACKGROUND;
     TileAddr tile_addr{
         TileAddr(map_col_index(), map_row_index(), mmu->lcdc.BGTileMap())};
     if (renderingWindow()) {
       tile_addr.map = mmu->lcdc.WindowTileMap();
-      tile_id = mmu->read_byte(tile_addr);
-    } else {
-      tile_id = mmu->read_byte(tile_addr);
+      layer = TILE::WINDOW;
+    }
+    tile_id = mmu->read_byte(tile_addr);
+
+    // check for sprites on current scanline (sprite store populated by PPU)
+    if (mmu->lcdc.areObjEnabled()) {
+      for (const auto &sprite : sprite_store) {
+        if (sprite.GetXPostition() == lx + 8) {
+          tile_id = sprite.GetTileIndex();
+          layer = TILE::OBJECT;
+          break;
+        }
+      }
     }
     fifo_state = READ_TILE_DATA0;
   } break;
   case READ_TILE_DATA0:
-    tile_data_low = mmu->GetTileFromIndex(tile_id, layer())
+    // if object update layer
+    tile_data_low = mmu->GetTileFromIndex(tile_id, layer)
                         .GetRawTile()[tile_row_index() * 2];
     fifo_state = READ_TILE_DATA1;
     break;
   case READ_TILE_DATA1:
-    tile_data_high = mmu->GetTileFromIndex(tile_id, layer())
+    tile_data_high = mmu->GetTileFromIndex(tile_id, layer)
                          .GetRawTile()[tile_row_index() * 2 + 1];
     fifo_state = PUSH;
     break;
@@ -65,7 +77,7 @@ void FIFO::fifo_step() {
                       ((tile_data_low >> bit) & 0x01);
       Pixel px;
       px.color = mmu->BG_Palette.GetColor(color);
-      px.layer = layer();
+      px.layer = layer;
       // dont push scx%8 if left edge
       if (!renderingWindow()) {
         if (map_col_index() == mmu->scx() / 8 && drop_pixels > 0) {

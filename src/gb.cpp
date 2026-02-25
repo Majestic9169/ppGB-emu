@@ -12,7 +12,7 @@
 // TODO: figure out how to move Opts to gb.hpp too
 Gameboy::Gameboy(Opts *opts_)
     : cli_opts{opts_}, mmu(opts_), cpu{opts_, &mmu}, ppu{opts_, &mmu},
-      is_paused(opts_->debug_enabled() ? true : false) {};
+      is_paused(opts_->debug_enabled() ? false : false) {};
 
 // step
 void Gameboy::gb_step() {

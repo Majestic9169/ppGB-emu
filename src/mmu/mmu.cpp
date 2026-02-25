@@ -64,6 +64,7 @@ MMU::MMU(Opts *opts_) : ROM(ROM_SIZE), cli_opts{opts_}, OAM{} {
   ROM[0xFF47] = 0xfc;
 }
 
+// TODO: clean up with util function
 void MMU::hexdump() const {
   FILE *vram = fopen("vram.dump", "w");
   for (size_t i = 0x8000; i < 0xA000; i += 16) {

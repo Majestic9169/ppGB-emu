@@ -68,16 +68,6 @@ private:
     }
   }
 
-  // NOTE: never actually used anywhere
-  // return column inside a tile to render
-  // uint8_t tile_column_index() const {
-  //   if (renderingWindow()) {
-  //     return (lx - mmu->wx() + 7) % 8;
-  //   } else {
-  //     return (lx + mmu->scx()) % 8;
-  //   }
-  // }
-
   // return row index of tile to select in map
   uint8_t map_row_index() const {
     if (renderingWindow()) {
@@ -96,10 +86,7 @@ private:
     }
   }
 
-  TILE::LAYERS layer() const {
-    return renderingWindow() ? TILE::WINDOW : TILE::BACKGROUND;
-  }
-
+  TILE::LAYERS layer{TILE::BACKGROUND};
   uint8_t tile_data_low{0};
   uint8_t tile_data_high{0};
   uint8_t tile_id{0};
