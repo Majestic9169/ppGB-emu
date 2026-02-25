@@ -38,6 +38,7 @@ void FIFO::fifo_step() {
 
   switch (fifo_state) {
   case READ_TILE_ID: {
+    xFlip = false;
     layer = TILE::BACKGROUND;
     TileAddr tile_addr{
         TileAddr(map_col_index(), map_row_index(), mmu->lcdc.BGTileMap())};
@@ -52,6 +53,7 @@ void FIFO::fifo_step() {
       for (const auto &sprite : sprite_store) {
         if (sprite.GetXPostition() == lx + 8) {
           tile_id = sprite.GetTileIndex();
+          xFlip = sprite.GetXFlip();
           layer = TILE::OBJECT;
           break;
         }
@@ -72,9 +74,10 @@ void FIFO::fifo_step() {
     break;
   case PUSH:
     for (int bit = 7; bit >= 0; bit--) {
+      int id = xFlip ? 7 - bit : bit;
       // interleave 2 bytes
-      uint8_t color = ((tile_data_high >> bit) & 0x01) << 1 |
-                      ((tile_data_low >> bit) & 0x01);
+      uint8_t color =
+          ((tile_data_high >> id) & 0x01) << 1 | ((tile_data_low >> id) & 0x01);
       Pixel px;
       px.color = mmu->BG_Palette.GetColor(color);
       px.layer = layer;

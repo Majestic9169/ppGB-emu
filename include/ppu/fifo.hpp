@@ -91,6 +91,7 @@ private:
   uint8_t tile_data_high{0};
   uint8_t tile_id{0};
   uint8_t drop_pixels{0};
+  bool xFlip{false};
 
   FIFO(const FIFO &) = delete;
   const FIFO &operator=(const FIFO &) = delete;
