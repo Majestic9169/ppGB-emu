@@ -100,6 +100,10 @@ void PPU::ppu_step() {
   case MODE0_HBLANK:
     if (ticks >= (456 / DIV_FACTOR)) {
       ticks = 0;
+      // if in window increment window line
+      if (pixel_fifo.renderingWindow()) {
+        pixel_fifo.window_line++;
+      }
       ly++;
       // VBLANK is entered after an entire frame has been rendered
       if (ly == 144) {
@@ -124,6 +128,8 @@ void PPU::ppu_step() {
         mmu->stat.SetPPUMode(2);
       }
     }
+    // reset window line counter
+    pixel_fifo.window_line = 0;
     break;
   }
 
