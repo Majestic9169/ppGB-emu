@@ -71,13 +71,6 @@ private:
           tileIndex(sprite.GetTileIndex()), priority(sprite.GetPriority()) {}
   } sprite{};
 
-  bool renderingWindow() const {
-    bool in_window = mmu->ly() >= mmu->wy();
-    in_window = in_window && (mmu->wx() - 8 < lx);
-    in_window = in_window && mmu->lcdc.isWindowEnable();
-    return in_window;
-  }
-
   // returns the row inside a tile to render
   uint8_t tile_row_index() const {
     if (sprite.is_rendering) {
@@ -85,7 +78,7 @@ private:
       int row = (mmu->ly() + 16) - sprite.yPos;
       return sprite.yFlip ? (mmu->lcdc.ObjSize() - 1) - row : row;
     } else if (renderingWindow()) {
-      return (mmu->ly() - mmu->wy()) % 8;
+      return window_line % 8;
     } else {
       return (mmu->ly() + mmu->scy()) % 8;
     }
@@ -129,6 +122,14 @@ private:
 
 public:
   std::queue<Pixel> fifo;
+  uint8_t window_line{0};
+
+  bool renderingWindow() const {
+    bool in_window = mmu->ly() >= mmu->wy();
+    in_window = in_window && (mmu->wx() - 8 < lx);
+    in_window = in_window && mmu->lcdc.isWindowEnable();
+    return in_window;
+  }
 
   std::vector<Object> sprite_store{};
 

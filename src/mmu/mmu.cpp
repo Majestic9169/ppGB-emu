@@ -158,23 +158,18 @@ uint8_t &MMU::wx() { return ROM[0xff4b]; }
 
 // get tiles from either of the 2 tile maps
 TILE MMU::GetTileFromIndex(uint16_t index, TILE::LAYERS layer) {
-  if (layer == TILE::OBJECT) {
-    TILE tile{ROM.begin() + 0x8000 + index * 16,
-              ROM.begin() + 0x8000 + index * 16 + 16};
-    return tile;
-  } else if (lcdc.TileMap() == 0x8000) {
-    TILE tile{ROM.begin() + 0x8000 + index * 16,
-              ROM.begin() + 0x8000 + index * 16 + 16};
-    return tile;
+  uint16_t base_addr{0x8000};
+  uint16_t offset{0};
+
+  if (layer == TILE::OBJECT || lcdc.TileMap() == 0x8000) {
+    offset = index * 16;
   } else {
-    if (index < 128) {
-      TILE tile{ROM.begin() + 0x9000 + index * 16,
-                ROM.begin() + 0x9000 + index * 16 + 16};
-      return tile;
-    } else {
-      TILE tile{ROM.begin() + 0x8800 + (index - 128) * 16,
-                ROM.begin() + 0x8800 + (index - 128) * 16 + 16};
-      return tile;
-    }
+    base_addr = 0x9000;
+    int8_t signed_index = static_cast<int8_t>(index);
+    offset = signed_index * 16;
   }
+
+  const auto start = ROM.begin() + base_addr + offset;
+  TILE tile{start};
+  return tile;
 }
