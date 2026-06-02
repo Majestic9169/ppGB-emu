@@ -6,3 +6,5 @@
 **/callgrind.out*
 rom.log
 vram.dump
+*perf.*
+graph.svg
