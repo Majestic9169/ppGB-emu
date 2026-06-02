@@ -6,13 +6,13 @@
 #ifndef TILE_H
 #define TILE_H
 #include <cstdint>
+#include <span>
 #include <vector>
 
 class TILE {
   // 16 bytes
 private:
-  std::vector<uint8_t> raw_data;
-  std::vector<uint16_t> spliced_data;
+  std::span<uint8_t, 16> raw_data;
 
 public:
   enum LAYERS {
@@ -21,15 +21,9 @@ public:
     OBJECT      // sprites and stuff, this will be separately covered
   };
 
-  TILE(std::vector<uint8_t>::iterator start,
-       std::vector<uint8_t>::iterator end);
+  TILE(std::vector<uint8_t>::iterator start);
 
-  TILE &operator=(const TILE &a);
-
-  TILE(const TILE &a);
-
-  std::vector<uint16_t> GetRenderedTile() const;
-  std::vector<uint8_t> GetRawTile() const;
+  std::span<uint8_t, 16> GetRawTile() const;
 };
 
 #endif

@@ -170,6 +170,6 @@ TILE MMU::GetTileFromIndex(uint16_t index, TILE::LAYERS layer) {
   }
 
   const auto start = ROM.begin() + base_addr + offset;
-  TILE tile{start, start + 16};
+  TILE tile{start};
   return tile;
 }
