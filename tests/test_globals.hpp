@@ -10,6 +10,6 @@ extern char *argv[2];
 extern Opts cli_opts;
 extern MMU mmu;
 extern Opcodes op;
+extern CB_Opcodes cb;
 extern PPU ppu;
 extern Registers reg;
-extern CB_Opcodes cb;
