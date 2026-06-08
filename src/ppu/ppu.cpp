@@ -88,6 +88,13 @@ void PPU::ppu_step() {
     if (!pixel_fifo.fifo.empty()) {
       Pixel px = pixel_fifo.fifo.front();
       pixel_fifo.fifo.pop();
+
+      // scroll checking moved here
+      if (pixel_fifo.drop_pixels) {
+        pixel_fifo.drop_pixels--;
+        break;
+      }
+
       SetPixel(MapColorToSDL(px.color, GetSurface()->format));
       lx++;
     }
@@ -117,19 +124,19 @@ void PPU::ppu_step() {
     }
     break;
   case MODE1_VBLANK:
-    mmu->interrupt_flag.ResetVBLANK();
     if (ticks >= (456 / DIV_FACTOR)) {
       ticks = 0;
       ly++;
       // wait 10 more rows before moving to next frame
       if (ly == 153) {
         ly = 0;
-        ppu_state = MODE2_OAM_SCAN;
         mmu->stat.SetPPUMode(2);
+        // reset window line counter
+        pixel_fifo.window_line = 0;
+        ppu_state = MODE2_OAM_SCAN;
+        mmu->interrupt_flag.ResetVBLANK();
       }
     }
-    // reset window line counter
-    pixel_fifo.window_line = 0;
     break;
   }
 

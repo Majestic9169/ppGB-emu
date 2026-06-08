@@ -16,6 +16,8 @@
 
 class Gameboy {
 private:
+  static constexpr int CYCLES_PER_FRAME{70224};
+
   Opts *cli_opts;
   MMU mmu;
   CPU cpu;
@@ -30,7 +32,7 @@ public:
   Gameboy(Opts *opts_);
 
   // gb step
-  void gb_step();
+  int gb_step();
 
   // application loop
   void run();

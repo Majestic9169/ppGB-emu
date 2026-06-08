@@ -15,7 +15,7 @@
 // https://github.com/CTurt/Cinoop/
 CPU::CPU(Opts *cli, MMU *_mmu)
     : cli_opts(cli), mmu(_mmu), reg{}, op{_mmu, &reg}, cb(_mmu, &reg),
-      curr_pc{}, opcode{}, ticks{},
+      curr_pc{}, opcode{},
       op_ticks{
           2, 6, 4, 4, 2, 2, 4, 4, 10, 4, 4, 4, 2, 2, 4, 4, // 0x0_
           2, 6, 4, 4, 2, 2, 4, 4, 4,  4, 4, 4, 2, 2, 4, 4, // 0x1_
@@ -62,44 +62,32 @@ void CPU::print_reg() {
   printf("ime: %d\n", reg.ime);
 }
 
-void CPU::check_interrupts(uint8_t of) {
+int CPU::check_interrupts(uint8_t of) {
   IF_REG old_if{of};
   if (reg.ime && mmu->read_byte(0xff0f) && mmu->read_byte(0xffff)) {
     if (old_if.CheckLCD() == 0 && mmu->interrupt_enable.ReqLCD() &&
         mmu->interrupt_flag.CheckLCD()) {
       op.call_interrupt(0x48);
-      ticks += 3;
       mmu->interrupt_flag.ResetLCD();
       reg.ime = false;
+      return 12;
     } else if (old_if.CheckVBLANK() == 0 && mmu->interrupt_flag.CheckVBLANK() &&
                mmu->interrupt_enable.ReqVBLANK()) {
       op.call_interrupt(0x40);
-      ticks += 3;
       mmu->interrupt_flag.ResetVBLANK();
       reg.ime = false;
+      return 12;
     }
   }
+  return 0;
 }
 
 // TODO: add cpu cycle clocks array and handle when opcodes clocks have 2-3
 // possible values
-void CPU::cpu_step() {
+int CPU::cpu_step() {
   curr_pc = reg.pc;
-  opcode = mmu->read_byte(reg.pc);
+  opcode = mmu->read_byte(reg.pc++);
 
-  // do nothing for x ticks
-  if (ticks) {
-    ticks--;
-    return;
-  } else {
-    if (opcode == 0xcb) {
-      ticks = cb_ticks[opcode];
-    } else {
-      ticks = op_ticks[opcode];
-    }
-  }
-
-  reg.pc++;
   switch (opcode) {
     // clang-format off
       case 0x00: op.opcode_00(); break;  case 0x01: op.opcode_01(); break;
@@ -237,6 +225,11 @@ void CPU::cpu_step() {
     std::printf("%s[%04x] %sopcode 0x%02x\n%s", YEL.data(), curr_pc, GRN.data(),
                 opcode, COLOR_RESET.data());
   }
+
+  if ((opcode & 0xFF00) == 0xcb00)
+    return cb_ticks[opcode & 0x00FF];
+
+  return op_ticks[opcode];
 }
 
 void CPU::cb_cycle() {

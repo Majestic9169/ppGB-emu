@@ -97,13 +97,6 @@ void FIFO::fifo_step() {
       Pixel px;
       px.color = mmu->BG_Palette.GetColor(color);
       px.layer = layer();
-      // dont push scx%8 if left edge
-      if (!renderingWindow()) {
-        if (map_col_index() == mmu->scx() / 8 && drop_pixels > 0) {
-          drop_pixels--;
-          continue;
-        }
-      }
       fifo.push(px);
     }
     lx += 8;

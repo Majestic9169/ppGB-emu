@@ -113,7 +113,6 @@ private:
   uint8_t tile_data_low{0};
   uint8_t tile_data_high{0};
   uint8_t tile_id{0};
-  uint8_t drop_pixels{0};
 
   FIFO(const FIFO &) = delete;
   const FIFO &operator=(const FIFO &) = delete;
@@ -122,6 +121,7 @@ private:
 
 public:
   std::queue<Pixel> fifo;
+  uint8_t drop_pixels{0};
   uint8_t window_line{0};
 
   bool renderingWindow() const {

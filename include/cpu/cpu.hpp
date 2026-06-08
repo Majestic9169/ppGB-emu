@@ -35,7 +35,6 @@ private:
   CB_Opcodes cb;
   uint16_t curr_pc;
   uint16_t opcode;
-  uint8_t ticks{0}; // counter for ticks
   std::vector<uint8_t> op_ticks;
   std::vector<uint8_t> cb_ticks;
 
@@ -44,10 +43,10 @@ private:
 public:
   CPU(Opts *cli, MMU *_mmu);
 
-  void check_interrupts(uint8_t old_if);
+  int check_interrupts(uint8_t old_if); // return T cycles
 
   // fetch-decode-execute cycle
-  void cpu_step();
+  int cpu_step(); // return T cycles
 
   void print_reg();
 };
