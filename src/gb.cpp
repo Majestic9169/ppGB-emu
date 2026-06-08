@@ -36,6 +36,10 @@ int Gameboy::gb_step() {
     ppu.ppu_step();
 
   if (cli_opts->debug_enabled()) {
+    if (cpu.reg.pc == 0x022F) {
+      printf("Back in init at 0x022F, SP=%04x, IE=%02x, IF=%02x\n", cpu.reg.sp,
+             mmu.read_byte(0xFFFF), mmu.read_byte(0xFF0F));
+    }
     cpu.print_reg();
     ppu.print_debug();
   }

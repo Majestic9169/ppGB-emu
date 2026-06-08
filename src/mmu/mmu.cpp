@@ -58,10 +58,14 @@ MMU::MMU(Opts *opts_) : ROM(ROM_SIZE), cli_opts{opts_}, OAM{} {
   }
 
   // init hardware registers
-  ROM[0xFF0F] = 0xe1;
-  ROM[0xFF40] = 0x91;
-  ROM[0xFF41] = 0x85;
-  ROM[0xFF47] = 0xfc;
+  ROM[0xFF0F] = 0xe1; // IF
+  ROM[0xFF40] = 0x91; // LCDC
+  ROM[0xFF41] = 0x85; // STAT
+  ROM[0xFF47] = 0xfc; // BGP
+  ROM[0xFF48] = 0xff; // OBP0
+  ROM[0xFF49] = 0xff; // OBP1
+  ROM[0xFF50] = 0x01; // disable boot rom
+  ROM[0xFFFF] = 0x00; // IE
 }
 
 // TODO: clean up with util function
@@ -136,7 +140,12 @@ uint8_t &MMU::read_byte(uint16_t addr) { return ROM[addr]; }
 uint16_t MMU::read_word(uint16_t addr) {
   return ROM[addr] | ROM[addr + 1] << 8;
 }
-void MMU::write_byte(uint16_t addr, uint8_t val) { ROM[addr] = val; }
+void MMU::write_byte(uint16_t addr, uint8_t val) {
+  if (cli_opts->debug_enabled() && addr == 0xff40) {
+    printf("LCDC write: %02x ly: %d\n", val, ly());
+  }
+  ROM[addr] = val;
+}
 void MMU::write_word(uint16_t addr, uint16_t val) {
   write_byte(addr, static_cast<uint8_t>(val));
   write_byte(addr + 1, static_cast<uint8_t>(val >> 8));
@@ -169,7 +178,12 @@ TILE MMU::GetTileFromIndex(uint16_t index, TILE::LAYERS layer) {
     offset = signed_index * 16;
   }
 
-  const auto start = ROM.begin() + base_addr + offset;
+  if (cli_opts->debug_enabled()) {
+    printf("GetTile: index=%02x layer=%d addr=%04x lcdc=%02x\n", index, layer,
+           base_addr + offset, read_byte(0xff40));
+  }
+
+  const auto start{ROM.begin() + base_addr + offset};
   TILE tile{start};
   return tile;
 }

@@ -4,7 +4,7 @@ name: C++ Build Test CI
 
 on:
   push:
-    branches: [ "new-start" ]
+    branches: [ "main" ]
 
 jobs:
   build:
@@ -12,6 +12,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+      with:
+          submodules: true
 
     - name: Update System
       run: |
@@ -22,12 +24,28 @@ jobs:
       run: |
         sudo apt-get -y install libsdl2-dev
 
+    - name: Install Catch2 v3
+      run: |
+        git clone https://github.com/catchorg/Catch2.git
+        cd Catch2
+        cmake -Bbuild -H.
+        sudo cmake --build build --target install
+        cd ../
+
+    - name: Install nlohmann/json
+      run: |
+        sudo apt install nlohmann-json3-dev
+
     - name: Install Tetris ROM
       run: |
         mkdir ./roms
-        cd roms && wget http://0x0.st/8lWu.gb && mv 8lWu.gb tetris.gb
+        cd roms && wget https://archive.org/download/tetris_gb/tetris.gb && cd ../
 
-    - name: Build and Test
+    - name: Build 
       run: |
         mkdir ./build
         bash ./build.sh
+
+    - name: Test
+      run: |
+        bash ./build.sh -t
