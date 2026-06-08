@@ -5,7 +5,8 @@
 
 #ifndef ANSI_COLOR_CODES
 #define ANSI_COLOR_CODES
-#include <string>
+
+#include <string_view>
 
 /*
  * fun fact: "\e" is the GNU ansi escape code
@@ -13,78 +14,78 @@
  */
 
 // Regular text
-const std::string BLK = "\033[0;30m";
-const std::string RED = "\033[0;31m";
-const std::string GRN = "\033[0;32m";
-const std::string YEL = "\033[0;33m";
-const std::string BLU = "\033[0;34m";
-const std::string MAG = "\033[0;35m";
-const std::string CYN = "\033[0;36m";
-const std::string WHT = "\033[0;37m";
+constexpr std::string_view BLK = "\033[0;30m";
+constexpr std::string_view RED = "\033[0;31m";
+constexpr std::string_view GRN = "\033[0;32m";
+constexpr std::string_view YEL = "\033[0;33m";
+constexpr std::string_view BLU = "\033[0;34m";
+constexpr std::string_view MAG = "\033[0;35m";
+constexpr std::string_view CYN = "\033[0;36m";
+constexpr std::string_view WHT = "\033[0;37m";
 
 // Regular bold text
-const std::string BBLK = "\033[1;30m";
-const std::string BRED = "\033[1;31m";
-const std::string BGRN = "\033[1;32m";
-const std::string BYEL = "\033[1;33m";
-const std::string BBLU = "\033[1;34m";
-const std::string BMAG = "\033[1;35m";
-const std::string BCYN = "\033[1;36m";
-const std::string BWHT = "\033[1;37m";
+constexpr std::string_view BBLK = "\033[1;30m";
+constexpr std::string_view BRED = "\033[1;31m";
+constexpr std::string_view BGRN = "\033[1;32m";
+constexpr std::string_view BYEL = "\033[1;33m";
+constexpr std::string_view BBLU = "\033[1;34m";
+constexpr std::string_view BMAG = "\033[1;35m";
+constexpr std::string_view BCYN = "\033[1;36m";
+constexpr std::string_view BWHT = "\033[1;37m";
 
 // Regular underline text
-const std::string UBLK = "\033[4;30m";
-const std::string URED = "\033[4;31m";
-const std::string UGRN = "\033[4;32m";
-const std::string UYEL = "\033[4;33m";
-const std::string UBLU = "\033[4;34m";
-const std::string UMAG = "\033[4;35m";
-const std::string UCYN = "\033[4;36m";
-const std::string UWHT = "\033[4;37m";
+constexpr std::string_view UBLK = "\033[4;30m";
+constexpr std::string_view URED = "\033[4;31m";
+constexpr std::string_view UGRN = "\033[4;32m";
+constexpr std::string_view UYEL = "\033[4;33m";
+constexpr std::string_view UBLU = "\033[4;34m";
+constexpr std::string_view UMAG = "\033[4;35m";
+constexpr std::string_view UCYN = "\033[4;36m";
+constexpr std::string_view UWHT = "\033[4;37m";
 
 // Regular background
-const std::string BLKB = "\033[40m";
-const std::string REDB = "\033[41m";
-const std::string GRNB = "\033[42m";
-const std::string YELB = "\033[43m";
-const std::string BLUB = "\033[44m";
-const std::string MAGB = "\033[45m";
-const std::string CYNB = "\033[46m";
-const std::string WHTB = "\033[47m";
+constexpr std::string_view BLKB = "\033[40m";
+constexpr std::string_view REDB = "\033[41m";
+constexpr std::string_view GRNB = "\033[42m";
+constexpr std::string_view YELB = "\033[43m";
+constexpr std::string_view BLUB = "\033[44m";
+constexpr std::string_view MAGB = "\033[45m";
+constexpr std::string_view CYNB = "\033[46m";
+constexpr std::string_view WHTB = "\033[47m";
 
 // High intensty background
-const std::string BLKHB = "\033[0;100m";
-const std::string REDHB = "\033[0;101m";
-const std::string GRNHB = "\033[0;102m";
-const std::string YELHB = "\033[0;103m";
-const std::string BLUHB = "\033[0;104m";
-const std::string MAGHB = "\033[0;105m";
-const std::string CYNHB = "\033[0;106m";
-const std::string WHTHB = "\033[0;107m";
+constexpr std::string_view BLKHB = "\033[0;100m";
+constexpr std::string_view REDHB = "\033[0;101m";
+constexpr std::string_view GRNHB = "\033[0;102m";
+constexpr std::string_view YELHB = "\033[0;103m";
+constexpr std::string_view BLUHB = "\033[0;104m";
+constexpr std::string_view MAGHB = "\033[0;105m";
+constexpr std::string_view CYNHB = "\033[0;106m";
+constexpr std::string_view WHTHB = "\033[0;107m";
 
 // High intensty text
-const std::string HBLK = "\033[0;90m";
-const std::string HRED = "\033[0;91m";
-const std::string HGRN = "\033[0;92m";
-const std::string HYEL = "\033[0;93m";
-const std::string HBLU = "\033[0;94m";
-const std::string HMAG = "\033[0;95m";
-const std::string HCYN = "\033[0;96m";
-const std::string HWHT = "\033[0;97m";
+constexpr std::string_view HBLK = "\033[0;90m";
+constexpr std::string_view HRED = "\033[0;91m";
+constexpr std::string_view HGRN = "\033[0;92m";
+constexpr std::string_view HYEL = "\033[0;93m";
+constexpr std::string_view HBLU = "\033[0;94m";
+constexpr std::string_view HMAG = "\033[0;95m";
+constexpr std::string_view HCYN = "\033[0;96m";
+constexpr std::string_view HWHT = "\033[0;97m";
 
 // Bold high intensity text
-const std::string BHBLK = "\033[1;90m";
-const std::string BHRED = "\033[1;91m";
-const std::string BHGRN = "\033[1;92m";
-const std::string BHYEL = "\033[1;93m";
-const std::string BHBLU = "\033[1;94m";
-const std::string BHMAG = "\033[1;95m";
-const std::string BHCYN = "\033[1;96m";
-const std::string BHWHT = "\033[1;97m";
+constexpr std::string_view BHBLK = "\033[1;90m";
+constexpr std::string_view BHRED = "\033[1;91m";
+constexpr std::string_view BHGRN = "\033[1;92m";
+constexpr std::string_view BHYEL = "\033[1;93m";
+constexpr std::string_view BHBLU = "\033[1;94m";
+constexpr std::string_view BHMAG = "\033[1;95m";
+constexpr std::string_view BHCYN = "\033[1;96m";
+constexpr std::string_view BHWHT = "\033[1;97m";
 
 // Reset
-const std::string reset = "\033[0m";
-const std::string CRESET = "\033[0m";
-const std::string COLOR_RESET = "\033[0m";
+constexpr std::string_view reset = "\033[0m";
+constexpr std::string_view CRESET = "\033[0m";
+constexpr std::string_view COLOR_RESET = "\033[0m";
 
 #endif

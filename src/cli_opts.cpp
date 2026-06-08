@@ -26,7 +26,7 @@ Opts::Opts(int argc, char **argv) : args{}, ROM_FILE{} {
 
     ROM_FILE = rom_name();
   } else {
-    std::cerr << RED + "[!] Too few arguments\n" + COLOR_RESET;
+    std::cerr << RED << "[!] Too few arguments\n" << COLOR_RESET;
     std::cout << USAGE;
     exit(1);
   }

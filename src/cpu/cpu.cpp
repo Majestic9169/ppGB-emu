@@ -234,8 +234,8 @@ void CPU::cpu_step() {
   }
   if (cli_opts->debug_enabled()) {
     // TODO: write this to file instead of stdout
-    std::printf("%s[%04x] %sopcode 0x%02x\n%s", YEL.c_str(), curr_pc,
-                GRN.c_str(), opcode, COLOR_RESET.c_str());
+    std::printf("%s[%04x] %sopcode 0x%02x\n%s", YEL.data(), curr_pc, GRN.data(),
+                opcode, COLOR_RESET.data());
   }
 }
 
