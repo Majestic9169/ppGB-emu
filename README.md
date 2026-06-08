@@ -155,14 +155,20 @@ alternatively you could add the [`json.hpp`](https://raw.githubusercontent.com/n
 #include "../include/json.hpp"
 ```
 
+Then make sure you add the git submodule for the sm83 tests
+
+```bash
+git submodule update --init
+```
+
 - The purpose of `nlohmann/json` is to incorporate the [Single Step sm83 Tests](https://github.com/singlesteptests/sm83), a massive suite of cpu tests.
-  - make sure you have cloned the repo in the root of this project. its added to the `.gitignore` you don't need to worry about other stuff
 - [gameboy-doctor](https://github.com/robert/gameboy-doctor?tab=readme-ov-file) helped a little with debugging the cpu too
 
 ```bash
 ❯ ./build.sh -t
-===============================================================================
-All tests passed (2830171 assertions in 30 test cases)
+=====================================================
+RNG seed: 1613788928
+All tests passed (6190205 assertions in 31 test cases)
 ```
 
 The tests need a ROM to be loaded which you can edit in the [`./tests/test_globals.cpp`](./tests/test_globals.cpp) file
