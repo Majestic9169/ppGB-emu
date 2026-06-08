@@ -78,8 +78,9 @@ ppGB (plus plus GameBoy emulator) is a GameBoy Emulator written in C++.
 
 This project aims to implement a basic featured Gameboy Emulator that will allow the user to play simple games like Tetris at their convenience, while exhibiting good software engineering practices like version control, build systems, documentation, etc.
 
-![This might be illegal](./assets/nintendo.png)
+![fairlylake](./assets/fairlylake.gif)
 ![hello!!!](./assets/hello_world.png)
+![This might be illegal](./assets/nintendo.gif)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
