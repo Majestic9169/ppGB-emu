@@ -1,7 +1,5 @@
 #!/usr/bin/bash
 
-ROM=./roms/tetris.gb
-
 mkdir -p ./build
 
 echo "build: building"
@@ -14,7 +12,9 @@ if (( $OPTIND == 1 )); then
     echo "build: built"
 fi
 
-while getopts 'rdctp' OPTION; do
+ROM=$2
+
+while getopts 'rdctpg' OPTION; do
   case "$OPTION" in
     r)
       cd ./build/ && cmake .. && make && cd ../
@@ -38,7 +38,7 @@ while getopts 'rdctp' OPTION; do
       cmake ..
       make tests 
       cd ..
-      ./build/tests # --reporter compact # --success
+      ./build/tests --reporter compact #  --success
       ;;
     p) 
       echo "build: testing"
@@ -51,6 +51,13 @@ while getopts 'rdctp' OPTION; do
       find . -name "*.gcda" | xargs gcov -H -k -q -s "./gcov/"
       find . -name "*.gcda" -exec rm {} \;
       find . -name "*.gcov" -exec mv -f {} ./gcov/ 2>/dev/null \;
+      ;;
+    g)
+      ## NOTE: make sure you have perf and the flamegraph scripts installed
+      echo "build: profiling (perf+flamegraph)"
+      timeout --signal=INT 10s perf record -g -- ./build/ppGB-emu $ROM
+      perf script | stackcollapse-perf.pl | flamegraph.pl > graph.svg
+      xdg-open graph.svg
       ;;
     ?)
       echo "build: exiting"

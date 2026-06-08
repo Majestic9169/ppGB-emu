@@ -124,6 +124,7 @@ Usage
   ./build.sh -d to run $ROM with debug information printed
   ./build.sh -t to run tests on a default rom you can set in `./tests/test_globals.cpp`
   ./build.sh -p to run code coverage on the tests
+  ./build.sh -g to run code perf+flamegraph profiling on the emulator
   ./build.sh -c to clean the build folder
 ```
 
