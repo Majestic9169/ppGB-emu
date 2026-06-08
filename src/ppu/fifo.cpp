@@ -45,10 +45,19 @@ void FIFO::fifo_step() {
           fifo.pop();
 
         sprite = s;
-        uint8_t lo = mmu->GetTileFromIndex(sprite.tileIndex, layer())
-                         .GetRawTile()[tile_row_index() * 2];
-        uint8_t hi = mmu->GetTileFromIndex(sprite.tileIndex, layer())
-                         .GetRawTile()[tile_row_index() * 2 + 1];
+        // NOTE: the reason we do this bs is gb sprites of size 16 are locked to
+        // having their top tile be the one with the 1 bit and the bottom one be
+        // the onw with the 0 bit
+        // anyway this helps pass the half mouth dmg-acid2 test
+        uint8_t sprite_tile_id =
+            (mmu->lcdc.ObjSize() == 16)
+                ? ((sprite.tileIndex & 0xFE) | (tile_row_index() >= 8 ? 1 : 0))
+                : sprite.tileIndex;
+        uint8_t sprite_row_id = tile_row_index() % 8;
+        uint8_t lo = mmu->GetTileFromIndex(sprite_tile_id, layer())
+                         .GetRawTile()[2 * sprite_row_id];
+        uint8_t hi = mmu->GetTileFromIndex(sprite_tile_id, layer())
+                         .GetRawTile()[2 * sprite_row_id + 1];
 
         for (int bit = 7; bit >= 0; bit--) {
           int id = sprite.xFlip ? 7 - bit : bit;

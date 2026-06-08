@@ -52,6 +52,7 @@ private:
   uint8_t &curr_lx;
   int ticks{0};
   uint8_t lx{0};
+  uint8_t sprite_tile_offset{0};
 
   struct sprite_helper_t {
     bool is_rendering{false};
@@ -74,7 +75,6 @@ private:
   // returns the row inside a tile to render
   uint8_t tile_row_index() const {
     if (sprite.is_rendering) {
-      // TODO: check that this is correct
       int row = (mmu->ly() + 16) - sprite.yPos;
       return sprite.yFlip ? (mmu->lcdc.ObjSize() - 1) - row : row;
     } else if (renderingWindow()) {
