@@ -24,6 +24,8 @@ public:
   TILE(std::vector<uint8_t>::iterator start);
 
   std::span<uint8_t, 16> GetRawTile() const;
+
+  std::vector<uint16_t> GetRenderedTile() const;
 };
 
 #endif
