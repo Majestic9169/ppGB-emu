@@ -56,16 +56,18 @@ void PPU::ppu_step() {
 
   switch (ppu_state) {
   case MODE2_OAM_SCAN: {
-    pixel_fifo.sprite_store.clear();
+    if (ticks == (1 / DIV_FACTOR)) { // only load sprites once
+      pixel_fifo.sprite_store.clear();
 
-    if (mmu->lcdc.areObjEnabled()) {
-      if (pixel_fifo.sprite_store.size() <= 10) {
-        for (auto sprite : mmu->OAM) {
-          // YPos is given by required ly + 16
-          if ((sprite.GetXPostition() > 0) &&
-              (sprite.GetYPostition() <= ly + 16) &&
-              (sprite.GetYPostition() + mmu->lcdc.ObjSize() > ly + 16)) {
-            pixel_fifo.sprite_store.push_back(sprite);
+      if (mmu->lcdc.areObjEnabled()) {
+        if (pixel_fifo.sprite_store.size() <= 10) {
+          for (auto sprite : mmu->OAM) {
+            // YPos is given by required ly + 16
+            if ((sprite.GetXPostition() > 0) &&
+                (sprite.GetYPostition() <= ly + 16) &&
+                (sprite.GetYPostition() + mmu->lcdc.ObjSize() > ly + 16)) {
+              pixel_fifo.sprite_store.push_back(sprite);
+            }
           }
         }
       }
@@ -141,7 +143,7 @@ void PPU::ppu_step() {
   }
 
   // set ly==lyc
-  if (ly == mmu->lyc()) {
+  if (lx >= 160 && ly == mmu->lyc()) {
     mmu->stat.SetLYEqualLYC();
   } else {
     mmu->stat.ResetLYEqualLYC();
