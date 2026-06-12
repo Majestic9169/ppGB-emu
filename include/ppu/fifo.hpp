@@ -52,36 +52,18 @@ private:
   uint8_t &curr_lx;
   int ticks{0};
   uint8_t lx{0};
-  uint8_t sprite_tile_offset{0};
-
-  struct sprite_helper_t {
-    bool is_rendering{false};
-    uint8_t xPos{0};
-    uint8_t yPos{0};
-    bool xFlip{false};
-    bool yFlip{false};
-    bool palette{false};
-    uint8_t tileIndex{0};
-    bool priority{false};
-
-    sprite_helper_t() {}
-    sprite_helper_t(const Object &sprite)
-        : is_rendering(true), xPos{sprite.GetXPostition()},
-          yPos{sprite.GetYPostition()}, xFlip(sprite.GetXFlip()),
-          yFlip(sprite.GetYFlip()), palette(sprite.GetPallete()),
-          tileIndex(sprite.GetTileIndex()), priority(sprite.GetPriority()) {}
-  } sprite{};
 
   // returns the row inside a tile to render
   uint8_t tile_row_index() const {
-    if (sprite.is_rendering) {
-      int row = (mmu->ly() + 16) - sprite.yPos;
-      return sprite.yFlip ? (mmu->lcdc.ObjSize() - 1) - row : row;
-    } else if (renderingWindow()) {
+    if (renderingWindow()) {
       return window_line % 8;
     } else {
       return (mmu->ly() + mmu->scy()) % 8;
     }
+  }
+  uint8_t tile_row_index(const Object &sprite) const {
+    int row = (mmu->ly() + 16) - sprite.GetYPostition();
+    return sprite.GetYFlip() ? (mmu->lcdc.ObjSize() - 1) - row : row;
   }
 
   // return row index of tile to select in map
@@ -103,11 +85,7 @@ private:
   }
 
   TILE::LAYERS layer() {
-    if (sprite.is_rendering) {
-      return TILE::OBJECT;
-    } else {
-      return renderingWindow() ? TILE::WINDOW : TILE::BACKGROUND;
-    }
+    return renderingWindow() ? TILE::WINDOW : TILE::BACKGROUND;
   }
 
   uint8_t tile_data_low{0};
@@ -130,6 +108,8 @@ public:
     in_window = in_window && mmu->lcdc.isWindowEnable();
     return in_window;
   }
+
+  void push_sprite(const Object &sprite);
 
   std::vector<Object> sprite_store{};
 

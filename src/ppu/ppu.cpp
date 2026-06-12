@@ -48,10 +48,6 @@ void PPU::ppu_step() {
   // HACK: for wayland to show window
   GetSurface();
 
-  if (!mmu->lcdc.isLCDenabled()) {
-    return;
-  }
-
   ticks++;
 
   switch (ppu_state) {
@@ -87,11 +83,23 @@ void PPU::ppu_step() {
     if (pixel_fifo.fifo.size() <= 8) {
       break;
     }
+
+    // check for sprites on current scanline (sprite store populated by PPU)
+    if (mmu->lcdc.areObjEnabled()) {
+      for (const auto &s : pixel_fifo.sprite_store) {
+        if (s.GetXPostition() == lx + 8) {
+          pixel_fifo.push_sprite(s);
+          break; // first sprite only
+        }
+      }
+    }
+
     if (!pixel_fifo.fifo.empty()) {
       Pixel px = pixel_fifo.fifo.front();
       pixel_fifo.fifo.pop();
 
       // scroll checking moved here
+      // each dropped pixel takes one tick
       if (pixel_fifo.drop_pixels) {
         pixel_fifo.drop_pixels--;
         break;
@@ -143,7 +151,7 @@ void PPU::ppu_step() {
   }
 
   // set ly==lyc
-  if (lx >= 160 && ly == mmu->lyc()) {
+  if (ppu_state != MODE3_PIXEL_TRANSFER && ly == mmu->lyc()) {
     mmu->stat.SetLYEqualLYC();
   } else {
     mmu->stat.ResetLYEqualLYC();

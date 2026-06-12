@@ -27,6 +27,56 @@ void FIFO::start_fifo() {
   fifo_state = READ_TILE_ID;
 }
 
+void FIFO::push_sprite(const Object &sprite) {
+  // NOTE: the reason we do this bs is gb sprites of size 16 are locked to
+  // having their top tile be the one with the 1 bit and the bottom one be
+  // the onw with the 0 bit
+  // anyway this helps pass the half mouth dmg-acid2 test
+  uint8_t sprite_tile_id = (mmu->lcdc.ObjSize() == 16)
+                               ? ((sprite.GetTileIndex() & 0xFE) |
+                                  (tile_row_index(sprite) >= 8 ? 1 : 0))
+                               : sprite.GetTileIndex();
+  uint8_t sprite_row_id = tile_row_index(sprite) % 8;
+  uint8_t lo = mmu->GetTileFromIndex(sprite_tile_id, layer())
+                   .GetRawTile()[2 * sprite_row_id];
+  uint8_t hi = mmu->GetTileFromIndex(sprite_tile_id, layer())
+                   .GetRawTile()[2 * sprite_row_id + 1];
+
+  std::queue<Pixel> bg_fifo{std::move(fifo)};
+
+  for (int bit = 7; bit >= 0; bit--) {
+    int id = sprite.GetXFlip() ? 7 - bit : bit;
+    uint8_t color = ((hi >> id) & 0x01) << 1 | ((lo >> id) & 0x01);
+    Pixel px;
+    px.layer = TILE::OBJECT;
+
+    if (color == 0) {
+      px.color = Palette::WHITE;
+    } else {
+      px.color = sprite.GetPallete() ? mmu->OBP1.GetColor(color)
+                                     : mmu->OBP0.GetColor(color);
+    }
+
+    if (px.color == Palette::WHITE) {
+      fifo.push(bg_fifo.front());
+      bg_fifo.pop();
+    } else if (sprite.GetPriority() &&
+               bg_fifo.front().color != Palette::WHITE) {
+      fifo.push(bg_fifo.front());
+      bg_fifo.pop();
+    } else {
+      if (!bg_fifo.empty())
+        bg_fifo.pop();
+      fifo.push(px);
+    }
+  }
+
+  while (!bg_fifo.empty()) {
+    fifo.push(bg_fifo.front());
+    bg_fifo.pop();
+  }
+}
+
 void FIFO::fifo_step() {
   ticks++;
 
@@ -36,56 +86,8 @@ void FIFO::fifo_step() {
 
   ticks = 0;
 
-  // check for sprites on current scanline (sprite store populated by PPU)
-  if (mmu->lcdc.areObjEnabled()) {
-    for (const auto &s : sprite_store) {
-      if (s.GetXPostition() == curr_lx + 8) {
-        sprite = s;
-
-        // NOTE: the reason we do this bs is gb sprites of size 16 are locked to
-        // having their top tile be the one with the 1 bit and the bottom one be
-        // the onw with the 0 bit
-        // anyway this helps pass the half mouth dmg-acid2 test
-        uint8_t sprite_tile_id =
-            (mmu->lcdc.ObjSize() == 16)
-                ? ((sprite.tileIndex & 0xFE) | (tile_row_index() >= 8 ? 1 : 0))
-                : sprite.tileIndex;
-        uint8_t sprite_row_id = tile_row_index() % 8;
-        uint8_t lo = mmu->GetTileFromIndex(sprite_tile_id, layer())
-                         .GetRawTile()[2 * sprite_row_id];
-        uint8_t hi = mmu->GetTileFromIndex(sprite_tile_id, layer())
-                         .GetRawTile()[2 * sprite_row_id + 1];
-
-        std::queue<Pixel> bg_fifo{std::move(fifo)};
-
-        for (int bit = 7; bit >= 0; bit--) {
-          int id = sprite.xFlip ? 7 - bit : bit;
-          uint8_t color = ((hi >> id) & 0x01) << 1 | ((lo >> id) & 0x01);
-          Pixel px;
-          px.layer = layer();
-          px.color = sprite.palette ? mmu->OBP1.GetColor(color)
-                                    : mmu->OBP0.GetColor(color);
-
-          if (px.color == Palette::WHITE) {
-            fifo.push(bg_fifo.front());
-            bg_fifo.pop();
-          } else if (sprite.priority &&
-                     bg_fifo.front().color != Palette::WHITE) {
-            fifo.push(bg_fifo.front());
-            bg_fifo.pop();
-          } else {
-            fifo.push(px);
-          }
-        }
-        sprite.is_rendering = false;
-        break;
-      }
-    }
-  }
-
   switch (fifo_state) {
   case READ_TILE_ID: {
-    sprite.is_rendering = false;
     TileAddr tile_addr{
         TileAddr(map_col_index(), map_row_index(), mmu->lcdc.BGTileMap())};
     if (renderingWindow()) {
