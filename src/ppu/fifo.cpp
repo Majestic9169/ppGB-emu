@@ -40,11 +40,8 @@ void FIFO::fifo_step() {
   if (mmu->lcdc.areObjEnabled()) {
     for (const auto &s : sprite_store) {
       if (s.GetXPostition() == curr_lx + 8) {
-        // HACK: replace instead of merging
-        while (!fifo.empty())
-          fifo.pop();
-
         sprite = s;
+
         // NOTE: the reason we do this bs is gb sprites of size 16 are locked to
         // having their top tile be the one with the 1 bit and the bottom one be
         // the onw with the 0 bit
@@ -59,16 +56,26 @@ void FIFO::fifo_step() {
         uint8_t hi = mmu->GetTileFromIndex(sprite_tile_id, layer())
                          .GetRawTile()[2 * sprite_row_id + 1];
 
+        std::queue<Pixel> bg_fifo{std::move(fifo)};
+
         for (int bit = 7; bit >= 0; bit--) {
           int id = sprite.xFlip ? 7 - bit : bit;
           uint8_t color = ((hi >> id) & 0x01) << 1 | ((lo >> id) & 0x01);
           Pixel px;
           px.layer = layer();
-          // px.color = sprite.palette ? mmu->OBP1.GetColor(color)
-          //                           : mmu->OBP0.GetColor(color);
-          // HACK: object palettes work but not for the waves :(
-          px.color = mmu->BG_Palette.GetColor(color);
-          fifo.push(px);
+          px.color = sprite.palette ? mmu->OBP1.GetColor(color)
+                                    : mmu->OBP0.GetColor(color);
+
+          if (px.color == Palette::WHITE) {
+            fifo.push(bg_fifo.front());
+            bg_fifo.pop();
+          } else if (sprite.priority &&
+                     bg_fifo.front().color != Palette::WHITE) {
+            fifo.push(bg_fifo.front());
+            bg_fifo.pop();
+          } else {
+            fifo.push(px);
+          }
         }
         sprite.is_rendering = false;
         break;
