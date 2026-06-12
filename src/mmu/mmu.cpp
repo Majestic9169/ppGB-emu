@@ -167,20 +167,16 @@ uint8_t &MMU::wx() { return ROM[0xff4b]; }
 
 // get tiles from either of the 2 tile maps
 TILE MMU::GetTileFromIndex(uint16_t index, TILE::LAYERS layer) {
-  uint16_t base_addr{0x8000};
-  uint16_t offset{0};
+  uint16_t base_addr;
+  int16_t offset;
 
   if (layer == TILE::OBJECT || lcdc.TileMap() == 0x8000) {
+    base_addr = 0x8000;
     offset = index * 16;
   } else {
     base_addr = 0x9000;
     int8_t signed_index = static_cast<int8_t>(index);
     offset = signed_index * 16;
-  }
-
-  if (cli_opts->debug_enabled()) {
-    printf("GetTile: index=%02x layer=%d addr=%04x lcdc=%02x\n", index, layer,
-           base_addr + offset, read_byte(0xff40));
   }
 
   const auto start{ROM.begin() + base_addr + offset};
