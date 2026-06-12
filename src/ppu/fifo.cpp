@@ -113,8 +113,13 @@ void FIFO::fifo_step() {
       uint8_t color = ((tile_data_high >> bit) & 0x01) << 1 |
                       ((tile_data_low >> bit) & 0x01);
       Pixel px;
-      px.color = mmu->BG_Palette.GetColor(color);
-      px.layer = layer();
+      if (mmu->lcdc.BGWindowEnable()) {
+        px.color = mmu->BG_Palette.GetColor(color);
+        px.layer = layer();
+      } else {
+        px.color = Palette::WHITE;
+        px.layer = TILE::BACKGROUND;
+      }
       fifo.push(px);
     }
     lx += 8;
