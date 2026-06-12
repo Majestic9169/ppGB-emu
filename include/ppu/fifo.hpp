@@ -69,7 +69,7 @@ private:
   // return row index of tile to select in map
   uint8_t map_row_index() const {
     if (renderingWindow()) {
-      return (mmu->ly() - mmu->wy()) / 8;
+      return window_line / 8;
     } else {
       return (uint8_t(mmu->ly() + mmu->scy()) / 8);
     }
