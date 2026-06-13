@@ -56,6 +56,9 @@ public:
   // TODO: not sure this works
   std::vector<Object> OAM;
 
+  // joypad input
+  JOYP_REG joyp{ROM[0xFF00]};
+
   // make lcdc usable
   LCDC_REG lcdc{ROM[0xFF40]};
 

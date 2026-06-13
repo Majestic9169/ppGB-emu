@@ -124,3 +124,25 @@ public:
   bool ReqTimer() const;
   bool ReqVBLANK() const;
 };
+
+// 0xFF00 - JOYP: Joypad
+// 5 - are buttons selected
+// 4 - is dpad selected
+// 3, 2, 1, 0 - which button
+class JOYP_REG {
+  uint8_t &ff00_ref;
+  uint8_t dpad_ref{};
+  uint8_t butt_ref{}; // haha
+  bool getBit(int bit_no) const;
+  void setBit(uint8_t &ref, int bit_no);
+  void clearBit(uint8_t &ref, int bit_no);
+
+public:
+  enum class BUTTON_TYPE { DPAD, BUTT }; // haha
+
+  JOYP_REG(uint8_t &ff00);
+
+  void setButton(BUTTON_TYPE type, int bit);
+  void clearButton(BUTTON_TYPE type, int bit);
+  uint8_t read() const noexcept;
+};

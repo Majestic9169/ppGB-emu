@@ -6,6 +6,7 @@
 
 #include "../include/gb.hpp"
 #include <SDL2/SDL_events.h>
+#include <SDL2/SDL_keycode.h>
 #include <SDL2/SDL_timer.h>
 #include <cstdint>
 
@@ -38,6 +39,7 @@ int Gameboy::gb_step() {
   if (cli_opts->debug_enabled()) {
     // cpu.print_reg();
     // ppu.print_debug();
+    // printf("JOYP: %02X\n", mmu.read_byte(0xff00));
   }
 
   return int_cycles + cpu_cycles;
@@ -68,6 +70,30 @@ void Gameboy::run() {
           std::cout << "Stepping\n";
           gb_step();
         } break;
+          // clang-format off
+        case SDLK_RIGHT: mmu.joyp.setButton(JOYP_REG::BUTTON_TYPE::DPAD, 0); break;
+        case SDLK_LEFT: mmu.joyp.setButton(JOYP_REG::BUTTON_TYPE::DPAD, 1); break;
+        case SDLK_UP: mmu.joyp.setButton(JOYP_REG::BUTTON_TYPE::DPAD, 2); break;
+        case SDLK_DOWN: mmu.joyp.setButton(JOYP_REG::BUTTON_TYPE::DPAD, 3); break;
+        case SDLK_z : mmu.joyp.setButton(JOYP_REG::BUTTON_TYPE::BUTT, 0); break;
+        case SDLK_x: mmu.joyp.setButton(JOYP_REG::BUTTON_TYPE::BUTT, 1); break;
+        case SDLK_RSHIFT: mmu.joyp.setButton(JOYP_REG::BUTTON_TYPE::BUTT, 2); break;
+        case SDLK_RETURN: mmu.joyp.setButton(JOYP_REG::BUTTON_TYPE::BUTT, 3); break;
+          // clang-format on
+        }
+        mmu.interrupt_flag.ReqJoypad();
+      } else if (Event.type == SDL_KEYUP) {
+        switch (Event.key.keysym.sym) {
+          // clang-format off
+        case SDLK_RIGHT: mmu.joyp.clearButton(JOYP_REG::BUTTON_TYPE::DPAD, 0); break;
+        case SDLK_LEFT: mmu.joyp.clearButton(JOYP_REG::BUTTON_TYPE::DPAD, 1); break;
+        case SDLK_UP: mmu.joyp.clearButton(JOYP_REG::BUTTON_TYPE::DPAD, 2); break;
+        case SDLK_DOWN: mmu.joyp.clearButton(JOYP_REG::BUTTON_TYPE::DPAD, 3); break;
+        case SDLK_z : mmu.joyp.clearButton(JOYP_REG::BUTTON_TYPE::BUTT, 0); break;
+        case SDLK_x: mmu.joyp.clearButton(JOYP_REG::BUTTON_TYPE::BUTT, 1); break;
+        case SDLK_RSHIFT: mmu.joyp.clearButton(JOYP_REG::BUTTON_TYPE::BUTT, 2); break;
+        case SDLK_RETURN: mmu.joyp.clearButton(JOYP_REG::BUTTON_TYPE::BUTT, 3); break;
+          // clang-format on
         }
       }
     }

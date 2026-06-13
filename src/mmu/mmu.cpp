@@ -136,7 +136,12 @@ void MMU::hexdump() const {
   fclose(vram);
 }
 
-uint8_t &MMU::read_byte(uint16_t addr) { return ROM[addr]; }
+uint8_t &MMU::read_byte(uint16_t addr) {
+  if (addr == 0xFF00) { // JOYPAD
+    ROM[0xFF00] = joyp.read();
+  }
+  return ROM[addr];
+}
 uint16_t MMU::read_word(uint16_t addr) {
   return ROM[addr] | ROM[addr + 1] << 8;
 }

@@ -65,17 +65,25 @@ void CPU::print_reg() {
 int CPU::check_interrupts(uint8_t of) {
   IF_REG old_if{of};
   if (reg.ime && mmu->read_byte(0xff0f) && mmu->read_byte(0xffff)) {
-    if (old_if.CheckLCD() == 0 && mmu->interrupt_enable.ReqLCD() &&
-        mmu->interrupt_flag.CheckLCD()) {
-      op.call_interrupt(0x48);
-      mmu->interrupt_flag.ResetLCD();
+    if (mmu->interrupt_enable.ReqVBLANK() &&
+        mmu->interrupt_flag.CheckVBLANK() &&
+        old_if.CheckVBLANK() == 0) { // VBLANK interrupt
       reg.ime = false;
-      return 12;
-    } else if (old_if.CheckVBLANK() == 0 && mmu->interrupt_flag.CheckVBLANK() &&
-               mmu->interrupt_enable.ReqVBLANK()) {
-      op.call_interrupt(0x40);
       mmu->interrupt_flag.ResetVBLANK();
+      op.call_interrupt(0x40);
+      return 12;
+    } else if (mmu->interrupt_enable.ReqLCD() &&
+               mmu->interrupt_flag.CheckLCD() &&
+               old_if.CheckLCD() == 0) { // LCD/STAT interrupt
       reg.ime = false;
+      mmu->interrupt_flag.ResetLCD();
+      op.call_interrupt(0x48);
+      return 12;
+    } else if (mmu->interrupt_enable.ReqJoypad() &&
+               mmu->interrupt_flag.CheckJoypad()) { // JOYPAD interrupt
+      reg.ime = false;
+      mmu->interrupt_flag.ResetJoypad();
+      op.call_interrupt(0x60);
       return 12;
     }
   }

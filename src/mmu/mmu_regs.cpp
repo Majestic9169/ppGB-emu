@@ -103,3 +103,48 @@ bool IE_REG::ReqSerial() const { return getBit(3); }
 bool IE_REG::ReqTimer() const { return getBit(2); }
 bool IE_REG::ReqLCD() const { return getBit(1); }
 bool IE_REG::ReqVBLANK() const { return getBit(0); }
+
+// JOYP
+// NOTE: negative edge triggered
+JOYP_REG::JOYP_REG(uint8_t &ff00) : ff00_ref{ff00} { ff00_ref = 0xFF; };
+bool JOYP_REG::getBit(int bit_no) const {
+  return (ff00_ref & (1 << bit_no)) == 0;
+}
+void JOYP_REG::setBit(uint8_t &ref, int bit_no) { ref = ref & ~(1 << bit_no); }
+void JOYP_REG::clearBit(uint8_t &ref, int bit_no) { ref = ref | (1 << bit_no); }
+
+void JOYP_REG::setButton(BUTTON_TYPE type, int bit) {
+  // button type
+  if (type == BUTTON_TYPE::BUTT) {
+    setBit(butt_ref, bit);
+  } else {
+    setBit(dpad_ref, bit);
+  }
+}
+void JOYP_REG::clearButton(BUTTON_TYPE type, int bit) {
+  if (type == BUTTON_TYPE::BUTT) {
+    clearBit(butt_ref, bit);
+  } else {
+    clearBit(dpad_ref, bit);
+  }
+}
+
+uint8_t JOYP_REG::read() const noexcept {
+  uint8_t u3 = ff00_ref & 0x30;
+  uint8_t res = 0xc0 | u3 | 0x0f;
+  switch (u3) {
+  // buttons selected
+  case 0x10:
+    res &= 0xf0 | butt_ref;
+    break;
+  // dpad selected
+  case 0x20:
+    res &= 0xf0 | dpad_ref;
+    break;
+  // neither: return 0xF
+  case 0x30:
+    res &= 0xff;
+    break;
+  }
+  return res;
+}
