@@ -20,7 +20,7 @@ SDL_Surface *PPU::GetSurface() const { return SDL_GetWindowSurface(SDLWindow); }
 Uint32 PPU::MapColorToSDL(Palette::Colors color, SDL_PixelFormat *format) {
   switch (color) {
   case Palette::WHITE:
-    return SDL_MapRGBA(format, 224, 248, 208, 255); // GB white
+    return SDL_MapRGBA(format, 224, 248, 208, 255);
   case Palette::LIGHT_GRAY:
     return SDL_MapRGBA(format, 136, 192, 112, 255);
   case Palette::DARK_GRAY:
@@ -28,14 +28,19 @@ Uint32 PPU::MapColorToSDL(Palette::Colors color, SDL_PixelFormat *format) {
   case Palette::BLACK:
     return SDL_MapRGBA(format, 8, 24, 32, 255);
   default:
-    return SDL_MapRGBA(format, 255, 0, 255, 255); // Magenta for error
+    return SDL_MapRGBA(format, 255, 0, 255, 255);
   }
 }
 
 void PPU::SetPixel(Uint32 color) {
-  Uint8 *pixelPtr = (Uint8 *)GetSurface()->pixels + ly * GetSurface()->pitch +
-                    lx * GetSurface()->format->BytesPerPixel;
-  *(Uint32 *)pixelPtr = color;
+  for (int dx{0}; dx < SCALE; dx++) {
+    for (int dy{0}; dy < SCALE; dy++) {
+      Uint8 *pixelPtr = (Uint8 *)GetSurface()->pixels +
+                        (ly * SCALE + dy) * GetSurface()->pitch +
+                        (lx * SCALE + dx) * GetSurface()->format->BytesPerPixel;
+      *(Uint32 *)pixelPtr = color;
+    }
+  }
 }
 
 PPU::PPU(Opts *cli_, MMU *mmu_)

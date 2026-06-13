@@ -18,8 +18,9 @@
 #include <cstdint>
 #include <sys/types.h>
 
-constexpr int WIDTH{160};
-constexpr int HEIGHT{144};
+constexpr int SCALE{2};
+constexpr int WIDTH{160 * SCALE};
+constexpr int HEIGHT{144 * SCALE};
 
 class PPU {
 private:
