@@ -146,10 +146,16 @@ uint16_t MMU::read_word(uint16_t addr) {
   return ROM[addr] | ROM[addr + 1] << 8;
 }
 void MMU::write_byte(uint16_t addr, uint8_t val) {
-  if (cli_opts->debug_enabled() && addr == 0xff40) {
-    printf("LCDC write: %02x ly: %d\n", val, ly());
-  }
   ROM[addr] = val;
+  // TODO: fix DMA timing (takes 640 ticks)
+  // games supposedly busy wait for it to end
+  // though so a bit of a non issue rn
+  if (addr == 0xFF46) { // OAM DMA transfer
+    int src{val * 0x100};
+    for (int i = 0; i < 160; i++) {
+      write_byte(0xFE00 + i, read_byte(src + i));
+    }
+  }
 }
 void MMU::write_word(uint16_t addr, uint16_t val) {
   write_byte(addr, static_cast<uint8_t>(val));
