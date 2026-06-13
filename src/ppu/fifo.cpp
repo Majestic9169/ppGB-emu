@@ -50,18 +50,14 @@ void FIFO::push_sprite(const Object &sprite) {
     Pixel px;
     px.layer = TILE::OBJECT;
 
-    if (color == 0) {
-      px.color = Palette::WHITE;
-    } else {
-      px.color = sprite.GetPallete() ? mmu->OBP1.GetColor(color)
-                                     : mmu->OBP0.GetColor(color);
-    }
+    px.color = sprite.GetPallete() ? mmu->OBP1.GetColor(color)
+                                   : mmu->OBP0.GetColor(color);
 
-    if (px.color == Palette::WHITE) {
+    if (color == 0) {
       fifo.push(bg_fifo.front());
       bg_fifo.pop();
     } else if (sprite.GetPriority() &&
-               bg_fifo.front().color != Palette::WHITE) {
+               bg_fifo.front().color != mmu->BG_Palette.GetColor0()) {
       fifo.push(bg_fifo.front());
       bg_fifo.pop();
     } else {

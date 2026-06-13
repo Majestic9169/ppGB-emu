@@ -56,10 +56,11 @@ void PPU::ppu_step() {
     if (ticks == (80 / DIV_FACTOR)) {
       pixel_fifo.sprite_store.clear();
       if (mmu->lcdc.areObjEnabled()) {
-        if (pixel_fifo.sprite_store.size() <= 10) {
+        if (pixel_fifo.sprite_store.size() < 10) {
           for (const Object &sprite : mmu->OAM) {
             // YPos is given by required ly + 16
-            if ((sprite.GetXPostition() > 0) &&
+            if ((pixel_fifo.sprite_store.size() < 10) &&
+                (sprite.GetXPostition() > 0) &&
                 (sprite.GetYPostition() <= ly + 16) &&
                 (sprite.GetYPostition() + mmu->lcdc.ObjSize() > ly + 16)) {
               pixel_fifo.sprite_store.push_back(sprite);
@@ -86,6 +87,7 @@ void PPU::ppu_step() {
       for (const auto &s : pixel_fifo.sprite_store) {
         if (s.GetXPostition() == lx + 8) {
           pixel_fifo.push_sprite(s);
+          ticks += 6;
           break; // first sprite only
         }
       }
