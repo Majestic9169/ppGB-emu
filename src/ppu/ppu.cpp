@@ -52,12 +52,12 @@ void PPU::ppu_step() {
 
   switch (ppu_state) {
   case MODE2_OAM_SCAN: {
-    if (ticks == (1 / DIV_FACTOR)) { // only load sprites once
+    // 2 ticks per object, 40 objects
+    if (ticks == (80 / DIV_FACTOR)) {
       pixel_fifo.sprite_store.clear();
-
       if (mmu->lcdc.areObjEnabled()) {
         if (pixel_fifo.sprite_store.size() <= 10) {
-          for (auto sprite : mmu->OAM) {
+          for (const Object &sprite : mmu->OAM) {
             // YPos is given by required ly + 16
             if ((sprite.GetXPostition() > 0) &&
                 (sprite.GetYPostition() <= ly + 16) &&
@@ -67,10 +67,6 @@ void PPU::ppu_step() {
           }
         }
       }
-    }
-
-    // 2 ticks per object, 40 objects
-    if (ticks == (80 / DIV_FACTOR)) {
       lx = 0;
       pixel_fifo.start_fifo();
       ppu_state = MODE3_PIXEL_TRANSFER;
@@ -85,6 +81,7 @@ void PPU::ppu_step() {
     }
 
     // check for sprites on current scanline (sprite store populated by PPU)
+    // TODO: fix dmg-acid2 left mole (lower x sprite in overlapping regions)
     if (mmu->lcdc.areObjEnabled()) {
       for (const auto &s : pixel_fifo.sprite_store) {
         if (s.GetXPostition() == lx + 8) {

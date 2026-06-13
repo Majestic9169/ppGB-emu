@@ -27,14 +27,14 @@ void FIFO::start_fifo() {
   fifo_state = READ_TILE_ID;
 }
 
+// clang-format off
 void FIFO::push_sprite(const Object &sprite) {
   // NOTE: the reason we do this bs is gb sprites of size 16 are locked to
   // having their top tile be the one with the 1 bit and the bottom one be
   // the onw with the 0 bit
   // anyway this helps pass the half mouth dmg-acid2 test
   uint8_t sprite_tile_id = (mmu->lcdc.ObjSize() == 16)
-                               ? ((sprite.GetTileIndex() & 0xFE) |
-                                  (tile_row_index(sprite) >= 8 ? 1 : 0))
+                               ? ((sprite.GetTileIndex() & 0xFE) | (tile_row_index(sprite) >= 8 ? 1 : 0))
                                : sprite.GetTileIndex();
   uint8_t sprite_row_id = tile_row_index(sprite) % 8;
   uint8_t lo = mmu->GetTileFromIndex(sprite_tile_id, layer())
@@ -76,6 +76,7 @@ void FIFO::push_sprite(const Object &sprite) {
     bg_fifo.pop();
   }
 }
+// clang-format on
 
 void FIFO::fifo_step() {
   ticks++;
