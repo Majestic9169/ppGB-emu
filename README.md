@@ -65,6 +65,8 @@
         <li><a href="#tests">Tests</a></li>
       </ul>
     </li>
+    <li><a href="#further-plans">Further Plans</a></li>
+    <li><a href="#known-issues">Known Bugs</a></li>
     <li><a href="#top-contributors">Top Contributors</a></li>
   </ol>
 </details>
@@ -76,7 +78,11 @@
 
 ppGB (plus plus GameBoy emulator) is a GameBoy Emulator written in C++. 
 
-This project aims to implement a basic featured Gameboy Emulator that will allow the user to play simple games like Tetris at their convenience, while exhibiting good software engineering practices like version control, build systems, documentation, etc.
+This project aims to implement a basic featured Gameboy Emulator that will
+allow the user to play simple games like Tetris.
+
+It is my attempt at learning more about best practices, modern c++, computer architecture, and much more
+
 
 |![fairlylake](./assets/fairlylake.gif) |  ![tetris demo](./assets/tetris2.gif) |
 | ------------------------------------- | ---------------------------------- | 
@@ -89,7 +95,9 @@ This project aims to implement a basic featured Gameboy Emulator that will allow
 
 ### Built With
 
-[![C++](https://img.shields.io/badge/C++-%2300599C.svg?logo=c%2B%2B&logoColor=white)](#)
+[![C++](https://img.shields.io/badge/C++-%2300599C.svg?logo=c%2B%2B&logoColor=white)](#) 
+[![](https://img.shields.io/badge/crashout%20count-73-08C)](https://github.com/sebmestrallet/absurd-badges)
+[![](https://img.shields.io/badge/rubber%20duck%20debugger-quack-DB1)](https://github.com/sebmestrallet/absurd-badges)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -114,10 +122,14 @@ On linux mint and similar systems
 sudo apt-get install libsdl2-2.0.0
 ```
 
-> [!CAUTION]
-> SDL3 is newly released and not stable. Up until April 3rd 2025 I was trying to use SDL3 not realising that it simply was not functional yet (or i was just messing up really bad)
-
 ### Usage
+
+**Quick Start:**
+
+```bash
+./build.sh
+./build/ppGB-emu ./roms/fairylake.gb # you need a gb rom installed
+```
 
 a `build.sh` convenience script is provided. You can set `$ROM` in the script then use as below
 
@@ -181,7 +193,28 @@ The tests need a ROM to be loaded which you can edit in the [`./tests/test_globa
 char *argv[2] = {strdup("./tests"), strdup("./roms/sgb_bios.bin")};
 ```
 
-The choice of ROM is irrelevant for the tests to function
+The choice of ROM is irrelevant for the tests to function (i realise this is kinda dumb, i will fix it when i care enough)
+
+---
+
+## Further Plans
+
+- [ ] The Timer needs to be implemented
+- [ ] Memory Bank Controllers needs to be implemented to support larger games
+- [ ] Serial port functionality needs to be implemented
+- [ ] Add an SDL back buffer for screen updates
+- [ ] Refactor and clean up a bunch of stuff (mostly debugging helpers)
+- [ ] Add more unit tests, I realised how incomplete my testsuite is recently
+- [ ] more modern c++!!!
+- [ ] Audio support some day???
+
+## Known Bugs
+
+- [ ] DMG-Acid2 Left mole is visible, this is because overlapping sprite priority on the same scanline is not handled
+- [ ] Timing Oddities and other cycle accuracy issues
+- [ ] joypad starts out with all keys pressed
+- [ ] a few of the assertions in the sm83 test-suite also fail (like 10 of them) which i believe has to do with the above issue
+- [ ] Sprites in the game Asteroid are either deformed or not visible
 
 ---
 
