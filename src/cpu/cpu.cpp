@@ -79,6 +79,13 @@ int CPU::check_interrupts(uint8_t of) {
       mmu->interrupt_flag.ResetLCD();
       op.call_interrupt(0x48);
       return 12;
+    } else if (mmu->interrupt_enable.ReqTimer() &&
+               mmu->interrupt_flag.CheckTimer() &&
+               old_if.CheckTimer() == 0) { // Timer interrupt
+      reg.ime = false;
+      mmu->interrupt_flag.ResetTimer();
+      op.call_interrupt(0x50);
+      return 12;
     } else if (mmu->interrupt_enable.ReqJoypad() &&
                mmu->interrupt_flag.CheckJoypad()) { // JOYPAD interrupt
       reg.ime = false;

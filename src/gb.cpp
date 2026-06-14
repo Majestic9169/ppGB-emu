@@ -30,6 +30,12 @@ int Gameboy::gb_step() {
   for (int i = 0; i < cpu_cycles; i++)
     ppu.ppu_step();
 
+  // HACK: more timer bs over here
+  // THIS IS NOT CORRECT
+  if (mmu.read_byte(0xff05) + cpu_cycles > 0xFF) {
+    mmu.interrupt_flag.CheckTimer();
+  }
+
   // the same old interrupt handling
   int_cycles += cpu.check_interrupts(old_if);
   // move ppu ahead those many more cycles
@@ -37,8 +43,8 @@ int Gameboy::gb_step() {
     ppu.ppu_step();
 
   if (cli_opts->debug_enabled()) {
-    // cpu.print_reg();
-    // ppu.print_debug();
+    cpu.print_reg();
+    ppu.print_debug();
     // printf("JOYP: %02X\n", mmu.read_byte(0xff00));
   }
 
@@ -71,12 +77,12 @@ void Gameboy::run() {
           gb_step();
         } break;
           // clang-format off
-        case SDLK_RIGHT: mmu.joyp.setButton(JOYP_REG::BUTTON_TYPE::DPAD, 0); break;
-        case SDLK_LEFT: mmu.joyp.setButton(JOYP_REG::BUTTON_TYPE::DPAD, 1); break;
-        case SDLK_UP: mmu.joyp.setButton(JOYP_REG::BUTTON_TYPE::DPAD, 2); break;
-        case SDLK_DOWN: mmu.joyp.setButton(JOYP_REG::BUTTON_TYPE::DPAD, 3); break;
-        case SDLK_z : mmu.joyp.setButton(JOYP_REG::BUTTON_TYPE::BUTT, 0); break;
-        case SDLK_x: mmu.joyp.setButton(JOYP_REG::BUTTON_TYPE::BUTT, 1); break;
+        case SDLK_d: mmu.joyp.setButton(JOYP_REG::BUTTON_TYPE::DPAD, 0); break;
+        case SDLK_a: mmu.joyp.setButton(JOYP_REG::BUTTON_TYPE::DPAD, 1); break;
+        case SDLK_w: mmu.joyp.setButton(JOYP_REG::BUTTON_TYPE::DPAD, 2); break;
+        case SDLK_s: mmu.joyp.setButton(JOYP_REG::BUTTON_TYPE::DPAD, 3); break;
+        case SDLK_j : mmu.joyp.setButton(JOYP_REG::BUTTON_TYPE::BUTT, 0); break;
+        case SDLK_k: mmu.joyp.setButton(JOYP_REG::BUTTON_TYPE::BUTT, 1); break;
         case SDLK_RSHIFT: mmu.joyp.setButton(JOYP_REG::BUTTON_TYPE::BUTT, 2); break;
         case SDLK_RETURN: mmu.joyp.setButton(JOYP_REG::BUTTON_TYPE::BUTT, 3); break;
           // clang-format on
@@ -85,12 +91,12 @@ void Gameboy::run() {
       } else if (Event.type == SDL_KEYUP) {
         switch (Event.key.keysym.sym) {
           // clang-format off
-        case SDLK_RIGHT: mmu.joyp.clearButton(JOYP_REG::BUTTON_TYPE::DPAD, 0); break;
-        case SDLK_LEFT: mmu.joyp.clearButton(JOYP_REG::BUTTON_TYPE::DPAD, 1); break;
-        case SDLK_UP: mmu.joyp.clearButton(JOYP_REG::BUTTON_TYPE::DPAD, 2); break;
-        case SDLK_DOWN: mmu.joyp.clearButton(JOYP_REG::BUTTON_TYPE::DPAD, 3); break;
-        case SDLK_z : mmu.joyp.clearButton(JOYP_REG::BUTTON_TYPE::BUTT, 0); break;
-        case SDLK_x: mmu.joyp.clearButton(JOYP_REG::BUTTON_TYPE::BUTT, 1); break;
+        case SDLK_d: mmu.joyp.clearButton(JOYP_REG::BUTTON_TYPE::DPAD, 0); break;
+        case SDLK_a: mmu.joyp.clearButton(JOYP_REG::BUTTON_TYPE::DPAD, 1); break;
+        case SDLK_w: mmu.joyp.clearButton(JOYP_REG::BUTTON_TYPE::DPAD, 2); break;
+        case SDLK_s: mmu.joyp.clearButton(JOYP_REG::BUTTON_TYPE::DPAD, 3); break;
+        case SDLK_j : mmu.joyp.clearButton(JOYP_REG::BUTTON_TYPE::BUTT, 0); break;
+        case SDLK_k: mmu.joyp.clearButton(JOYP_REG::BUTTON_TYPE::BUTT, 1); break;
         case SDLK_RSHIFT: mmu.joyp.clearButton(JOYP_REG::BUTTON_TYPE::BUTT, 2); break;
         case SDLK_RETURN: mmu.joyp.clearButton(JOYP_REG::BUTTON_TYPE::BUTT, 3); break;
           // clang-format on
@@ -101,6 +107,11 @@ void Gameboy::run() {
     if (!is_paused) {
       while (curr_cycles < CYCLES_PER_FRAME) {
         curr_cycles += gb_step();
+        // HACK: random bs timer updates
+        // this is NOT CORRECT in the slightest but will convince games
+        // like tetris and dr mario to run
+        mmu.write_byte(0xff04, curr_cycles ^ 0xc3);
+        mmu.write_byte(0xff05, curr_cycles + mmu.read_byte(0xff06));
       }
       curr_cycles -= CYCLES_PER_FRAME;
     }
