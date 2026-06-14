@@ -4,7 +4,7 @@
 int argc = 2;
 char *argv[2] = {strdup("./tests"), strdup("./roms/tetris.gb")};
 Opts cli_opts{argc, argv};
-MMU mmu{&cli_opts};
+MMU mmu{&cli_opts, true};
 Registers reg{};
 Opcodes op{&mmu, &reg};
 CB_Opcodes cb{&mmu, &reg};

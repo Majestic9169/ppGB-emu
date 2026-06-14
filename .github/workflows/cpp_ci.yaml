@@ -4,7 +4,7 @@ name: C++ Build Test CI
 
 on:
   push:
-    branches: [ "new_start" ]
+    branches: [ "main" ]
 
 jobs:
   build:

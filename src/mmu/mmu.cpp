@@ -26,7 +26,8 @@ void MMU::header_information() {
   std::cout << "No. Banks   " << rom_banks << std::endl;
 }
 
-MMU::MMU(Opts *opts_) : ROM(ROM_SIZE), cli_opts{opts_}, OAM{} {
+MMU::MMU(Opts *opts_, bool is_test)
+    : ROM(ROM_SIZE), cli_opts{opts_}, testing_mode(is_test), OAM{} {
   std::ifstream rom_file{cli_opts->rom_name(), std::ios::binary};
 
   if (!rom_file.good()) {
@@ -137,15 +138,26 @@ void MMU::hexdump() const {
 }
 
 uint8_t &MMU::read_byte(uint16_t addr) {
+  if (testing_mode) {
+    return ROM.at(addr);
+  }
+
   if (addr == 0xFF00) { // JOYPAD
     ROM[0xFF00] = joyp.read();
   }
   return ROM[addr];
 }
 uint16_t MMU::read_word(uint16_t addr) {
-  return ROM[addr] | ROM[addr + 1] << 8;
+  return read_byte(addr) | (read_byte(addr + 1) << 8);
 }
 void MMU::write_byte(uint16_t addr, uint8_t val) {
+  if (testing_mode) {
+    ROM[addr] = val;
+    return;
+  }
+
+  if (addr < 0x8000) // block writes to the ROM
+    return;
   ROM[addr] = val;
   // TODO: fix DMA timing (takes 640 ticks)
   // games supposedly busy wait for it to end

@@ -32,12 +32,14 @@ private:
   MMU(const MMU &) = delete;
   MMU &operator=(const MMU &) = delete;
 
+  bool testing_mode{false}; // to allow the sm83 tests to pass
+
   void header_information();
 
 public:
   void hexdump() const;
 
-  MMU(Opts *opts_);
+  MMU(Opts *opts_, bool is_test = false);
 
   uint8_t &read_byte(uint16_t addr);
   uint16_t read_word(uint16_t addr);
