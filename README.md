@@ -213,7 +213,7 @@ The choice of ROM is irrelevant for the tests to function (i realise this is kin
 - [ ] DMG-Acid2 Left mole is visible, this is because overlapping sprite priority on the same scanline is not handled
 - [ ] Timing Oddities and other cycle accuracy issues
 - [ ] joypad starts out with all keys pressed
-- [ ] a few of the assertions in the sm83 test-suite also fail (like 10 of them) which i believe has to do with the above issue
+- [ ] 14 of the sm83 tests fail because they assume a flat memory without registers. i will either replace those tests or fix the underlying framework eventually
 
 ---
 
