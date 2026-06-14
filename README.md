@@ -214,7 +214,6 @@ The choice of ROM is irrelevant for the tests to function (i realise this is kin
 - [ ] Timing Oddities and other cycle accuracy issues
 - [ ] joypad starts out with all keys pressed
 - [ ] a few of the assertions in the sm83 test-suite also fail (like 10 of them) which i believe has to do with the above issue
-- [ ] Sprites in the game Asteroid are either deformed or not visible
 
 ---
 

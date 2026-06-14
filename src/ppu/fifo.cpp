@@ -37,9 +37,9 @@ void FIFO::push_sprite(const Object &sprite) {
                                ? ((sprite.GetTileIndex() & 0xFE) | (tile_row_index(sprite) >= 8 ? 1 : 0))
                                : sprite.GetTileIndex();
   uint8_t sprite_row_id = tile_row_index(sprite) % 8;
-  uint8_t lo = mmu->GetTileFromIndex(sprite_tile_id, layer())
+  uint8_t lo = mmu->GetTileFromIndex(sprite_tile_id, TILE::OBJECT)
                    .GetRawTile()[2 * sprite_row_id];
-  uint8_t hi = mmu->GetTileFromIndex(sprite_tile_id, layer())
+  uint8_t hi = mmu->GetTileFromIndex(sprite_tile_id, TILE::OBJECT)
                    .GetRawTile()[2 * sprite_row_id + 1];
 
   std::queue<Pixel> bg_fifo{std::move(fifo)};
