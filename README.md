@@ -17,11 +17,11 @@
 *** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
 *** https://www.markdownguide.org/basic-syntax/#reference-style-links
 -->
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
+<!-- [![Contributors][contributors-shield]][contributors-url] -->
+<!-- [![Forks][forks-shield]][forks-url] -->
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
-[![Unlicense License][license-shield]][license-url]
+<!-- [![Unlicense License][license-shield]][license-url] -->
 <!-- [![LinkedIn][linkedin-shield]][linkedin-url] -->
 
 <!-- PROJECT LOGO -->
@@ -241,13 +241,11 @@ The choice of ROM is irrelevant for the tests to function (i realise this is kin
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/Majestic9169/ppGB-emu.svg?style=for-the-badge
-[contributors-url]: https://github.com/Majestic9169/ppGB-emu/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/Majestic9169/ppGB-emu.svg?style=for-the-badge
-[forks-url]: https://github.com/Majestic9169/ppGB-emu/network/members
-[stars-shield]: https://img.shields.io/github/stars/Majestic9169/ppGB-emu.svg?style=for-the-badge
-[stars-url]: https://github.com/Majestic9169/ppGB-emu/stargazers
-[issues-shield]: https://img.shields.io/github/issues/Majestic9169/ppGB-emu.svg?style=for-the-badge
-[issues-url]: https://github.com/Majestic9169/ppGB-emu/issues
-[license-shield]: https://img.shields.io/github/license/Majestic9169/ppGB-emu.svg?style=for-the-badge
-[license-url]: https://github.com/Majestic9169/ppGB-emu/blob/master/LICENSE.txt
+[contributors-shield]: https://img.shields.io/github/contributors/majestic9169/ppgb-emu.svg?style=for-the-badge
+[contributors-url]: https://github.com/majestic9169/ppgb-emu/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/majestic9169/ppgb-emu.svg?style=for-the-badge
+[forks-url]: https://github.com/majestic9169/ppgb-emu/network/members
+[stars-shield]: https://img.shields.io/github/stars/majestic9169/ppgb-emu.svg?style=for-the-badge
+[stars-url]: https://github.com/majestic9169/ppgb-emu/stargazers
+[issues-shield]: https://img.shields.io/github/issues/majestic9169/ppgb-emu.svg?style=for-the-badge
+[issues-url]: https://github.com/majestic9169/ppgb-emu/issues
